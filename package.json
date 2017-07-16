@@ -1,6 +1,6 @@
 {
   "name": "entropy-string",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Efficiently generate cryptographically strong random strings of specified entropy from various character sets.",
   "main": "entropy-string.js",
   "directories": {
@@ -9,7 +9,7 @@
   },
   "scripts": {
     "build": "BABEL_ENV=production babel --out-dir=dist lib/*.js",
-    "prepublish": "npm run build",
+    "prepublish": "yarn build",
     "test": "ava"
   },
   "repository": {

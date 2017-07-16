@@ -1,4 +1,4 @@
-## EntropyString for JavaScript
+## EntropyString for JavaScript &nbsp;&nbsp; [![Build Status](https://travis-ci.org/EntropyString/JavaScript.svg?branch=master)](https://travis-ci.org/EntropyString/JavaScript)
 
 `entropy-string` provides efficient creation of cryptographically strong random strings of specific entropy using various character sets.
 
