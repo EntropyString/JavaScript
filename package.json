@@ -9,7 +9,7 @@
   },
   "scripts": {
     "build": "BABEL_ENV=production babel --out-dir=dist lib/*.js",
-    "prepublish": "yarn build",
+    "prepare": "yarn build",
     "test": "ava"
   },
   "repository": {

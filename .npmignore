@@ -1,5 +1,7 @@
 lib
+test
 *~
+
 .idea
 *.iml
 npm-debug.log
