@@ -1,6 +1,6 @@
 {
   "name": "entropy-string",
-  "version": "1.0.4",
+  "version": "1.0.5",
   "description": "Efficiently generate cryptographically strong random strings of specified entropy from various character sets.",
   "main": "entropy-string.js",
   "directories": {
