@@ -1,6 +1,6 @@
 {
   "name": "entropy-string",
-  "version": "1.0.8",
+  "version": "1.0.9",
   "description": "Efficiently generate cryptographically strong random strings of specified entropy from various character sets.",
   "main": "entropy-string.js",
   "directories": {
@@ -57,5 +57,8 @@
     "babel-plugin-transform-runtime": "^6.4.3",
     "babel-preset-es2015": "^6.3.13",
     "babel-preset-stage-3": "^6.3.13"
+  },
+  "dependencies": {
+    "babel-runtime": "^6.23.0"
   }
 }
