@@ -1,6 +1,6 @@
 ## EntropyString for JavaScript
 
-[![Build Status](https://travis-ci.org/EntropyString/JavaScript.svg?branch=master)](https://travis-ci.org/EntropyString/JavaScript) &nbsp; [![npm](https://img.shields.io/npm/v/npm.svg)]() &nbsp;  [![License: ISC](./ISC.svg)](https://en.wikipedia.org/wiki/ISC_license)
+[![Build Status](https://travis-ci.org/EntropyString/JavaScript.svg?branch=master)](https://travis-ci.org/EntropyString/JavaScript) &nbsp; [![npm](https://img.shields.io/npm/v/npm.svg)]() &nbsp;  [![License: ISC](https://github.com/EntropyString/JavaScript/blob/master/ISC.svg)](https://en.wikipedia.org/wiki/ISC_license)
 
 Efficiently generate cryptographically strong random strings of specified entropy from various character sets.
 
