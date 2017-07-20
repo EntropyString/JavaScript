@@ -380,7 +380,7 @@ However, if you don't need cryptographically strong random strings, you can requ
   
   > fdRp9Q3rTMF7TdFN
   
-When using `Math.random`, the `entropy-string` scheme uses 48 of the 52(ish) bits of randomness from each call to `Math.random`. That's more efficient than the above code snippet but less so than using bytes from `crypto`.
+When using `Math.random`, the `entropy-string` scheme uses 48 of the 52(ish) bits of randomness from each call to `Math.random`. That's much more efficient than the previous code snippet but a bit less so than using bytes from `crypto`.
 
 Fortunately you don't need to really understand how the bytes are efficiently sliced and diced to get the string. But you may want to provide your own [Custom Bytes](#CustomBytes) to create a string, which is the next topic.
 
