@@ -6,11 +6,11 @@ Object.defineProperty(exports, "__esModule", {
 
 var _log = require('babel-runtime/core-js/math/log10');
 
-var _log2 = _interopRequireDefault(_log);
+var _log3 = _interopRequireDefault(_log);
 
-var _log3 = require('babel-runtime/core-js/math/log2');
+var _log4 = require('babel-runtime/core-js/math/log2');
 
-var _log4 = _interopRequireDefault(_log3);
+var _log5 = _interopRequireDefault(_log4);
 
 var _charSet = require('./charSet');
 
@@ -22,11 +22,11 @@ var _lcm2 = _interopRequireDefault(_lcm);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-var log2 = _log4.default;
-var log10 = _log2.default;
-var log2_10 = log2(10);
+var _log2 = _log5.default;
+var _log10 = _log3.default;
+var _log2_10 = _log2(10);
 
-var endianByteNum = function () {
+var _endianByteNum = function () {
   var buf32 = new Uint32Array(1);
   var buf8 = new Uint8Array(buf32.buffer);
   buf32[0] = 0xff;
@@ -40,10 +40,10 @@ var bits = function bits(total, risk) {
 
   var N = 0;
   if (total < 10001) {
-    N = log2(total) + log2(total - 1) + log2_10 * log10(risk) - 1;
+    N = _log2(total) + _log2(total - 1) + _log2_10 * _log10(risk) - 1;
   } else {
-    var n = 2 * log10(total) + log10(risk);
-    N = n * log2_10 - 1;
+    var n = 2 * _log10(total) + _log10(risk);
+    N = n * _log2_10 - 1;
   }
   return N;
 };
@@ -55,10 +55,10 @@ var bitsWithRiskPower = function bitsWithRiskPower(total, rPower) {
 
   var N = 0;
   if (total < 10001) {
-    N = log2(total) + log2(total - 1) + log2_10 * rPower - 1;
+    N = _log2(total) + _log2(total - 1) + _log2_10 * rPower - 1;
   } else {
-    var n = 2 * log10(total) + rPower;
-    N = n * log2_10 - 1;
+    var n = 2 * _log10(total) + rPower;
+    N = n * _log2_10 - 1;
   }
   return N;
 };
@@ -69,7 +69,7 @@ var bitsWithPowers = function bitsWithPowers(tPower, rPower) {
     return bitsWithRiskPower(Math.pow(10, tPower), rPower);
   } else {
     var n = 2 * tPower + rPower;
-    N = n * log2_10 - 1;
+    N = n * _log2_10 - 1;
   }
   return N;
 };
@@ -77,7 +77,7 @@ var bitsWithPowers = function bitsWithPowers(tPower, rPower) {
 var randomString = function randomString(entropy, charSet) {
   var crypto = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : true;
 
-  var bytes = crypto ? cryptoBytes(entropy, charSet) : randomBytes(entropy, charSet);
+  var bytes = crypto ? _cryptoBytes(entropy, charSet) : _randomBytes(entropy, charSet);
   return randomStringWithBytes(entropy, charSet, bytes);
 };
 
@@ -107,27 +107,27 @@ var randomStringWithBytes = function randomStringWithBytes(entropy, charSet, byt
   switch (charSet) {
     case _charSet2.default.charSet64:
       chars = _charSet2.default.charSet64.chars;
-      ndxFn = ndx64;
+      ndxFn = _ndx64;
       break;
     case _charSet2.default.charSet32:
       chars = _charSet2.default.charSet32.chars;
-      ndxFn = ndx32;
+      ndxFn = _ndx32;
       break;
     case _charSet2.default.charSet16:
       chars = _charSet2.default.charSet16.chars;
-      ndxFn = ndx16;
+      ndxFn = _ndx16;
       break;
     case _charSet2.default.charSet8:
       chars = _charSet2.default.charSet8.chars;
-      ndxFn = ndx8;
+      ndxFn = _ndx8;
       break;
     case _charSet2.default.charSet4:
       chars = _charSet2.default.charSet4.chars;
-      ndxFn = ndx4;
+      ndxFn = _ndx4;
       break;
     case _charSet2.default.charSet2:
       chars = _charSet2.default.charSet2.chars;
-      ndxFn = ndx2;
+      ndxFn = _ndx2;
       break;
     default:
       break;
@@ -160,12 +160,12 @@ var bytesNeeded = function bytesNeeded(entropy, charSet) {
   return Math.ceil(count * bytesPerSlice);
 };
 
-var cryptoBytes = function cryptoBytes(entropy, charSet) {
+var _cryptoBytes = function _cryptoBytes(entropy, charSet) {
   var crypto = require('crypto');
   return Buffer.from(crypto.randomBytes(bytesNeeded(entropy, charSet)));
 };
 
-var randomBytes = function randomBytes(entropy, charSet) {
+var _randomBytes = function _randomBytes(entropy, charSet) {
   var byteCount = bytesNeeded(entropy, charSet);
   var randCount = Math.ceil(byteCount / 6);
 
@@ -174,45 +174,45 @@ var randomBytes = function randomBytes(entropy, charSet) {
   for (var rNum = 0; rNum < randCount; rNum++) {
     dataView.setFloat64(0, Math.random());
     for (var n = 0; n < 6; n++) {
-      var fByteNum = endianByteNum[n];
+      var fByteNum = _endianByteNum[n];
       var bByteNum = 6 * rNum + n;
-      bufferByte(buffer, bByteNum, fByteNum, byteCount, dataView);
+      _bufferByte(buffer, bByteNum, fByteNum, byteCount, dataView);
     }
   }
   return buffer;
 };
 
-var bufferByte = function bufferByte(buffer, bByte, nByte, byteCount, dataView) {
+var _bufferByte = function _bufferByte(buffer, bByte, nByte, byteCount, dataView) {
   if (bByte < byteCount) {
     buffer[bByte] = dataView.getUint8(nByte);
   }
 };
 
-var ndx64 = function ndx64(chunk, slice, bytes) {
-  return ndxGen(chunk, slice, bytes, 6);
+var _ndx64 = function _ndx64(chunk, slice, bytes) {
+  return _ndxGen(chunk, slice, bytes, 6);
 };
 
-var ndx32 = function ndx32(chunk, slice, bytes) {
-  return ndxGen(chunk, slice, bytes, 5);
+var _ndx32 = function _ndx32(chunk, slice, bytes) {
+  return _ndxGen(chunk, slice, bytes, 5);
 };
 
-var ndx16 = function ndx16(chunk, slice, bytes) {
+var _ndx16 = function _ndx16(chunk, slice, bytes) {
   return (bytes[chunk] << 4 * slice & 0xff) >> 4;
 };
 
-var ndx8 = function ndx8(chunk, slice, bytes) {
-  return ndxGen(chunk, slice, bytes, 3);
+var _ndx8 = function _ndx8(chunk, slice, bytes) {
+  return _ndxGen(chunk, slice, bytes, 3);
 };
 
-var ndx4 = function ndx4(chunk, slice, bytes) {
+var _ndx4 = function _ndx4(chunk, slice, bytes) {
   return (bytes[chunk] << 2 * slice & 0xff) >> 6;
 };
 
-var ndx2 = function ndx2(chunk, slice, bytes) {
+var _ndx2 = function _ndx2(chunk, slice, bytes) {
   return (bytes[chunk] << slice & 0xff) >> 7;
 };
 
-var ndxGen = function ndxGen(chunk, slice, bytes, bitsPerSlice) {
+var _ndxGen = function _ndxGen(chunk, slice, bytes, bitsPerSlice) {
   var bitsPerByte = 8;
   var slicesPerChunk = (0, _lcm2.default)(bitsPerSlice, bitsPerByte) / bitsPerByte;
 
