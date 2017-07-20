@@ -352,24 +352,33 @@ The `entropy-string` scheme is also efficient with regard to the amount of rando
   let chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789"
   let string = ""
   for(let i = 0; i < length; i++) {
-    string += possible.charAt(Math.floor(Math.random() * possible.length));
+    string += chars.charAt(Math.floor(Math.random() * chars.length));
   }
   ```
+
+  > bl0mvxXAqXuz5R3N
 
 There are two significant issues with this code. `Math.random` returns a random `float` value. At the very best this value has about 53-bits of entropy. Let's assume it's 52-bits for argument sake, i.e. `Math.random` generates 52 bits of randomness per call. That randomness is in turn used to create an index. Since there are 62 **chars**, each represents 5.95 bits of entropy. So if we're creating strings with **length=16**, the 16 calls generate a total of 816 bits of randomness which are used to inject a total of 95.2 bits of entropy (5.95/char) into **string**. That means 720 bits (88% of the total) of the generated randomness is simply wasted.
 
 Compare that to the `entropy-string` scheme. For the example above, slicing off 5 bits at a time requires a total of 80 bits (10 bytes). Creating the same strings as above, `entropy-string` uses 80 bits of randomness per string with no wasted bits. In general, the `entropy-string` scheme can waste up to 7 bits per string, but that's the worst case scenario and that's *per string*, not *per character*!
 
-But there is an even bigger issue with the above code from a security perspective. `Math.random` *is not a cryptographically strong random number generator*. **_Do not_** use `Math.random` to create secure IDs! This highlights an important point. Strings are only capable of carrying information (entropy); it's the random bytes that actually provide the entropy itself. `entropy-string` automatically generates the necessary number of bytes needed to create a random string using the `crypto` library.
+  ```js
+  const entropy = require('entropy-string')
+  let string = entropy.randomString(80, entropy.charSet32)
+  ```
+  
+  > HFtgHQ9q9fH6B8HM
+  
+But there is an even bigger issue with the previous code from a security perspective. `Math.random` *is not a cryptographically strong random number generator*. **_Do not_** use `Math.random` to create strings used for security purposes! This highlights an important point. Strings are only capable of carrying information (entropy); it's the random bytes that actually provide the entropy itself. `entropy-string` automatically generates the necessary bytes needed to create cryptographically strong random strings using the `crypto` library.
 
 However, if you don't need cryptographically strong random strings, you can request `entropy-string` use `Math.random` rather than the `crypto` library by passing in a 3rd argument of `false`:
 
   ```js
   const entropy = require('entropy-string')
-  let string = entropy.randomString(48, entropy.charSet32, false)
+  let string = entropy.randomString(80, entropy.charSet32, false)
   ```
   
-  > PQ9dmqJ7g6
+  > fdRp9Q3rTMF7TdFN
   
 When using `Math.random`, the `entropy-string` scheme uses 48 of the 52(ish) bits of randomness from each call to `Math.random`. That's more efficient than the above code snippet but less so than using bytes from `crypto`.
 
