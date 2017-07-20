@@ -89,71 +89,90 @@ test('Char Set 2 Strings', t => {
 
 test('Char Set 64 string lengths', t => {
   const charSet = entropy.charSet64
-  t.is(entropyStringLength(  5, charSet),  1)
-  t.is(entropyStringLength(  6, charSet),  1)
-  t.is(entropyStringLength(  7, charSet),  2)
-  t.is(entropyStringLength( 18, charSet),  3)
-  t.is(entropyStringLength( 50, charSet),  9)
-  t.is(entropyStringLength(122, charSet), 21)
-  t.is(entropyStringLength(128, charSet), 22)
-  t.is(entropyStringLength(132, charSet), 22)
+  const fns = [entropyStringLength, entropyStringLengthNoCrypto]
+  for (let i = 0; i < 2; i++) {
+    t.is(fns[i](  5, charSet),  1)
+    t.is(fns[i](  6, charSet),  1)
+    t.is(fns[i](  7, charSet),  2)
+    t.is(fns[i]( 18, charSet),  3)
+    t.is(fns[i]( 50, charSet),  9)
+    t.is(fns[i](122, charSet), 21)
+    t.is(fns[i](128, charSet), 22)
+    t.is(fns[i](132, charSet), 22)
+  }
 })
 
 test('Char Set 32 string lengths', t => {
   const charSet = entropy.charSet32
-  t.is(entropyStringLength(  4, charSet),  1)
-  t.is(entropyStringLength(  5, charSet),  1)
-  t.is(entropyStringLength(  6, charSet),  2)
-  t.is(entropyStringLength( 20, charSet),  4)
-  t.is(entropyStringLength( 32, charSet),  7)
-  t.is(entropyStringLength(122, charSet), 25)
-  t.is(entropyStringLength(128, charSet), 26)
-  t.is(entropyStringLength(130, charSet), 26)
+  const fns = [entropyStringLength, entropyStringLengthNoCrypto]
+  for (let i = 0; i < 2; i++) {
+    t.is(fns[i](  4, charSet),  1)
+    t.is(fns[i](  5, charSet),  1)
+    t.is(fns[i](  6, charSet),  2)
+    t.is(fns[i]( 20, charSet),  4)
+    t.is(fns[i]( 32, charSet),  7)
+    t.is(fns[i](122, charSet), 25)
+    t.is(fns[i](128, charSet), 26)
+    t.is(fns[i](130, charSet), 26)
+  }
 })
 
 test('Char Set 16 string lengths', t => {
   const charSet = entropy.charSet16
-  t.is(entropyStringLength(  3, charSet),  1)
-  t.is(entropyStringLength(  4, charSet),  1)
-  t.is(entropyStringLength(  5, charSet),  2)
-  t.is(entropyStringLength( 14, charSet),  4)
-  t.is(entropyStringLength( 40, charSet), 10)
-  t.is(entropyStringLength(122, charSet), 31)
-  t.is(entropyStringLength(128, charSet), 32)
+  const fns = [entropyStringLength, entropyStringLengthNoCrypto]
+  for (let i = 0; i < 2; i++) {
+    t.is(fns[i](  3, charSet),  1)
+    t.is(fns[i](  4, charSet),  1)
+    t.is(fns[i](  5, charSet),  2)
+    t.is(fns[i]( 14, charSet),  4)
+    t.is(fns[i]( 40, charSet), 10)
+    t.is(fns[i](122, charSet), 31)
+    t.is(fns[i](128, charSet), 32)
+  }
 })
 
 test('Char Set 8 string lengths', t => {
   const charSet = entropy.charSet8
-  t.is(entropyStringLength(  2, charSet),  1)
-  t.is(entropyStringLength(  3, charSet),  1)
-  t.is(entropyStringLength(  4, charSet),  2)
-  t.is(entropyStringLength( 32, charSet), 11)
-  t.is(entropyStringLength( 48, charSet), 16)
-  t.is(entropyStringLength(120, charSet), 40)
-  t.is(entropyStringLength(122, charSet), 41)
-  t.is(entropyStringLength(128, charSet), 43)
+  const fns = [entropyStringLength, entropyStringLengthNoCrypto]
+  for (let i = 0; i < 2; i++) {
+    t.is(fns[i](  2, charSet),  1)
+    t.is(fns[i](  3, charSet),  1)
+    t.is(fns[i](  4, charSet),  2)
+    t.is(fns[i]( 32, charSet), 11)
+    t.is(fns[i]( 48, charSet), 16)
+    t.is(fns[i](120, charSet), 40)
+    t.is(fns[i](122, charSet), 41)
+    t.is(fns[i](128, charSet), 43)
+  }
+    
 })
 
 test('Char Set 4 string lengths', t => {
   const charSet = entropy.charSet4
-  t.is(entropyStringLength(  1, charSet),  1)
-  t.is(entropyStringLength(  2, charSet),  1)
-  t.is(entropyStringLength(  3, charSet),  2)
-  t.is(entropyStringLength( 32, charSet), 16)
-  t.is(entropyStringLength( 48, charSet), 24)
-  t.is(entropyStringLength(122, charSet), 61)
-  t.is(entropyStringLength(128, charSet), 64)
+  const fns = [entropyStringLength, entropyStringLengthNoCrypto]
+  for (let i = 0; i < 2; i++) {
+    t.is(fns[i](  1, charSet),  1)
+    t.is(fns[i](  2, charSet),  1)
+    t.is(fns[i](  3, charSet),  2)
+    t.is(fns[i]( 32, charSet), 16)
+    t.is(fns[i]( 48, charSet), 24)
+    t.is(fns[i](122, charSet), 61)
+    t.is(fns[i](128, charSet), 64)
+  }
 })
 
 test('Char Set 2 string lengths', t => {
   const charSet = entropy.charSet2
-  t.is(entropyStringLength(  1, charSet),   1)
-  t.is(entropyStringLength(  2, charSet),   2)
-  t.is(entropyStringLength(  3, charSet),   3)
-  t.is(entropyStringLength( 32, charSet),  32)
-  t.is(entropyStringLength( 48, charSet),  48)
-  t.is(entropyStringLength(122, charSet), 122)
-  t.is(entropyStringLength(128, charSet), 128)
+  const fns = [entropyStringLength, entropyStringLengthNoCrypto]
+  for (let i = 0; i < 2; i++) {
+    t.is(fns[i](  1, charSet),   1)
+    t.is(fns[i](  2, charSet),   2)
+    t.is(fns[i](  3, charSet),   3)
+    t.is(fns[i]( 32, charSet),  32)
+    t.is(fns[i]( 48, charSet),  48)
+    t.is(fns[i](122, charSet), 122)
+    t.is(fns[i](128, charSet), 128)
+  }
 })
 
 test('Bits using total, risk', t => {
@@ -548,6 +567,12 @@ test('Custom 2 chars', t => {
   }
 })
 
+test('No crypto', t => {
+  let charSet = entropy.charSet32
+  t.is(entropyStringLengthNoCrypto(5, charSet), 1)
+  t.is(entropyStringLengthNoCrypto(6, charSet), 2)
+})
+
 const entropyString = (bits, charSet, arr) => {
   let bytes = Buffer.from(arr)
   return entropy.randomStringWithBytes(bits, charSet, bytes)
@@ -555,6 +580,10 @@ const entropyString = (bits, charSet, arr) => {
 
 const entropyStringLength = (bits, charSet) => {
   return entropy.randomString(bits, charSet).length
+}
+
+const entropyStringLengthNoCrypto = (bits, charSet) => {
+  return entropy.randomString(bits, charSet, false).length
 }
 
 const bitsStringLength = (total, risk, charSet) => {
