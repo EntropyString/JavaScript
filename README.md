@@ -361,7 +361,18 @@ There are two significant issues with this code. `Math.random` returns a random 
 
 Compare that to the `entropy-string` scheme. For the example above, slicing off 5 bits at a time requires a total of 80 bits (10 bytes). Creating the same strings as above, `entropy-string` uses 80 bits of randomness per string with no wasted bits. In general, the `entropy-string` scheme can waste up to 7 bits per string, but that's the worst case scenario and that's *per string*, not *per character*!
 
-But there is an even bigger issue with the above code from a security perspective. `Math.random` *is not a crytographically strong random number generator*. **_Do not_** use `Math.random` to create secure IDs in a scheme as shown above! This highlights an important point. Strings are only capable of carrying information (entropy); it's the random bytes that actually provide the entropy itself. `entropy-string` automatically generates the necessary number of bytes needed to create a random string using the `crypto` library.
+But there is an even bigger issue with the above code from a security perspective. `Math.random` *is not a crytographically strong random number generator*. **_Do not_** use `Math.random` to create secure IDs! This highlights an important point. Strings are only capable of carrying information (entropy); it's the random bytes that actually provide the entropy itself. `entropy-string` automatically generates the necessary number of bytes needed to create a random string using the `crypto` library.
+
+However, if you don't need cryptographically strong random strings, you can request `entropy-string` use `Math.random` rather than the `crypto` library to generate randomness:
+
+  ```js
+  const entropy = require('entropy-string')
+  let string = entropy.randString(48, entropy.charSet32, false)
+  ```
+  
+  > PQ9dmqJ7g6
+  
+When using `Math.random`, the `entropy-string` scheme uses 48 of the 52(ish) bits of randomness from each call to `Math.random`. That's more efficient than the above code snippet but less so than using `crypto` bytes.
 
 Fortunately you don't need to really understand how the bytes are efficiently sliced and diced to get the string. But you may want to provide your own [Custom Bytes](#CustomBytes) to create a string, which is the next topic.
 
