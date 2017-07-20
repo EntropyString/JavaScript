@@ -14,7 +14,6 @@ Efficiently generate cryptographically strong random strings of specified entrop
  - [Custom Characters](#CustomCharacters)
  - [Unique Characters](#UniqueCharacters)
  - [Efficiency](#Efficiency)
- - [Secure Bytes](#SecureBytes)
  - [Custom Bytes](#CustomBytes)
 
 ## <a name="Installation"></a>Installation
