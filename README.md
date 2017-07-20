@@ -198,11 +198,11 @@ We'll start with using 32 characters. What 32 characters, you ask? Well, the [Ch
 
 We're using the same __bits__ calculation since we haven't changed the number of IDs or the accepted risk of probabilistic uniqueness. But this time we use 32 characters and our resulting ID only requires 10 characters (and can carry 50 bits of entropy).
 
-Now let's suppose we need to ensure the names of a handful of items are unique.  Let's say 30 items. And let's decide we can live with a 1 in 100,000 probability of collision (we're just futzing with some code ideas). Using hex characters:
+Now let's suppose we need to ensure the names of a handful of items are unique.  Let's say 30 items. And let's decide we can live with a 1 in 100,000 probability of collision (we're just futzing with some coding ideas). Using hex characters:
 
   ```js
   bits = entropy.bits(30, 100000)
-  string = entropy.randomString(bits, entropy.charSet16)
+  string = entropy.randomString(bits, entropy.charSet16, false)
   ```
 
   > String: dbf40a6
@@ -210,12 +210,12 @@ Now let's suppose we need to ensure the names of a handful of items are unique. 
 Using 4 characters:
 
   ```js
-  string = entropy.randomString(bits, entropy.charSet4)
+  string = entropy.randomString(bits, entropy.charSet4, false)
   ```
 
   > String: CGCCGTAGGATAT
 
-Okay, we probably wouldn't use 4 characters (and what's up with those characters?), but you get the idea.
+Okay, we probably wouldn't use 4 characters (and what's up with those characters?), but you get the idea. The [Efficiency](#Efficiency) explains the 3rd argument of `false`.
 
 Suppose we have a more extreme need. We want less than a 1 in a trillion chance that 10 billion base 32 strings repeat. Let's see, our risk (trillion) is 10 to the 12th and our total (10 billion) is 10 to the 10th, so:
 
@@ -363,7 +363,7 @@ Compare that to the `entropy-string` scheme. For the example above, slicing off 
 
 But there is an even bigger issue with the above code from a security perspective. `Math.random` *is not a crytographically strong random number generator*. **_Do not_** use `Math.random` to create secure IDs! This highlights an important point. Strings are only capable of carrying information (entropy); it's the random bytes that actually provide the entropy itself. `entropy-string` automatically generates the necessary number of bytes needed to create a random string using the `crypto` library.
 
-However, if you don't need cryptographically strong random strings, you can request `entropy-string` use `Math.random` rather than the `crypto` library to generate randomness:
+However, if you don't need cryptographically strong random strings, you can request `entropy-string` use `Math.random` rather than the `crypto` library by passing in a 3rd argument of `false`:
 
   ```js
   const entropy = require('entropy-string')
@@ -372,7 +372,7 @@ However, if you don't need cryptographically strong random strings, you can requ
   
   > PQ9dmqJ7g6
   
-When using `Math.random`, the `entropy-string` scheme uses 48 of the 52(ish) bits of randomness from each call to `Math.random`. That's more efficient than the above code snippet but less so than using `crypto` bytes.
+When using `Math.random`, the `entropy-string` scheme uses 48 of the 52(ish) bits of randomness from each call to `Math.random`. That's more efficient than the above code snippet but less so than using bytes from `crypto`.
 
 Fortunately you don't need to really understand how the bytes are efficiently sliced and diced to get the string. But you may want to provide your own [Custom Bytes](#CustomBytes) to create a string, which is the next topic.
 
@@ -380,24 +380,24 @@ Fortunately you don't need to really understand how the bytes are efficiently sl
 
 ## <a name="CustomBytes"></a>Custom Bytes
 
-As described in [Efficiency](#Efficiency), `entropy-string` automatically generates random bytes using the `crypto` library. But you may have a need to provide your own bytes, say for deterministic testing or to use a specialized byte genterator. The `entropy.randomStringWithBytes` function allows passing in your own bytes to create a string.
+As described in [Efficiency](#Efficiency), `entropy-string` automatically generates random bytes using the `crypto` library. But you may have a need to provide your own bytes, say for deterministic testing or to use a specialized byte generator. The `entropy.randomString` function allows passing in your own bytes to create a string.
 
 Suppose we want a string capable of 30 bits of entropy using 32 characters. We pass in 4 bytes (to cover the 30 bits):
 
   ```js
   const entropy = require('entropy-string')
 
-  let bytes: RandomString.Bytes = [250, 200, 150, 100]
-  let string = entropy.randomStringWithBytes(30, entropy.charSet32, bytes)
+  let bytes: RandomString.Bytes = new Uint8Array[250, 200, 150, 100]
+  let string = entropy.randomString(30, entropy.charSet32, bytes)
   ```
 
   > string: Th7fjL
  
-The __bytes__ provided can come from any source. However, the number of bytes must be sufficient to generate the string as described in the [Efficiency](#Efficiency) section.  `entropy.randomStringWithBytes` throws an `Error` if the string cannot be formed from the passed bytes.
+The __bytes__ provided can come from any source. However, the number of bytes must be sufficient to generate the string as described in the [Efficiency](#Efficiency) section.  `entropy.randomString` throws an `Error` if the string cannot be formed from the passed bytes.
 
   ```js
   try {
-    string = entropy.randomStringWithBytes(32, entropy.charSet32, bytes)
+    string = entropy.randomString(32, entropy.charSet32, bytes)
   }
   catch(error) {
     console.log(error.message)

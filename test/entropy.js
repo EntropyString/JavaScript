@@ -453,7 +453,7 @@ test('Custom 64 chars', t => {
   let charSet = entropy.charSet64
   try {
     charSet.use('abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ9876543210_-')
-    let bytes = [0x9d, 0x99, 0x4e, 0xa5, 0xd2, 0x3f, 0x8c, 0x86, 0x80]
+    let bytes = new Uint8Array([0x9d, 0x99, 0x4e, 0xa5, 0xd2, 0x3f, 0x8c, 0x86, 0x80])
     let string = entropy.randomString(72, charSet, bytes)
                                                
     t.is(string, 'NzLoPDi-JiAa')
@@ -471,7 +471,8 @@ test('Custom 32 chars', t => {
   let charSet = entropy.charSet32
   try {
     charSet.use('2346789BDFGHJMNPQRTbdfghjlmnpqrt')
-    let string = entropy.randomString(55, charSet, [0xd2, 0xe3, 0xe9, 0xda, 0x19, 0x97, 0x52])
+    let bytes = new Uint8Array([0xd2, 0xe3, 0xe9, 0xda, 0x19, 0x97, 0x52])
+    let string = entropy.randomString(55, charSet, bytes)
     t.is(string, 'mHRrbgQlTqF')
   }
   catch(error) {
@@ -487,7 +488,7 @@ test('Custom 16 chars', t => {
   let charSet = entropy.charSet16
   try {
     charSet.use('0123456789ABCDEF')
-    let string = entropy.randomString(20, charSet, [0xc7, 0xc9, 0x00])
+    let string = entropy.randomString(20, charSet, new Uint8Array([0xc7, 0xc9, 0x00]))
     t.is(string, 'C7C90')
   }
   catch(error) {
@@ -503,7 +504,7 @@ test('Custom 8 chars', t => {
   let charSet = entropy.charSet8
   try {
     charSet.use('abcdefgh')
-    let string = entropy.randomString(30, charSet, [0xc7, 0xc9, 0x07, 0xc9])
+    let string = entropy.randomString(30, charSet, new Uint8Array([0xc7, 0xc9, 0x07, 0xc9]))
     t.is(string, 'gbheeeahgc')
   }
   catch(error) {
@@ -519,7 +520,7 @@ test('Custom 4 chars', t => {
   let charSet = entropy.charSet4
   try {
     charSet.use('atcg')
-    let string = entropy.randomString(16, charSet, [0x20, 0xf1])
+    let string = entropy.randomString(16, charSet, new Uint8Array([0x20, 0xf1]))
     t.is(string, 'acaaggat')
   }
   catch(error) {
@@ -535,7 +536,7 @@ test('Custom 2 chars', t => {
   let charSet = entropy.charSet2
   try {
     charSet.use('HT')
-    let string = entropy.randomString(16, charSet, [0xe3, 0xe9])
+    let string = entropy.randomString(16, charSet, new Uint8Array([0xe3, 0xe9]))
     t.is(string, 'TTTHHHTTTTTHTHHT')
   }
   catch(error) {
@@ -575,7 +576,7 @@ test('No crypto', t => {
 
 const entropyString = (bits, charSet, arr) => {
   let bytes = Buffer.from(arr)
-  return entropy.randomStringWithBytes(bits, charSet, bytes)
+  return entropy.randomString(bits, charSet, bytes)
 }
 
 const entropyStringLength = (bits, charSet) => {

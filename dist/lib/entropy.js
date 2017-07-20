@@ -75,9 +75,13 @@ var bitsWithPowers = function bitsWithPowers(tPower, rPower) {
 };
 
 var randomString = function randomString(entropy, charSet) {
-  var crypto = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : true;
+  var opt = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : null;
 
-  var bytes = crypto ? _cryptoBytes(entropy, charSet) : _randomBytes(entropy, charSet);
+  if (!(opt === null || opt instanceof Uint8Array || typeof opt == 'boolean')) {
+    throw new Error('Optional 3rd argument must be either an Uint8Array or a boolean');
+  }
+
+  var bytes = opt instanceof Uint8Array ? opt : opt === false ? _randomBytes(entropy, charSet) : _cryptoBytes(entropy, charSet);
   return randomStringWithBytes(entropy, charSet, bytes);
 };
 
