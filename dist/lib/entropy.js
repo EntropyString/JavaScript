@@ -22,11 +22,16 @@ var _lcm2 = _interopRequireDefault(_lcm);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-var crypto = require('crypto');
-
 var log2 = _log4.default;
 var log10 = _log2.default;
 var log2_10 = log2(10);
+
+var endianByteNum = function () {
+  var buf32 = new Uint32Array(1);
+  var buf8 = new Uint8Array(buf32.buffer);
+  buf32[0] = 0xff;
+  return buf8[0] === 0xff ? [2, 3, 4, 5, 6, 7] : [0, 1, 2, 3, 6, 7];
+}();
 
 var bits = function bits(total, risk) {
   if (total == 0) {
@@ -69,32 +74,22 @@ var bitsWithPowers = function bitsWithPowers(tPower, rPower) {
   return N;
 };
 
-var randomString = function randomString(bits, charSet) {
-  if (!_charSet2.default.isValid(charSet)) {
-    throw new Error('Invalid CharSet');
-  }
+var randomString = function randomString(entropy, charSet) {
+  var crypto = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : true;
 
-  var count = Math.ceil(bits / charSet.entropyPerChar);
-  if (count <= 0) {
-    return '';
-  }
-
-  var bytes = randomBytes(count, charSet);
-
-  return randomStringWithBytes(bits, charSet, bytes);
+  var bytes = crypto ? cryptoBytes(entropy, charSet) : randomBytes(entropy, charSet);
+  return randomStringWithBytes(entropy, charSet, bytes);
 };
 
-var randomStringWithBytes = function randomStringWithBytes(bits, charSet, bytes) {
+var randomStringWithBytes = function randomStringWithBytes(entropy, charSet, bytes) {
   if (!_charSet2.default.isValid(charSet)) {
-    console.log('WTF?');
     throw new Error('Invalid CharSet');
   }
-
-  if (bits <= 0) {
+  if (entropy <= 0) {
     return '';
   }
 
-  var count = Math.ceil(bits / charSet.entropyPerChar);
+  var count = Math.ceil(entropy / charSet.entropyPerChar);
   if (count <= 0) {
     return '';
   }
@@ -152,10 +147,45 @@ var randomStringWithBytes = function randomStringWithBytes(bits, charSet, bytes)
   return string;
 };
 
-var randomBytes = function randomBytes(count, charSet) {
+var bytesNeeded = function bytesNeeded(entropy, charSet) {
+  if (!_charSet2.default.isValid(charSet)) {
+    throw new Error('Invalid CharSet');
+  }
+  var count = Math.ceil(entropy / charSet.entropyPerChar);
+  if (count <= 0) {
+    return 0;
+  }
+
   var bytesPerSlice = charSet.entropyPerChar / 8;
-  var bytesNeeded = Math.ceil(count * bytesPerSlice);
-  return Buffer.from(crypto.randomBytes(bytesNeeded));
+  return Math.ceil(count * bytesPerSlice);
+};
+
+var cryptoBytes = function cryptoBytes(entropy, charSet) {
+  var crypto = require('crypto');
+  return Buffer.from(crypto.randomBytes(bytesNeeded(entropy, charSet)));
+};
+
+var randomBytes = function randomBytes(entropy, charSet) {
+  var byteCount = bytesNeeded(entropy, charSet);
+  var randCount = Math.ceil(byteCount / 6);
+
+  var buffer = new Buffer(byteCount);
+  var dataView = new DataView(new ArrayBuffer(8));
+  for (var rNum = 0; rNum < randCount; rNum++) {
+    dataView.setFloat64(0, Math.random());
+    for (var n = 0; n < 6; n++) {
+      var fByteNum = endianByteNum[n];
+      var bByteNum = 6 * rNum + n;
+      bufferByte(buffer, bByteNum, fByteNum, byteCount, dataView);
+    }
+  }
+  return buffer;
+};
+
+var bufferByte = function bufferByte(buffer, bByte, nByte, byteCount, dataView) {
+  if (bByte < byteCount) {
+    buffer[bByte] = dataView.getUint8(nByte);
+  }
 };
 
 var ndx64 = function ndx64(chunk, slice, bytes) {
@@ -209,6 +239,7 @@ exports.default = {
   bitsWithPowers: bitsWithPowers,
   randomString: randomString,
   randomStringWithBytes: randomStringWithBytes,
+  bytesNeeded: bytesNeeded,
 
   charSet64: _charSet2.default.charSet64,
   charSet32: _charSet2.default.charSet32,
