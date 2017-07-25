@@ -15,6 +15,7 @@ Efficiently generate cryptographically strong random strings of specified entrop
  - [Unique Characters](#UniqueCharacters)
  - [Efficiency](#Efficiency)
  - [Custom Bytes](#CustomBytes)
+ - [TL;DR Take 2](#TLDR2)
 
 ## <a name="Installation"></a>Installation
 
@@ -394,7 +395,7 @@ Suppose we want a string capable of 30 bits of entropy using 32 characters. We p
 
   ```js
   const entropy = require('entropy-string')
-
+  
   let bytes: RandomString.Bytes = new Uint8Array[250, 200, 150, 100]
   let string = entropy.randomString(30, entropy.charSet32, bytes)
   ```
@@ -416,4 +417,34 @@ The __bytes__ provided can come from any source. However, the number of bytes mu
 
 Note how the number of bytes needed is dependent on the number of characters in our set. In using a string to represent entropy, we can only have multiples of the bits of entropy per character used. So in the example above, to get at least 32 bits of entropy using a character set of 32 characters (5 bits per char), we'll need enough bytes to cover 35 bits, not 32, so an `error` is thrown.
 
+[TOC](#TOC)
+
+## <a name="TLDR2"></a>TL;DR T2
+
+### Take Away
+
+  - You don't need random strings of length L.
+    - String length is a by-product, not a goal.
+  - You need unique strings.
+    - Uniqueness is too onerous.
+  - You can't afford the overhead of unique strings.
+    - You'll do fine with probabilistically unique strings.
+  - Probabilistic uniqueness involves risk.
+    - Risk is measured in the sense of *"1 in __n__ chance of generating a repeat"*
+  - Probabilistic uniqueness requires measured randomness.
+    - Bits of entropy gives you that measure.
+  - You need to a total of **_N_** strings to have a risk **_1/n_** of repeat.
+    - The characters used is arbitrary.
+  - You need `entropy-string`.
+  
+```js
+  const entropy = require('entropy-string')
+  let N = 1000000
+  let n = 1000000000
+  let bits = entropy.bits(N, n)
+  let string = entropy.randomString(bits, entropy.charSet32)
+```
+
+  > DdHrT2NdrHf8tM
+  
 [TOC](#TOC)
