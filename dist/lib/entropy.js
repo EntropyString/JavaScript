@@ -74,7 +74,7 @@ var bitsWithPowers = function bitsWithPowers(tPower, rPower) {
   return N;
 };
 
-var randomString = function randomString(entropy, charSet) {
+var string = function string(entropy, charSet) {
   var opt = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : null;
 
   if (!(opt === null || opt instanceof Uint8Array || typeof opt == 'boolean')) {
@@ -82,10 +82,10 @@ var randomString = function randomString(entropy, charSet) {
   }
 
   var bytes = opt instanceof Uint8Array ? opt : opt === false ? _randomBytes(entropy, charSet) : _cryptoBytes(entropy, charSet);
-  return randomStringWithBytes(entropy, charSet, bytes);
+  return stringWithBytes(entropy, charSet, bytes);
 };
 
-var randomStringWithBytes = function randomStringWithBytes(entropy, charSet, bytes) {
+var stringWithBytes = function stringWithBytes(entropy, charSet, bytes) {
   if (!_charSet2.default.isValid(charSet)) {
     throw new Error('Invalid CharSet');
   }
@@ -241,8 +241,10 @@ exports.default = {
   bits: bits,
   bitsWithRiskPower: bitsWithRiskPower,
   bitsWithPowers: bitsWithPowers,
-  randomString: randomString,
-  randomStringWithBytes: randomStringWithBytes,
+  string: string,
+  stringWithBytes: stringWithBytes,
+  randomString: string,
+  randomStringWithBytes: stringWithBytes,
   bytesNeeded: bytesNeeded,
 
   charSet64: _charSet2.default.charSet64,
