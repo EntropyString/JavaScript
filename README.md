@@ -426,15 +426,12 @@ Note how the number of bytes needed is dependent on the number of characters in 
   - You don't need random strings of length L.
     - String length is a by-product, not a goal.
   - You need unique strings.
-    - Uniqueness is too onerous.
-  - You can't afford the overhead of unique strings.
-    - You'll do fine with probabilistically unique strings.
-  - Probabilistic uniqueness involves risk.
-    - Risk is measured in the sense of *"1 in __n__ chance of generating a repeat"*
-  - Probabilistic uniqueness requires measured randomness.
+    - Uniqueness is too onerous. You'll do fine with probabilistically unique strings.
+  - Probabilistic uniqueness involves measured risk.
+    - Risk is measured as *"1 in __n__ chance of generating a repeat"*
     - Bits of entropy gives you that measure.
-  - You need to a total of **_N_** strings to have a risk **_1/n_** of repeat.
-    - The characters used is arbitrary.
+  - You need to a total of **_N_** strings with a risk **_1/n_** of repeat.
+    - The characters are arbitrary.
   - You need `entropy-string`.
   
 ```js
