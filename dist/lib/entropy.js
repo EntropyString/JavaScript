@@ -106,37 +106,31 @@ var stringWithBytes = function stringWithBytes(entropy, charSet, bytes) {
   var chunks = Math.floor(count / charSet.charsPerChunk);
   var partials = count % charSet.charsPerChunk;
 
-  var chars = void 0,
-      ndxFn = void 0;
+  var ndxFn = void 0;
   switch (charSet) {
     case _charSet2.default.charSet64:
-      chars = _charSet2.default.charSet64.chars;
       ndxFn = _ndx64;
       break;
     case _charSet2.default.charSet32:
-      chars = _charSet2.default.charSet32.chars;
       ndxFn = _ndx32;
       break;
     case _charSet2.default.charSet16:
-      chars = _charSet2.default.charSet16.chars;
       ndxFn = _ndx16;
       break;
     case _charSet2.default.charSet8:
-      chars = _charSet2.default.charSet8.chars;
       ndxFn = _ndx8;
       break;
     case _charSet2.default.charSet4:
-      chars = _charSet2.default.charSet4.chars;
       ndxFn = _ndx4;
       break;
     case _charSet2.default.charSet2:
-      chars = _charSet2.default.charSet2.chars;
       ndxFn = _ndx2;
       break;
     default:
       break;
   }
 
+  var chars = charSet.chars;
   var string = '';
   for (var chunk = 0; chunk < chunks; chunk++) {
     for (var slice = 0; slice < charSet.charsPerChunk; slice++) {
