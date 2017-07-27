@@ -63,17 +63,6 @@ var CharSet = function () {
   return CharSet;
 }();
 
-var charSet64 = new CharSet("ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789-_", _ndx64);
-var charSet32 = new CharSet("2346789bdfghjmnpqrtBDFGHJLMNPQRT", _ndx32);
-var charSet16 = new CharSet("0123456789abcdef", _ndx16);
-var charSet8 = new CharSet("01234567", _ndx8);
-var charSet4 = new CharSet("ATCG", _ndx4);
-var charSet2 = new CharSet("01", _ndx2);
-
-var isValid = function isValid(charSet) {
-  return charSet instanceof CharSet;
-};
-
 var _ndx64 = function _ndx64(chunk, slice, bytes) {
   return _ndxGen(chunk, slice, bytes, 6);
 };
@@ -117,6 +106,17 @@ var _ndxGen = function _ndxGen(chunk, slice, bytes, bitsPerSlice) {
     ndx += bytes[bNum + rOffset] >> rShiftIt;
   }
   return ndx;
+};
+
+var charSet64 = new CharSet("ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789-_", _ndx64);
+var charSet32 = new CharSet("2346789bdfghjmnpqrtBDFGHJLMNPQRT", _ndx32);
+var charSet16 = new CharSet("0123456789abcdef", _ndx16);
+var charSet8 = new CharSet("01234567", _ndx8);
+var charSet4 = new CharSet("ATCG", _ndx4);
+var charSet2 = new CharSet("01", _ndx2);
+
+var isValid = function isValid(charSet) {
+  return charSet instanceof CharSet;
 };
 
 exports.default = {

@@ -20,7 +20,7 @@ print('\nBase 32 character string with a 1 in a trillion chance of a repeat in 1
 bits = entropy.bitsWithPowers(7, 12)
 print('  ' + entropy.string(bits, entropy.charSet32))
 
-print('\nAs above, but with "my" characters"')
+print('\nAs above, but with "my" base 8 characters')
 entropy.charSet8.use('dingosky')
 print('  ' + entropy.string(bits, entropy.charSet8))
 

@@ -202,7 +202,7 @@ Now let's suppose we need to ensure the names of a handful of items are unique. 
 
   ```js
   bits = entropy.bits(30, 100000)
-  string = entropy.string(bits, entropy.charSet16, false)
+  string = entropy.string(bits, entropy.charSet16)
   ```
 
   > String: dbf40a6
@@ -210,12 +210,12 @@ Now let's suppose we need to ensure the names of a handful of items are unique. 
 Using 4 characters:
 
   ```js
-  string = entropy.string(bits, entropy.charSet4, false)
+  string = entropy.string(bits, entropy.charSet4)
   ```
 
   > String: CGCCGTAGGATAT
 
-Okay, we probably wouldn't use 4 characters (and what's up with those characters?), but you get the idea. The [Efficiency](#Efficiency) explains the 3rd argument of `false`.
+Okay, we probably wouldn't use 4 characters (and what's up with those characters?), but you get the idea.
 
 Suppose we have a more extreme need. We want less than a 1 in a trillion chance that 10 billion base 32 strings repeat. Let's see, our risk (trillion) is 10 to the 12th and our total (10 billion) is 10 to the 10th, so:
 
@@ -372,11 +372,11 @@ Compare that to the `entropy-string` scheme. For the example above, slicing off 
   
 But there is an even bigger issue with the previous code from a security perspective. `Math.random` *is not a cryptographically strong random number generator*. **_Do not_** use `Math.random` to create strings used for security purposes! This highlights an important point. Strings are only capable of carrying information (entropy); it's the random bytes that actually provide the entropy itself. `entropy-string` automatically generates the necessary bytes needed to create cryptographically strong random strings using the `crypto` library.
 
-However, if you don't need cryptographically strong random strings, you can request `entropy-string` use `Math.random` rather than the `crypto` library by passing in a 3rd argument of `false`:
+However, if you don't need cryptographically strong random strings, you can request `entropy-string` use `Math.random` rather than the `crypto` library by using `entropy.stringRandom`:
 
   ```js
   const entropy = require('entropy-string')
-  let string = entropy.string(80, entropy.charSet32, false)
+  let string = entropy.stringRandom(80, entropy.charSet32)
   ```
   
   > fdRp9Q3rTMF7TdFN
