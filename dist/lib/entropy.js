@@ -106,41 +106,16 @@ var stringWithBytes = function stringWithBytes(entropy, charSet, bytes) {
   var chunks = Math.floor(count / charSet.charsPerChunk);
   var partials = count % charSet.charsPerChunk;
 
-  var ndxFn = void 0;
-  switch (charSet) {
-    case _charSet2.default.charSet64:
-      ndxFn = _ndx64;
-      break;
-    case _charSet2.default.charSet32:
-      ndxFn = _ndx32;
-      break;
-    case _charSet2.default.charSet16:
-      ndxFn = _ndx16;
-      break;
-    case _charSet2.default.charSet8:
-      ndxFn = _ndx8;
-      break;
-    case _charSet2.default.charSet4:
-      ndxFn = _ndx4;
-      break;
-    case _charSet2.default.charSet2:
-      ndxFn = _ndx2;
-      break;
-    default:
-      break;
-  }
-
-  var chars = charSet.chars;
   var string = '';
   for (var chunk = 0; chunk < chunks; chunk++) {
     for (var slice = 0; slice < charSet.charsPerChunk; slice++) {
-      var ndx = ndxFn(chunk, slice, bytes);
-      string += chars[ndx];
+      var ndx = charSet.ndxFn(chunk, slice, bytes);
+      string += charSet.chars[ndx];
     }
   }
   for (var _slice = 0; _slice < partials; _slice++) {
-    var _ndx = ndxFn(chunks, _slice, bytes);
-    string += chars[_ndx];
+    var _ndx = charSet.ndxFn(chunks, _slice, bytes);
+    string += charSet.chars[_ndx];
   }
   return string;
 };
@@ -184,51 +159,6 @@ var _bufferByte = function _bufferByte(buffer, bByte, nByte, byteCount, dataView
   if (bByte < byteCount) {
     buffer[bByte] = dataView.getUint8(nByte);
   }
-};
-
-var _ndx64 = function _ndx64(chunk, slice, bytes) {
-  return _ndxGen(chunk, slice, bytes, 6);
-};
-
-var _ndx32 = function _ndx32(chunk, slice, bytes) {
-  return _ndxGen(chunk, slice, bytes, 5);
-};
-
-var _ndx16 = function _ndx16(chunk, slice, bytes) {
-  return (bytes[chunk] << 4 * slice & 0xff) >> 4;
-};
-
-var _ndx8 = function _ndx8(chunk, slice, bytes) {
-  return _ndxGen(chunk, slice, bytes, 3);
-};
-
-var _ndx4 = function _ndx4(chunk, slice, bytes) {
-  return (bytes[chunk] << 2 * slice & 0xff) >> 6;
-};
-
-var _ndx2 = function _ndx2(chunk, slice, bytes) {
-  return (bytes[chunk] << slice & 0xff) >> 7;
-};
-
-var _ndxGen = function _ndxGen(chunk, slice, bytes, bitsPerSlice) {
-  var bitsPerByte = 8;
-  var slicesPerChunk = (0, _lcm2.default)(bitsPerSlice, bitsPerByte) / bitsPerByte;
-
-  var bNum = chunk * slicesPerChunk;
-
-  var rShift = bitsPerByte - bitsPerSlice;
-
-  var lOffset = Math.floor(slice * bitsPerSlice / bitsPerByte);
-  var lShift = slice * bitsPerSlice % bitsPerByte;
-
-  var ndx = (bytes[bNum + lOffset] << lShift & 0xff) >> rShift;
-
-  var rOffset = Math.ceil(slice * bitsPerSlice / bitsPerByte);
-  var rShiftIt = ((rOffset + 1) * bitsPerByte - (slice + 1) * bitsPerSlice) % bitsPerByte;
-  if (rShift < rShiftIt) {
-    ndx += bytes[bNum + rOffset] >> rShiftIt;
-  }
-  return ndx;
 };
 
 exports.default = {
