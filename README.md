@@ -12,10 +12,9 @@ Efficiently generate cryptographically strong random strings of specified entrop
  - [More Examples](#MoreExamples)
  - [Character Sets](#CharacterSets)
  - [Custom Characters](#CustomCharacters)
- - [Unique Characters](#UniqueCharacters)
  - [Efficiency](#Efficiency)
  - [Custom Bytes](#CustomBytes)
- - [TL;DR Take 2](#TLDR2)
+ - [TL;DR 2](#TLDR2)
 
 ## <a name="Installation"></a>Installation
 
@@ -102,7 +101,7 @@ A common strategy is to replace the *guarantee of uniqueness* with a weaker but 
 
 Understanding probabilistic uniqueness requires some understanding of [*entropy*](https://en.wikipedia.org/wiki/Entropy_(information_theory)) and of estimating the probability of a [*collision*](https://en.wikipedia.org/wiki/Birthday_problem#Cast_as_a_collision_problem) (i.e., the probability that two strings in a set of randomly generated strings might be the same).  Happily, you can use `entropy-string` without a deep understanding of these topics.
 
-We'll begin investigating `entropy-string` by considering our [Real Need](Read%20Need) when generating random strings.
+We'll begin investigating `entropy-string` by considering our [Real Need](#Real%20Need) when generating random strings.
 
 [TOC](#TOC)
 
@@ -132,7 +131,7 @@ Ah, now we're getting somewhere. The answer to question 3 might lead to the furt
 
 And the cat's out of the bag. We're getting at the real need, and it's not the same as the original statement. The developer needs *uniqueness* across a total of some number of strings. The length of the string is a by-product of the uniqueness, not the goal.
 
-As noted in the [Overview](Overview), guaranteeing uniqueness is difficult, so we'll replace that declaration with one of *probabilistic uniqueness* by asking:
+As noted in the [Overview](#Overview), guaranteeing uniqueness is difficult, so we'll replace that declaration with one of *probabilistic uniqueness* by asking:
 
   - What risk of a repeat are you willing to accept?
 
@@ -419,7 +418,7 @@ Note how the number of bytes needed is dependent on the number of characters in 
 
 [TOC](#TOC)
 
-## <a name="TLDR2"></a>TL;DR T2
+## <a name="TLDR2"></a>TL;DR 2
 
 ### Take Away
 
@@ -428,17 +427,17 @@ Note how the number of bytes needed is dependent on the number of characters in 
   - You don't need truly unique strings.
     - Uniqueness is too onerous. You'll do fine with probabilistically unique strings.
   - Probabilistic uniqueness involves measured risk.
-    - Risk is measured as *"1 in __n__ chance of generating a repeat"*
+    - Risk measured as *"1 in __n__ chance of generating a repeat"*
     - Bits of entropy gives you that measure.
   - You need to a total of **_N_** strings with a risk **_1/n_** of repeat.
     - The characters are arbitrary.
   - You need `entropy-string`.
   
+##### In a *million* strings, a *1 in a billion* chance of a repeat (using 32 possible characters):
 ```js
   const entropy = require('entropy-string')
-  let N = 1000000
-  let n = 1000000000
-  let bits = entropy.bits(N, n)
+
+  let bits = entropy.bits(1000000, 1000000000)
   let string = entropy.string(bits, entropy.charSet32)
 ```
 
