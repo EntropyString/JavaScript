@@ -101,7 +101,7 @@ A common strategy is to replace the *guarantee of uniqueness* with a weaker but 
 
 Understanding probabilistic uniqueness requires some understanding of [*entropy*](https://en.wikipedia.org/wiki/Entropy_(information_theory)) and of estimating the probability of a [*collision*](https://en.wikipedia.org/wiki/Birthday_problem#Cast_as_a_collision_problem) (i.e., the probability that two strings in a set of randomly generated strings might be the same).  Happily, you can use `entropy-string` without a deep understanding of these topics.
 
-We'll begin investigating `entropy-string` by considering our [Real Need](#Real%20Need) when generating random strings.
+We'll begin investigating `entropy-string` by considering our [Real Need](#RealNeed) when generating random strings.
 
 [TOC](#TOC)
 
