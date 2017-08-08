@@ -30,11 +30,9 @@ var CharSet = function () {
     this.ndxFn = ndxFn;
     this.len = chars.length;
     this.entropyPerChar = Math.floor((0, _log2.default)(this.len));
-
     if (this.entropyPerChar != (0, _log2.default)(this.len)) {
       throw new Error('EntropyString only supports CharSets with a power of 2 characters');
     }
-
     this.charsPerChunk = (0, _lcm2.default)(this.entropyPerChar, 8) / this.entropyPerChar;
   }
 
@@ -46,7 +44,6 @@ var CharSet = function () {
       if (len != this.len) {
         throw new Error('Invalid character count');
       }
-
       // Ensure no repeated characters
       for (var i = 0; i < len; i++) {
         var c = chars.charAt(i);
@@ -56,7 +53,6 @@ var CharSet = function () {
           }
         }
       }
-
       this.chars = chars;
     }
   }]);
@@ -72,7 +68,7 @@ var _ndx32 = function _ndx32(chunk, slice, bytes) {
 };
 
 var _ndx16 = function _ndx16(chunk, slice, bytes) {
-  return (bytes[chunk] << 4 * slice & 0xff) >> 4;
+  return _ndxDiv(chunk, slice, bytes, 4);
 };
 
 var _ndx8 = function _ndx8(chunk, slice, bytes) {
@@ -80,32 +76,36 @@ var _ndx8 = function _ndx8(chunk, slice, bytes) {
 };
 
 var _ndx4 = function _ndx4(chunk, slice, bytes) {
-  return (bytes[chunk] << 2 * slice & 0xff) >> 6;
+  return _ndxDiv(chunk, slice, bytes, 2);
 };
 
 var _ndx2 = function _ndx2(chunk, slice, bytes) {
-  return (bytes[chunk] << slice & 0xff) >> 7;
+  return _ndxDiv(chunk, slice, bytes, 1);
 };
 
-var _ndxGen = function _ndxGen(chunk, slice, bytes, bitsPerSlice) {
+var _ndxGen = function _ndxGen(chunk, slice, bytes, entropyPerChar) {
   var bitsPerByte = 8;
-  var slicesPerChunk = (0, _lcm2.default)(bitsPerSlice, bitsPerByte) / bitsPerByte;
-
+  var slicesPerChunk = (0, _lcm2.default)(entropyPerChar, bitsPerByte) / bitsPerByte;
   var bNum = chunk * slicesPerChunk;
 
-  var rShift = bitsPerByte - bitsPerSlice;
-
-  var lOffset = Math.floor(slice * bitsPerSlice / bitsPerByte);
-  var lShift = slice * bitsPerSlice % bitsPerByte;
+  var rShift = bitsPerByte - entropyPerChar;
+  var lOffset = Math.floor(slice * entropyPerChar / bitsPerByte);
+  var lShift = slice * entropyPerChar % bitsPerByte;
 
   var ndx = (bytes[bNum + lOffset] << lShift & 0xff) >> rShift;
 
-  var rOffset = Math.ceil(slice * bitsPerSlice / bitsPerByte);
-  var rShiftIt = ((rOffset + 1) * bitsPerByte - (slice + 1) * bitsPerSlice) % bitsPerByte;
+  var rOffset = Math.ceil(slice * entropyPerChar / bitsPerByte);
+  var rShiftIt = ((rOffset + 1) * bitsPerByte - (slice + 1) * entropyPerChar) % bitsPerByte;
   if (rShift < rShiftIt) {
     ndx += bytes[bNum + rOffset] >> rShiftIt;
   }
   return ndx;
+};
+
+var _ndxDiv = function _ndxDiv(chunk, slice, bytes, entropyPerChar) {
+  var lShift = entropyPerChar;
+  var rShift = 8 - entropyPerChar;
+  return (bytes[chunk] << lShift * slice & 0xff) >> rShift;
 };
 
 var charSet64 = new CharSet("ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789-_", _ndx64);

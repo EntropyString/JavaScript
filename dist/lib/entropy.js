@@ -25,6 +25,7 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 var _log2 = _log5.default;
 var _log10 = _log3.default;
 var _log2_10 = _log2(10);
+var _bitsPerByte = 8;
 
 var _endianByteNum = function () {
   var buf32 = new Uint32Array(1);
@@ -95,7 +96,7 @@ var stringWithBytes = function stringWithBytes(entropy, charSet, bytes) {
     return '';
   }
 
-  var needed = Math.ceil(count * (charSet.entropyPerChar / 8));
+  var needed = Math.ceil(count * (charSet.entropyPerChar / _bitsPerByte));
   if (bytes.length < needed) {
     throw new Error('Insufficient bytes');
   }
@@ -126,7 +127,7 @@ var bytesNeeded = function bytesNeeded(entropy, charSet) {
     return 0;
   }
 
-  var bytesPerSlice = charSet.entropyPerChar / 8;
+  var bytesPerSlice = charSet.entropyPerChar / _bitsPerByte;
   return Math.ceil(count * bytesPerSlice);
 };
 
@@ -140,7 +141,7 @@ var _randomBytes = function _randomBytes(entropy, charSet) {
   var randCount = Math.ceil(byteCount / 6);
 
   var buffer = new Buffer(byteCount);
-  var dataView = new DataView(new ArrayBuffer(8));
+  var dataView = new DataView(new ArrayBuffer(_bitsPerByte));
   for (var rNum = 0; rNum < randCount; rNum++) {
     dataView.setFloat64(0, Math.random());
     for (var n = 0; n < 6; n++) {
