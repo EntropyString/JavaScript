@@ -459,6 +459,7 @@ test('Custom 64 chars', t => {
     t.is(string, 'NzLoPDi-JiAa')
   }
   catch(error) {
+    console.log('Error: ' + error)
     t.fail()
   }
 
@@ -476,6 +477,7 @@ test('Custom 32 chars', t => {
     t.is(string, 'mHRrbgQlTqF')
   }
   catch(error) {
+    console.log('Error: ' + error)
     t.fail()
   }
 
@@ -492,6 +494,7 @@ test('Custom 16 chars', t => {
     t.is(string, 'C7C90')
   }
   catch(error) {
+    console.log('Error: ' + error)
     t.fail()
   }
 
@@ -508,6 +511,7 @@ test('Custom 8 chars', t => {
     t.is(string, 'gbheeeahgc')
   }
   catch(error) {
+    console.log('Error: ' + error)
     t.fail()
   }
 
@@ -524,6 +528,7 @@ test('Custom 4 chars', t => {
     t.is(string, 'acaaggat')
   }
   catch(error) {
+    console.log('Error: ' + error)
     t.fail()
   }
 
@@ -540,6 +545,7 @@ test('Custom 2 chars', t => {
     t.is(string, 'TTTHHHTTTTTHTHHT')
   }
   catch(error) {
+    console.log('Error: ' + error)
     t.fail()
   }
 
