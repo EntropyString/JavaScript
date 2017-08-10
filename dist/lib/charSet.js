@@ -108,23 +108,14 @@ var _ndxDiv = function _ndxDiv(chunk, slice, bytes, entropyPerChar) {
   return (bytes[chunk] << lShift * slice & 0xff) >> rShift;
 };
 
-var charSet64 = new CharSet("ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789-_", _ndx64);
-var charSet32 = new CharSet("2346789bdfghjmnpqrtBDFGHJLMNPQRT", _ndx32);
-var charSet16 = new CharSet("0123456789abcdef", _ndx16);
-var charSet8 = new CharSet("01234567", _ndx8);
-var charSet4 = new CharSet("ATCG", _ndx4);
-var charSet2 = new CharSet("01", _ndx2);
-
-var isValid = function isValid(charSet) {
-  return charSet instanceof CharSet;
-};
-
 exports.default = {
-  charSet64: charSet64,
-  charSet32: charSet32,
-  charSet16: charSet16,
-  charSet8: charSet8,
-  charSet4: charSet4,
-  charSet2: charSet2,
-  isValid: isValid
+  charSet64: new CharSet('ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789-_', _ndx64),
+  charSet32: new CharSet('2346789bdfghjmnpqrtBDFGHJLMNPQRT', _ndx32),
+  charSet16: new CharSet('0123456789abcdef', _ndx16),
+  charSet8: new CharSet('01234567', _ndx8),
+  charSet4: new CharSet('ATCG', _ndx4),
+  charSet2: new CharSet('01', _ndx2),
+  isValid: function isValid(charSet) {
+    return charSet instanceof CharSet;
+  }
 };

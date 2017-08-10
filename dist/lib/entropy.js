@@ -147,16 +147,12 @@ var _randomBytes = function _randomBytes(entropy, charSet) {
     for (var n = 0; n < 6; n++) {
       var fByteNum = _endianByteNum[n];
       var bByteNum = 6 * rNum + n;
-      _bufferByte(buffer, bByteNum, fByteNum, byteCount, dataView);
+      if (bByteNum < byteCount) {
+        buffer[bByteNum] = dataView.getUint8(fByteNum);
+      }
     }
   }
   return buffer;
-};
-
-var _bufferByte = function _bufferByte(buffer, bByte, nByte, byteCount, dataView) {
-  if (bByte < byteCount) {
-    buffer[bByte] = dataView.getUint8(nByte);
-  }
 };
 
 exports.default = {
