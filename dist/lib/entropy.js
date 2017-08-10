@@ -75,69 +75,76 @@ var bitsWithPowers = function bitsWithPowers(tPower, rPower) {
   return N;
 };
 
-var string = function string(entropy, charSet) {
-  return stringWithBytes(entropy, charSet, _cryptoBytes(entropy, charSet));
+var string = function string(entropyBits, charSet) {
+  return stringWithBytes(entropyBits, charSet, _cryptoBytes(entropyBits, charSet));
 };
 
-var stringRandom = function stringRandom(entropy, charSet) {
-  return stringWithBytes(entropy, charSet, _randomBytes(entropy, charSet));
+var stringRandom = function stringRandom(entropyBits, charSet) {
+  return stringWithBytes(entropyBits, charSet, _randomBytes(entropyBits, charSet));
 };
 
-var stringWithBytes = function stringWithBytes(entropy, charSet, bytes) {
+var stringWithBytes = function stringWithBytes(entropyBits, charSet, bytes) {
   if (!_charSet2.default.isValid(charSet)) {
     throw new Error('Invalid CharSet');
   }
-  if (entropy <= 0) {
+  if (entropyBits <= 0) {
     return '';
   }
 
-  var count = Math.ceil(entropy / charSet.entropyPerChar);
+  var bitsPerChar = charSet.getBitsPerChar();
+  var count = Math.ceil(entropyBits / bitsPerChar);
   if (count <= 0) {
     return '';
   }
 
-  var needed = Math.ceil(count * (charSet.entropyPerChar / _bitsPerByte));
+  var needed = Math.ceil(count * (bitsPerChar / _bitsPerByte));
   if (bytes.length < needed) {
     throw new Error('Insufficient bytes');
   }
 
-  var chunks = Math.floor(count / charSet.charsPerChunk);
-  var partials = count % charSet.charsPerChunk;
+  var charsPerChunk = charSet.getCharsPerChunk();
+  var chunks = Math.floor(count / charsPerChunk);
+  var partials = count % charsPerChunk;
+
+  var ndxFn = charSet.getNdxFn();
+  var chars = charSet.getChars();
 
   var string = '';
   for (var chunk = 0; chunk < chunks; chunk++) {
-    for (var slice = 0; slice < charSet.charsPerChunk; slice++) {
-      var ndx = charSet.ndxFn(chunk, slice, bytes);
-      string += charSet.chars[ndx];
+    for (var slice = 0; slice < charsPerChunk; slice++) {
+      var ndx = ndxFn(chunk, slice, bytes);
+      string += chars[ndx];
     }
   }
   for (var _slice = 0; _slice < partials; _slice++) {
-    var _ndx = charSet.ndxFn(chunks, _slice, bytes);
-    string += charSet.chars[_ndx];
+    var _ndx = ndxFn(chunks, _slice, bytes);
+    string += chars[_ndx];
   }
   return string;
 };
 
-var bytesNeeded = function bytesNeeded(entropy, charSet) {
+var bytesNeeded = function bytesNeeded(entropyBits, charSet) {
   if (!_charSet2.default.isValid(charSet)) {
     throw new Error('Invalid CharSet');
   }
-  var count = Math.ceil(entropy / charSet.entropyPerChar);
+
+  var bitsPerChar = charSet.getBitsPerChar();
+  var count = Math.ceil(entropyBits / bitsPerChar);
   if (count <= 0) {
     return 0;
   }
 
-  var bytesPerSlice = charSet.entropyPerChar / _bitsPerByte;
+  var bytesPerSlice = bitsPerChar / _bitsPerByte;
   return Math.ceil(count * bytesPerSlice);
 };
 
-var _cryptoBytes = function _cryptoBytes(entropy, charSet) {
+var _cryptoBytes = function _cryptoBytes(entropyBits, charSet) {
   var crypto = require('crypto');
-  return Buffer.from(crypto.randomBytes(bytesNeeded(entropy, charSet)));
+  return Buffer.from(crypto.randomBytes(bytesNeeded(entropyBits, charSet)));
 };
 
-var _randomBytes = function _randomBytes(entropy, charSet) {
-  var byteCount = bytesNeeded(entropy, charSet);
+var _randomBytes = function _randomBytes(entropyBits, charSet) {
+  var byteCount = bytesNeeded(entropyBits, charSet);
   var randCount = Math.ceil(byteCount / 6);
 
   var buffer = new Buffer(byteCount);
