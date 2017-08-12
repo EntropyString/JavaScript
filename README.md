@@ -47,6 +47,8 @@ Efficiently generate cryptographically strong random strings of specified entrop
 48-bit string using hex characters:
 
   ```js
+  const CharSet = require('entropy-string').CharSet
+  
   string = random.string(48, CharSet.base16)
   ```
 
@@ -64,6 +66,8 @@ Efficiently generate cryptographically strong random strings of specified entrop
 Base 32 character string with a 1 in a million chance of a repeat in 30 such strings:
 
   ```js
+  const entropy = require('entropy-string').entropy
+  
   bits = entropy.bits(30, 1000000)
   string = random.string(bits)
   ```
@@ -150,12 +154,11 @@ Let's use `entropy-string` to help this developer by generating 5 IDs:
   ```js
   const entropy = require('entropy-string').entropy
   const random = require('entropy-string').random
-  const CharSet = require('entropy-string').CharSet
 
   let bits = entropy.bits(10000, 1000000)
   let strings = Array()
   for (let i = 0; i < 5; i++) {
-    let string = random.string(bits, CharSet.base16)
+    let string = random.string(bits, random.charSet16)
     strings.push(string)
   }
   ```
@@ -259,7 +262,7 @@ As we've seen in the previous sections, `entropy-string` provides default charac
 
   > ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789-_
 
-The available CharSets are `base64`, `base32`, `base16`, `base8`, `base4` and `base2`. The default characters for each were chosen as follows:
+The available CharSets are `base64`, `base32`, `base16`, `base8`, `base4` and `base2`. For convenience, the character sets are also exported as `random` fields `charSet64`, `charSet32`, `charSet16`, `charSet8`, `charSet4` and `charSet2`. The default characters for each were chosen as follows:
 
   - CharSet 64: **ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789-_**
       * The file system and URL safe char set from [RFC 4648](https://tools.ietf.org/html/rfc4648#section-5).
@@ -289,8 +292,8 @@ Being able to easily generate random strings is great, but what if you want to s
 
   ```js
   const random = require('entropy-string').random
-  const CharSet = require('entropy-string').CharSet
-  let flips = random.string(10, CharSet.base2)
+
+let flips = random.string(10, random.charSet2)
   ```
 
   > flips: 1111001011
@@ -298,8 +301,8 @@ Being able to easily generate random strings is great, but what if you want to s
 The resulting string of __0__'s and __1__'s doesn't look quite right. Perhaps you want to use the characters __H__ and __T__ instead.
 
   ```js
-  CharSet.base2.use('HT')
-  flips = random.string(10, CharSet.base2)
+  random.charSet2.use('HT')
+  flips = random.string(10, random.charSet2)
   ```
 
   > flips: THHTHTTHHT
@@ -307,19 +310,18 @@ The resulting string of __0__'s and __1__'s doesn't look quite right. Perhaps yo
 As another example, we saw in [Character Sets](#CharacterSets) the default characters for CharSet 16 are **0123456789abcdef**. Suppose you like uppercase hexadecimal letters instead.
 
   ```js
-  CharSet.base16.use('0123456789ABCDEF')
-  let string = random.string(48, CharSet.base16)
+  random.charSet16.use('0123456789ABCDEF')
+  let string = random.string(48, random.charSet16)
   
   ```
 
   > string: 08BB82C0056A
 
-`CharSet.baseNN.use(string)` throws an `Error` if the number of characters doesn't match the number required for the CharSet or if the characters are not all unique.
+`random.charSetNN.use(string)` throws an `Error` if the number of characters doesn't match the number required for the CharSet or if the characters are not all unique.
 
   ```js
-  const CharSet = require('entropy-string').CharSet
   try {
-    CharSet.base8.use('abcdefh')
+    random.charSet8.use('abcdefh')
   }
   catch(error) {
     console.log(error.message)
@@ -330,7 +332,7 @@ As another example, we saw in [Character Sets](#CharacterSets) the default chara
 
   ```js
   try {
-    CharSet.base8.use('01233210')
+    random.charSet8.use('01233210')
   }
   catch(error) {
     console.log(error.message)
@@ -408,7 +410,7 @@ The __bytes__ provided can come from any source. However, the number of bytes mu
 
   ```js
   try {
-    string = random.string(32, CharSet.base32, bytes)
+    string = random.string(32, bytes)
   }
   catch(error) {
     console.log(error.message)
