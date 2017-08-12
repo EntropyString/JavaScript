@@ -1,9 +1,5 @@
 'use strict';
 
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-
 var _log = require('babel-runtime/core-js/math/log2');
 
 var _log2 = _interopRequireDefault(_log);
@@ -73,42 +69,47 @@ var CharSet = function () {
   var ndxFn = function ndxFn(bitsPerChar) {
     var bitsPerByte = 8;
 
+    // If bitsPerBytes is a multiple of bitsPerChar, we can slice off an integer number
+    // of chars per byte.
     if ((0, _lcm2.default)(bitsPerChar, bitsPerByte) === bitsPerByte) {
       return function (chunk, slice, bytes) {
         var lShift = bitsPerChar;
         var rShift = bitsPerByte - bitsPerChar;
         return (bytes[chunk] << lShift * slice & 0xff) >> rShift;
       };
-    } else {
-      return function (chunk, slice, bytes) {
-        var slicesPerChunk = (0, _lcm2.default)(bitsPerChar, bitsPerByte) / bitsPerByte;
-        var bNum = chunk * slicesPerChunk;
-
-        var rShift = bitsPerByte - bitsPerChar;
-        var lOffset = Math.floor(slice * bitsPerChar / bitsPerByte);
-        var lShift = slice * bitsPerChar % bitsPerByte;
-
-        var ndx = (bytes[bNum + lOffset] << lShift & 0xff) >> rShift;
-
-        var rOffset = Math.ceil(slice * bitsPerChar / bitsPerByte);
-        var rShiftIt = ((rOffset + 1) * bitsPerByte - (slice + 1) * bitsPerChar) % bitsPerByte;
-        if (rShift < rShiftIt) {
-          ndx += bytes[bNum + rOffset] >> rShiftIt;
-        }
-        return ndx;
-      };
     }
+    // Otherwise, while slicing off bits per char, we will possibly straddle a couple
+    // of bytes, so a bit more work is involved
+    else {
+        return function (chunk, slice, bytes) {
+          var slicesPerChunk = (0, _lcm2.default)(bitsPerChar, bitsPerByte) / bitsPerByte;
+          var bNum = chunk * slicesPerChunk;
+
+          var rShift = bitsPerByte - bitsPerChar;
+          var lOffset = Math.floor(slice * bitsPerChar / bitsPerByte);
+          var lShift = slice * bitsPerChar % bitsPerByte;
+
+          var ndx = (bytes[bNum + lOffset] << lShift & 0xff) >> rShift;
+
+          var rOffset = Math.ceil(slice * bitsPerChar / bitsPerByte);
+          var rShiftIt = ((rOffset + 1) * bitsPerByte - (slice + 1) * bitsPerChar) % bitsPerByte;
+          if (rShift < rShiftIt) {
+            ndx += bytes[bNum + rOffset] >> rShiftIt;
+          }
+          return ndx;
+        };
+      }
   };
   return CharSet;
 }();
 
-exports.default = {
-  charSet64: new CharSet('ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789-_'),
-  charSet32: new CharSet('2346789bdfghjmnpqrtBDFGHJLMNPQRT'),
-  charSet16: new CharSet('0123456789abcdef'),
-  charSet8: new CharSet('01234567'),
-  charSet4: new CharSet('ATCG'),
-  charSet2: new CharSet('01'),
+module.exports = {
+  base64: new CharSet('ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789-_'),
+  base32: new CharSet('2346789bdfghjmnpqrtBDFGHJLMNPQRT'),
+  base16: new CharSet('0123456789abcdef'),
+  base8: new CharSet('01234567'),
+  base4: new CharSet('ATCG'),
+  base2: new CharSet('01'),
   isValid: function isValid(charSet) {
     return charSet instanceof CharSet;
   }
