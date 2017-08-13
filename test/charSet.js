@@ -2,8 +2,17 @@ import test from 'ava'
 
 import CharSet from '../lib/charSet';
 
+test.beforeEach('Create CharSets', t => {
+  t.context.charSet64 = new CharSet('ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789-_')
+  t.context.charSet32 = new CharSet('2346789bdfghjmnpqrtBDFGHJLMNPQRT')
+  t.context.charSet16 = new CharSet('0123456789abcdef')
+  t.context.charSet8  = new CharSet('01234567')
+  t.context.charSet4  = new CharSet('ATCG')
+  t.context.charSet2  = new CharSet('01')
+})
+
 test('char set 64', t => {
-  const charSet = CharSet.base64
+  const charSet = t.context.charSet64
   const length = charSet.getChars().length
   t.is(length, 64)
   const bitsPerChar = Math.log2(length)
@@ -12,7 +21,7 @@ test('char set 64', t => {
 })
 
 test('char set 32', t => {
-  const charSet = CharSet.base32
+  const charSet = t.context.charSet32
   const length = charSet.getChars().length
   t.is(length, 32)
   const bitsPerChar = Math.log2(length)
@@ -21,7 +30,7 @@ test('char set 32', t => {
 })
 
 test('char set 16', t => {
-  const charSet = CharSet.base16
+  const charSet = t.context.charSet16
   const length = charSet.getChars().length
   t.is(length, 16)
   const bitsPerChar = Math.log2(length)
@@ -30,7 +39,7 @@ test('char set 16', t => {
 })
 
 test('char set 8', t => {
-  const charSet = CharSet.base8
+  const charSet = t.context.charSet8
   const length = charSet.getChars().length
   t.is(length, 8)
   const bitsPerChar = Math.log2(length)
@@ -39,7 +48,7 @@ test('char set 8', t => {
 })
 
 test('char set 4', t => {
-  const charSet = CharSet.base4
+  const charSet = t.context.charSet4
   const length = charSet.getChars().length
   t.is(length, 4)
   const bitsPerChar = Math.log2(length)
@@ -48,7 +57,7 @@ test('char set 4', t => {
 })
 
 test('char set 2', t => {
-  const charSet = CharSet.base2
+  const charSet = t.context.charSet2
   const length = charSet.getChars().length
   t.is(length, 2)
   const bitsPerChar = Math.log2(length)
@@ -56,57 +65,105 @@ test('char set 2', t => {
   t.is(charSet.getCharsPerChunk(), 8)
 })
 
-test('Custom 64 chars', t => {
-  let charSet = CharSet.base64
-  t.is(invalidChars(charSet,
-                    'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789ab'), true)
-  t.is(invalidChars(charSet,
-                    'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz)!@#$%^&*(+=0'), true)
-  t.is(invalidChars(charSet,
-                    'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz)!@#$%^&*(+'), true)
+test('Custom chars: 64', t => {
+  let error = t.throws(() => {
+    new CharSet('ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789ab')
+  }, Error)
+  t.regex(error.message, /.*unique/)
+
+  error = t.throws(() => {
+    new CharSet('ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz)!@#$%^&*(+=0')
+  }, Error)
+  t.regex(error.message, /.*count/)
+
+  error = t.throws(() => {
+    new CharSet('ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz)!@#$%^&*(+')
+  }, Error)
+  t.regex(error.message, /.*count/)
 })
 
-test('Custom 32 chars', t => {
-  let charSet = CharSet.base32
-  t.is(invalidChars(charSet, '01234567890123456789012345678901'),  true)
-  t.is(invalidChars(charSet, '0123456789abcdefghijklmnopqrstu'),   true)
-  t.is(invalidChars(charSet, '0123456789abcdefghijklmnopqrstuvw'), true)
+test('Custom chars: 32', t => {
+  let error = t.throws(() => {
+    new CharSet('01234567890123456789012345678901')
+  }, Error)
+  t.regex(error.message, /.*unique/)
+
+  error = t.throws(() => {
+    new CharSet('0123456789abcdefghijklmnopqrstu')
+  }, Error)
+  t.regex(error.message, /.*count/)
+
+  error = t.throws(() => {
+    new CharSet('0123456789abcdefghijklmnopqrstuvw')
+  }, Error)
+  t.regex(error.message, /.*count/)
 })
 
-test('Custom 16 chars', t => {
-  let charSet = CharSet.base16
-  t.is(invalidChars(charSet, '0123456789abcde0'),  true)
-  t.is(invalidChars(charSet, '0123456789abcde'),   true)
-  t.is(invalidChars(charSet, '0123456789abcdefg'), true)
+test('Custom chars: 16', t => {
+  let error = t.throws(() => {
+    new CharSet('0123456789abcde0')
+  }, Error)
+  t.regex(error.message, /.*unique/)
+
+  error = t.throws(() => {
+    new CharSet('0123456789abcde')
+  }, Error)
+  t.regex(error.message, /.*count/)
+
+  error = t.throws(() => {
+    new CharSet('0123456789abcdefg')
+  }, Error)
+  t.regex(error.message, /.*count/)
 })
 
-test('Custom 8 chars', t => {
-  let charSet = CharSet.base8
-  t.is(invalidChars(charSet, 'abcdefga'),  true)
-  t.is(invalidChars(charSet, 'abcdefg'),   true)
-  t.is(invalidChars(charSet, 'abcdefghi'), true)
+test('Custom chars: 8', t => {
+  let error = t.throws(() => {
+    new CharSet('abcdefga')
+  }, Error)
+  t.regex(error.message, /.*unique/)
+
+  error = t.throws(() => {
+    new CharSet('abcdefg')
+  }, Error)
+  t.regex(error.message, /.*count/)
+
+  error = t.throws(() => {
+    new CharSet('abcdefghi')
+  }, Error)
+  t.regex(error.message, /.*count/)
 })
 
-test('Custom 4 chars', t => {
-  let charSet = CharSet.base4
-  t.is(invalidChars(charSet, 'abcb'),  true)
-  t.is(invalidChars(charSet, 'abc'),   true)
-  t.is(invalidChars(charSet, 'abcde'), true)
+test('Custom chars: 4', t => {
+  let error = t.throws(() => {
+    new CharSet('abbc')
+  }, Error)
+  t.regex(error.message, /.*unique/)
+
+  error = t.throws(() => {
+    new CharSet('abc')
+  }, Error)
+  t.regex(error.message, /.*count/)
+
+  error = t.throws(() => {
+    new CharSet('abcde')
+  }, Error)
+  t.regex(error.message, /.*count/)
 })
 
-test('Custom 2 chars', t => {
-  let charSet = CharSet.base2
-  t.is(invalidChars(charSet, 'TT'),  true)
-  t.is(invalidChars(charSet, 'T'),   true)
-  t.is(invalidChars(charSet, 'H20'), true)
+test('Custom chars: 2', t => {
+  let error = t.throws(() => {
+    new CharSet('TT')
+  }, Error)
+  t.regex(error.message, /.*unique/)
+
+  error = t.throws(() => {
+    new CharSet('T')
+  }, Error)
+  t.regex(error.message, /.*count/)
+
+  error = t.throws(() => {
+    new CharSet('H20')
+  }, Error)
+  t.regex(error.message, /.*count/)
 })
 
-const invalidChars = (charSet, chars) => {
-  try {
-    charSet.use(chars)
-    return false
-  }
-  catch(error) {
-    return true
-  }
-}

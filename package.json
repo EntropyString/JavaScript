@@ -10,6 +10,7 @@
   },
   "scripts": {
     "build": "BABEL_ENV=production babel --out-dir=dist lib/*.js",
+    "examples": "BABEL_ENV=development babel --out-dir=tmp examples.js",
     "prepare": "yarn build",
     "test": "ava"
   },

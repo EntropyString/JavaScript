@@ -1,5 +1,9 @@
 'use strict';
 
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
 var _log = require('babel-runtime/core-js/math/log10');
 
 var _log3 = _interopRequireDefault(_log);
@@ -54,7 +58,7 @@ var bitsWithPowers = function bitsWithPowers(tPower, rPower) {
   }
 };
 
-module.exports = {
+exports.default = {
   bits: bits,
   bitsWithRiskPower: bitsWithRiskPower,
   bitsWithPowers: bitsWithPowers

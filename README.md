@@ -34,20 +34,30 @@ Efficiently generate cryptographically strong random strings of specified entrop
 
 ## <a name="TLDR"></a>TL;DR
 
+Run the examples using
+
+  ```bash
+  node dist/examples.js
+  ```
+
+Example usage:
+
 48-bit string using base32 characters:
 
   ```js
-  const random = require('entropy-string').random
-
+  import {Random, Entropy, CharSet} from './entropy-string'
+  
+  let random = new Random()
   let string = random.string(48)
   ```
 
   > MRd272t4G3
+  
 
 48-bit string using hex characters:
 
   ```js
-  const CharSet = require('entropy-string').CharSet
+  
   
   string = random.string(48, CharSet.base16)
   ```

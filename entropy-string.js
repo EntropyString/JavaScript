@@ -1,9 +1,9 @@
-const random = require('./dist/lib/random')
-const entropy = require('./dist/lib/entropy')
-const CharSet = require('./dist/lib/charSet')
+const Random  = require('./lib/random').default
+const Entropy = require('./lib/entropy').default
+const CharSet = require('./lib/charSet').default
 
 module.exports = {
-  random,
-  entropy,
+  Random,
+  Entropy,
   CharSet
 }

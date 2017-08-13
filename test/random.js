@@ -1,291 +1,233 @@
-import random from '../lib/random'
+import Random from '../lib/random'
 import CharSet from '../lib/charSet'
-import entropy from '../lib/entropy'
 
 import test from 'ava'
 
-test('Char Set 64 Strings', t => {
-  const charSet = CharSet.base64
-  t.is(randomString( 6, charSet, [0xdd]), '3')
-  t.is(randomString(12, charSet, [0x78, 0xfc]), 'eP')
-  t.is(randomString(18, charSet, [0xc5, 0x6f, 0x21]), 'xW8')
-  t.is(randomString(24, charSet, [0xc9, 0x68, 0xc7]), 'yWjH')
-  t.is(randomString(30, charSet, [0xa5, 0x62, 0x20, 0x87]), 'pWIgh')
-  t.is(randomString(36, charSet, [0x39, 0x51, 0xca, 0xcc, 0x8b]), 'OVHKzI')
-  t.is(randomString(42, charSet, [0x83, 0x89, 0x00, 0xc7, 0xf4, 0x02]), 'g4kAx_Q')
-  t.is(randomString(48, charSet, [0x51, 0xbc, 0xa8, 0xc7, 0xc9, 0x17]), 'Ubyox8kX')
-  t.is(randomString(54, charSet, [0xd2, 0xe3, 0xe9, 0xda, 0x19, 0x97, 0x52]), '0uPp2hmXU')
-  t.is(randomString(60, charSet, [0xd9, 0x39, 0xc1, 0xaf, 0x1e, 0x2e, 0x69, 0x48]), '2TnBrx4uaU')
-  t.is(randomString(66, charSet, [0x78, 0x3f, 0xfd, 0x93, 0xd1, 0x06, 0x90, 0x4b, 0xd6]), 'eD_9k9EGkEv')
-  t.is(randomString(72, charSet, [0x9d, 0x99, 0x4e, 0xa5, 0xd2, 0x3f, 0x8c, 0x86, 0x80]), 'nZlOpdI_jIaA')
+test.beforeEach('Create CharSets', t => {
+  t.context.charSet64 = new CharSet('ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789-_')
+  t.context.charSet32 = new CharSet('2346789bdfghjmnpqrtBDFGHJLMNPQRT')
+  t.context.charSet16 = new CharSet('0123456789abcdef')
+  t.context.charSet8  = new CharSet('01234567')
+  t.context.charSet4  = new CharSet('ATCG')
+  t.context.charSet2  = new CharSet('01')
 })
 
-test('Char Set 32 Strings', t => {
-  const charSet = CharSet.base32
-  t.is(randomString( 5, charSet, [0xdd]), 'N')
-  t.is(randomString(10, charSet, [0x78, 0xfc]), 'p6')
-  t.is(randomString(15, charSet, [0x78, 0xfc]), 'p6R')
-  t.is(randomString(20, charSet, [0xc5, 0x6f, 0x21]), 'JFHt')
-  t.is(randomString(25, charSet, [0xa5, 0x62, 0x20, 0x87]), 'DFr43')
-  t.is(randomString(30, charSet, [0xa5, 0x62, 0x20, 0x87]), 'DFr433')
-  t.is(randomString(35, charSet, [0x39, 0x51, 0xca, 0xcc, 0x8b]), 'b8dPFB7')
-  t.is(randomString(40, charSet, [0x39, 0x51, 0xca, 0xcc, 0x8b]), 'b8dPFB7h')
-  t.is(randomString(45, charSet, [0x83, 0x89, 0x00, 0xc7, 0xf4, 0x02]), 'qn7q3rTD2')
-  t.is(randomString(50, charSet, [0xd2, 0xe3, 0xe9, 0xda, 0x19, 0x97, 0x52]), 'MhrRBGqLtQ')
-  t.is(randomString(55, charSet, [0xd2, 0xe3, 0xe9, 0xda, 0x19, 0x97, 0x52]), 'MhrRBGqLtQf')
+
+test('Char Set Base 64 Strings', t => {
+  let random = new Random(t.context.charSet64)
+  t.is(random.stringWithBytes( 6, Buffer.from([0xdd])), '3')
+  t.is(random.stringWithBytes(12, Buffer.from([0x78, 0xfc])), 'eP')
+  t.is(random.stringWithBytes(18, Buffer.from([0xc5, 0x6f, 0x21])), 'xW8')
+  t.is(random.stringWithBytes(24, Buffer.from([0xc9, 0x68, 0xc7])), 'yWjH')
+  t.is(random.stringWithBytes(30, Buffer.from([0xa5, 0x62, 0x20, 0x87])), 'pWIgh')
+  t.is(random.stringWithBytes(36, Buffer.from([0x39, 0x51, 0xca, 0xcc, 0x8b])), 'OVHKzI')
+  t.is(random.stringWithBytes(42, Buffer.from([0x83, 0x89, 0x00, 0xc7, 0xf4, 0x02])), 'g4kAx_Q')
+  t.is(random.stringWithBytes(48, Buffer.from([0x51, 0xbc, 0xa8, 0xc7, 0xc9, 0x17])), 'Ubyox8kX')
+  t.is(random.stringWithBytes(54, Buffer.from([0xd2, 0xe3, 0xe9, 0xda, 0x19, 0x97, 0x52])), '0uPp2hmXU')
+  t.is(random.stringWithBytes(60, [0xd9, 0x39, 0xc1, 0xaf, 0x1e, 0x2e, 0x69, 0x48]), '2TnBrx4uaU')
+  t.is(random.stringWithBytes(66, Buffer.from([0x78, 0x3f, 0xfd, 0x93, 0xd1, 0x06, 0x90, 0x4b, 0xd6])), 'eD_9k9EGkEv')
+  t.is(random.stringWithBytes(72, Buffer.from([0x9d, 0x99, 0x4e, 0xa5, 0xd2, 0x3f, 0x8c, 0x86, 0x80])), 'nZlOpdI_jIaA')
 })
 
-test('Char Set 16 Strings', t => {
-  const charSet = CharSet.base16
-  t.is(randomString( 4, charSet, [0x9d]), '9')
-  t.is(randomString( 8, charSet, [0xae]), 'ae')
-  t.is(randomString(12, charSet, [0x01, 0xf2]), '01f')
-  t.is(randomString(16, charSet, [0xc7, 0xc9]), 'c7c9')
-  t.is(randomString(20, charSet, [0xc7, 0xc9, 0x00]), 'c7c90')
+test('Char Set Base 32 Strings', t => {
+  let random = new Random(t.context.charSet32)
+  t.is(random.stringWithBytes( 5, Buffer.from([0xdd])), 'N')
+  t.is(random.stringWithBytes(10, Buffer.from([0x78, 0xfc])), 'p6')
+  t.is(random.stringWithBytes(15, Buffer.from([0x78, 0xfc])), 'p6R')
+  t.is(random.stringWithBytes(20, Buffer.from([0xc5, 0x6f, 0x21])), 'JFHt')
+  t.is(random.stringWithBytes(25, Buffer.from([0xa5, 0x62, 0x20, 0x87])), 'DFr43')
+  t.is(random.stringWithBytes(30, Buffer.from([0xa5, 0x62, 0x20, 0x87])), 'DFr433')
+  t.is(random.stringWithBytes(35, Buffer.from([0x39, 0x51, 0xca, 0xcc, 0x8b])), 'b8dPFB7')
+  t.is(random.stringWithBytes(40, Buffer.from([0x39, 0x51, 0xca, 0xcc, 0x8b])), 'b8dPFB7h')
+  t.is(random.stringWithBytes(45, Buffer.from([0x83, 0x89, 0x00, 0xc7, 0xf4, 0x02])), 'qn7q3rTD2')
+  t.is(random.stringWithBytes(50, Buffer.from([0xd2, 0xe3, 0xe9, 0xda, 0x19, 0x97, 0x52])), 'MhrRBGqLtQ')
+  t.is(random.stringWithBytes(55, Buffer.from([0xd2, 0xe3, 0xe9, 0xda, 0x19, 0x97, 0x52])), 'MhrRBGqLtQf')
 })
 
-test('Char Set 8 Strings', t => {
-  const charSet = CharSet.base8
-  t.is(randomString( 3, charSet, [0x5a]), '2')
-  t.is(randomString( 6, charSet, [0x5a]), '26')
-  t.is(randomString( 9, charSet, [0x21, 0xa4]), '103')
-  t.is(randomString(12, charSet, [0x21, 0xa4]), '1032')
-  t.is(randomString(15, charSet, [0xda, 0x19]), '66414')
-  t.is(randomString(18, charSet, [0xfd, 0x93, 0xd1]), '773117')
-  t.is(randomString(21, charSet, [0xfd, 0x93, 0xd1]), '7731172')
-  t.is(randomString(24, charSet, [0xfd, 0x93, 0xd1]), '77311721')
-  t.is(randomString(27, charSet, [0xc7, 0xc9, 0x07, 0xc9]), '617444076')
-  t.is(randomString(30, charSet, [0xc7, 0xc9, 0x07, 0xc9]), '6174440762')  
+test('Char Set Base 16 Strings', t => {
+  let random = new Random(t.context.charSet16)
+  t.is(random.stringWithBytes( 4, Buffer.from([0x9d])), '9')
+  t.is(random.stringWithBytes( 8, Buffer.from([0xae])), 'ae')
+  t.is(random.stringWithBytes(12, Buffer.from([0x01, 0xf2])), '01f')
+  t.is(random.stringWithBytes(16, Buffer.from([0xc7, 0xc9])), 'c7c9')
+  t.is(random.stringWithBytes(20, Buffer.from([0xc7, 0xc9, 0x00])), 'c7c90')
 })
 
-test('Char Set 4 Strings', t => {
-  const charSet = CharSet.base4
-  t.is(randomString( 2, charSet, [0x5a]), 'T')
-  t.is(randomString( 4, charSet, [0x5a]), 'TT')
-  t.is(randomString( 6, charSet, [0x93]), 'CTA')
-  t.is(randomString( 8, charSet, [0x93]), 'CTAG')
-  t.is(randomString(10, charSet, [0x20, 0xf1]), 'ACAAG')
-  t.is(randomString(12, charSet, [0x20, 0xf1]), 'ACAAGG')
-  t.is(randomString(14, charSet, [0x20, 0xf1]), 'ACAAGGA')
-  t.is(randomString(16, charSet, [0x20, 0xf1]), 'ACAAGGAT')
+test('Char Set Base 8 Strings', t => {
+  let random = new Random(t.context.charSet8)
+  t.is(random.stringWithBytes( 3, Buffer.from([0x5a])), '2')
+  t.is(random.stringWithBytes( 6, Buffer.from([0x5a])), '26')
+  t.is(random.stringWithBytes( 9, Buffer.from([0x21, 0xa4])), '103')
+  t.is(random.stringWithBytes(12, Buffer.from([0x21, 0xa4])), '1032')
+  t.is(random.stringWithBytes(15, Buffer.from([0xda, 0x19])), '66414')
+  t.is(random.stringWithBytes(18, Buffer.from([0xfd, 0x93, 0xd1])), '773117')
+  t.is(random.stringWithBytes(21, Buffer.from([0xfd, 0x93, 0xd1])), '7731172')
+  t.is(random.stringWithBytes(24, Buffer.from([0xfd, 0x93, 0xd1])), '77311721')
+  t.is(random.stringWithBytes(27, Buffer.from([0xc7, 0xc9, 0x07, 0xc9])), '617444076')
+  t.is(random.stringWithBytes(30, Buffer.from([0xc7, 0xc9, 0x07, 0xc9])), '6174440762')  
 })
 
-test('Char Set 2 Strings', t => {
-  const charSet = CharSet.base2
-  t.is(randomString( 1, charSet, [0x27]), '0')
-  t.is(randomString( 2, charSet, [0x27]), '00')
-  t.is(randomString( 3, charSet, [0x27]), '001')
-  t.is(randomString( 4, charSet, [0x27]), '0010')
-  t.is(randomString( 5, charSet, [0x27]), '00100')
-  t.is(randomString( 6, charSet, [0x27]), '001001')
-  t.is(randomString( 7, charSet, [0x27]), '0010011')
-  t.is(randomString( 8, charSet, [0x27]), '00100111')
-  t.is(randomString( 9, charSet, [0xe3, 0xe9]), '111000111')
-  t.is(randomString(16, charSet, [0xe3, 0xe9]), '1110001111101001')
+test('Char Set Base 4 Strings', t => {
+  let random = new Random(t.context.charSet4)
+  t.is(random.stringWithBytes( 2, Buffer.from([0x5a])), 'T')
+  t.is(random.stringWithBytes( 4, Buffer.from([0x5a])), 'TT')
+  t.is(random.stringWithBytes( 6, Buffer.from([0x93])), 'CTA')
+  t.is(random.stringWithBytes( 8, Buffer.from([0x93])), 'CTAG')
+  t.is(random.stringWithBytes(10, Buffer.from([0x20, 0xf1])), 'ACAAG')
+  t.is(random.stringWithBytes(12, Buffer.from([0x20, 0xf1])), 'ACAAGG')
+  t.is(random.stringWithBytes(14, Buffer.from([0x20, 0xf1])), 'ACAAGGA')
+  t.is(random.stringWithBytes(16, Buffer.from([0x20, 0xf1])), 'ACAAGGAT')
 })
 
-test('Char Set 64 string lengths', t => {
-  const charSet = CharSet.base64
-  const fns = [randomStringLength, randomStringLengthNoCrypto]
-  for (let i = 0; i < 2; i++) {
-    t.is(fns[i](  5, charSet),  1)
-    t.is(fns[i](  6, charSet),  1)
-    t.is(fns[i](  7, charSet),  2)
-    t.is(fns[i]( 18, charSet),  3)
-    t.is(fns[i]( 50, charSet),  9)
-    t.is(fns[i](122, charSet), 21)
-    t.is(fns[i](128, charSet), 22)
-    t.is(fns[i](132, charSet), 22)
-  }
+test('Char Set Base 2 Strings', t => {
+  let random = new Random(t.context.charSet2)
+  t.is(random.stringWithBytes( 1, Buffer.from([0x27])), '0')
+  t.is(random.stringWithBytes( 2, Buffer.from([0x27])), '00')
+  t.is(random.stringWithBytes( 3, Buffer.from([0x27])), '001')
+  t.is(random.stringWithBytes( 4, Buffer.from([0x27])), '0010')
+  t.is(random.stringWithBytes( 5, Buffer.from([0x27])), '00100')
+  t.is(random.stringWithBytes( 6, Buffer.from([0x27])), '001001')
+  t.is(random.stringWithBytes( 7, Buffer.from([0x27])), '0010011')
+  t.is(random.stringWithBytes( 8, Buffer.from([0x27])), '00100111')
+  t.is(random.stringWithBytes( 9, Buffer.from([0xe3, 0xe9])), '111000111')
+  t.is(random.stringWithBytes(16, Buffer.from([0xe3, 0xe9])), '1110001111101001')
 })
 
-test('Char Set 32 string lengths', t => {
-  const charSet = CharSet.base32
-  const fns = [randomStringLength, randomStringLengthNoCrypto]
-  for (let i = 0; i < 2; i++) {
-    t.is(fns[i](  4, charSet),  1)
-    t.is(fns[i](  5, charSet),  1)
-    t.is(fns[i](  6, charSet),  2)
-    t.is(fns[i]( 20, charSet),  4)
-    t.is(fns[i]( 32, charSet),  7)
-    t.is(fns[i](122, charSet), 25)
-    t.is(fns[i](128, charSet), 26)
-    t.is(fns[i](130, charSet), 26)
-  }
-})
-
-test('Char Set 16 string lengths', t => {
-  const charSet = CharSet.base16
-  const fns = [randomStringLength, randomStringLengthNoCrypto]
-  for (let i = 0; i < 2; i++) {
-    t.is(fns[i](  3, charSet),  1)
-    t.is(fns[i](  4, charSet),  1)
-    t.is(fns[i](  5, charSet),  2)
-    t.is(fns[i]( 14, charSet),  4)
-    t.is(fns[i]( 40, charSet), 10)
-    t.is(fns[i](122, charSet), 31)
-    t.is(fns[i](128, charSet), 32)
-  }
-})
-
-test('Char Set 8 string lengths', t => {
-  const charSet = CharSet.base8
-  const fns = [randomStringLength, randomStringLengthNoCrypto]
-  for (let i = 0; i < 2; i++) {
-    t.is(fns[i](  2, charSet),  1)
-    t.is(fns[i](  3, charSet),  1)
-    t.is(fns[i](  4, charSet),  2)
-    t.is(fns[i]( 32, charSet), 11)
-    t.is(fns[i]( 48, charSet), 16)
-    t.is(fns[i](120, charSet), 40)
-    t.is(fns[i](122, charSet), 41)
-    t.is(fns[i](128, charSet), 43)
-  }
-    
-})
-
-test('Char Set 4 string lengths', t => {
-  const charSet = CharSet.base4
-  const fns = [randomStringLength, randomStringLengthNoCrypto]
-  for (let i = 0; i < 2; i++) {
-    t.is(fns[i](  1, charSet),  1)
-    t.is(fns[i](  2, charSet),  1)
-    t.is(fns[i](  3, charSet),  2)
-    t.is(fns[i]( 32, charSet), 16)
-    t.is(fns[i]( 48, charSet), 24)
-    t.is(fns[i](122, charSet), 61)
-    t.is(fns[i](128, charSet), 64)
-  }
-})
-
-test('Char Set 2 string lengths', t => {
-  const charSet = CharSet.base2
-  const fns = [randomStringLength, randomStringLengthNoCrypto]
-  for (let i = 0; i < 2; i++) {
-    t.is(fns[i](  1, charSet),   1)
-    t.is(fns[i](  2, charSet),   2)
-    t.is(fns[i](  3, charSet),   3)
-    t.is(fns[i]( 32, charSet),  32)
-    t.is(fns[i]( 48, charSet),  48)
-    t.is(fns[i](122, charSet), 122)
-    t.is(fns[i](128, charSet), 128)
-  }
+test('Char Set Strings', t => {
+  let random = new Random()
+  t.is(random.stringWithBytes(30, [0xa5, 0x62, 0x20, 0x87], t.context.charSet64), 'pWIgh')
+  t.is(random.stringWithBytes(25, [0xa5, 0x62, 0x20, 0x87], t.context.charSet32), 'DFr43')
+  t.is(random.stringWithBytes(16, [0xc7, 0xc9], t.context.charSet16), 'c7c9')
+  t.is(random.stringWithBytes(24, [0xfd, 0x93, 0xd1], t.context.charSet8), '77311721')
+  t.is(random.stringWithBytes(12, [0x20, 0xf1], t.context.charSet4), 'ACAAGG') 
+  t.is(random.stringWithBytes( 6, [0x27], t.context.charSet2), '001001')
 })
 
 test('Invalid bytes', t => {
-  t.is(invalidBytes( 7, CharSet.base64, [1]), true)
-  t.is(invalidBytes(13, CharSet.base64, [1,2]), true)
-  t.is(invalidBytes(25, CharSet.base64, [1,2,3]), true)
-  t.is(invalidBytes(31, CharSet.base64, [1,2,3,4]), true)
-  
-  t.is(invalidBytes( 6, CharSet.base32, [1]), true)
-  t.is(invalidBytes(16, CharSet.base32, [1,2]), true)
-  t.is(invalidBytes(21, CharSet.base32, [1,2,3]), true)
-  t.is(invalidBytes(31, CharSet.base32, [1,2,3,4]), true)
-  t.is(invalidBytes(41, CharSet.base32, [1,2,3,4,5]), true)
-  t.is(invalidBytes(46, CharSet.base32, [1,2,3,4,5,6]), true)
-  
-  t.is(invalidBytes( 9, CharSet.base16, [1]), true)
-  t.is(invalidBytes(17, CharSet.base16, [1,2]), true)
-  
-  t.is(invalidBytes( 7, CharSet.base8,  [1]), true)
-  t.is(invalidBytes(16, CharSet.base8,  [1,2]), true)
-  t.is(invalidBytes(25, CharSet.base8,  [1,2,3]), true)
-  t.is(invalidBytes(31, CharSet.base8,  [1,2,3,4]), true)
+  let random
+  let regex = /Insufficient/
 
-  t.is(invalidBytes( 9, CharSet.base4,  [1]), true)
-  t.is(invalidBytes(17, CharSet.base4,  [1,2]), true)
+  random = new Random(t.context.charSet64)
+  t.regex(invalidBytes(random, 7, [1]), regex)
+  t.regex(invalidBytes(random, 13, [1,2]), regex)
+  t.regex(invalidBytes(random, 25, [1,2,3]), regex)
+  t.regex(invalidBytes(random, 31, [1,2,3,4]), regex)
   
-  t.is(invalidBytes( 9, CharSet.base2,  [1]), true)
-  t.is(invalidBytes(17, CharSet.base2,  [1,2]), true)
+  random = new Random(t.context.charSet32)
+  t.regex(invalidBytes(random,  6, [1]), regex)
+  t.regex(invalidBytes(random, 16, [1,2]), regex)
+  t.regex(invalidBytes(random, 21, [1,2,3]), regex)
+  t.regex(invalidBytes(random, 31, [1,2,3,4]), regex)
+  t.regex(invalidBytes(random, 41, [1,2,3,4,5]), regex)
+  t.regex(invalidBytes(random, 46, [1,2,3,4,5,6]), regex)
+  t.regex(invalidBytes(random, 32, [250, 200, 150, 100]), regex)
+  
+  random = new Random(t.context.charSet16)
+  t.regex(invalidBytes(random,  9, [1]), regex)
+  t.regex(invalidBytes(random, 17, [1,2]), regex)
+  
+  random = new Random(t.context.charSet8)
+  t.regex(invalidBytes(random,  7, [1]), regex)
+  t.regex(invalidBytes(random, 16, [1,2]), regex)
+  t.regex(invalidBytes(random, 25, [1,2,3]), regex)
+  t.regex(invalidBytes(random, 31, [1,2,3,4]), regex)
 
-  t.is(invalidBytes(32, CharSet.base32, [250, 200, 150, 100]), true)
+  random = new Random(t.context.charSet4)
+  t.regex(invalidBytes(random,  9, [1]), regex)
+  t.regex(invalidBytes(random, 17, [1,2]), regex)
+  
+  random = new Random(t.context.charSet2)
+  t.regex(invalidBytes(random,  9, [1]), regex)
+  t.regex(invalidBytes(random, 17, [1,2]), regex)
 })
 
 test('Custom 64 chars', t => {
-  let charSet = CharSet.base64
-  try {
-    charSet.use('abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ9876543210_-')
-    let bytes = new Uint8Array([0x9d, 0x99, 0x4e, 0xa5, 0xd2, 0x3f, 0x8c, 0x86, 0x80])
-    let string = random.stringWithBytes(72, bytes, charSet)
-                                               
-    t.is(string, 'NzLoPDi-JiAa')
-  }
-  catch(error) {
-    console.log('Error: ' + error)
-    t.fail()
-  }
+  let chars = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ9876543210_-'
+  let random = new Random(chars)
+
+  let bytes = new Uint8Array([0x9d, 0x99, 0x4e, 0xa5, 0xd2, 0x3f, 0x8c, 0x86, 0x80])
+  let string = random.stringWithBytes(72, bytes)
+  t.is(string, 'NzLoPDi-JiAa')
+
+  random = new Random()
+  random.useChars(chars)
+  string = random.stringWithBytes(72, bytes)
+  t.is(string, 'NzLoPDi-JiAa')
 })
 
 test('Custom 32 chars', t => {
-  let charSet = CharSet.base32
-  try {
-    charSet.use('2346789BDFGHJMNPQRTbdfghjlmnpqrt')
-    let bytes = new Uint8Array([0xd2, 0xe3, 0xe9, 0xda, 0x19, 0x97, 0x52])
-    let string = random.stringWithBytes(55, bytes, charSet)
-    t.is(string, 'mHRrbgQlTqF')
-  }
-  catch(error) {
-    console.log('Error: ' + error)
-    t.fail()
-  }
+  let chars = '2346789BDFGHJMNPQRTbdfghjlmnpqrt'
+  let random = new Random(chars)
+
+  let bytes = new Uint8Array([0xd2, 0xe3, 0xe9, 0xda, 0x19, 0x97, 0x52])
+  let string = random.stringWithBytes(55, bytes)
+  t.is(string, 'mHRrbgQlTqF')
+
+  random = new Random()
+  random.useChars(chars)
+  string = random.stringWithBytes(55, bytes)
+  t.is(string, 'mHRrbgQlTqF')
 })
 
 test('Custom 16 chars', t => {
-  let charSet = CharSet.base16
-  try {
-    charSet.use('0123456789ABCDEF')
-    let string = random.stringWithBytes(20, new Uint8Array([0xc7, 0xc9, 0x00], charSet))
-    t.is(string, 'C7C90')
-  }
-  catch(error) {
-    console.log('Error: ' + error)
-    t.fail()
-  }
+  let chars = '0123456789ABCDEF'
+  let random = new Random(chars)
+
+  let bytes = new Uint8Array([0xc7, 0xc9, 0x00])
+  let string = random.stringWithBytes(20, bytes)
+  t.is(string, 'C7C90')
+
+  random = new Random()
+  random.useChars(chars)
+  string = random.stringWithBytes(20, bytes)
+  t.is(string, 'C7C90')
 })
 
 test('Custom 8 chars', t => {
-  let charSet = CharSet.base8
-  try {
-    charSet.use('abcdefgh')
-    let string = random.stringWithBytes(30, new Uint8Array([0xc7, 0xc9, 0x07, 0xc9]), charSet)
-    t.is(string, 'gbheeeahgc')
-  }
-  catch(error) {
-    console.log('Error: ' + error)
-    t.fail()
-  }
+  let chars = 'abcdefgh'
+  let random = new Random(chars)
+
+  let bytes = new Uint8Array([0xc7, 0xc9, 0x07, 0xc9])
+  let string = random.stringWithBytes(30, bytes)
+  t.is(string, 'gbheeeahgc')
+
+  random = new Random()
+  random.useChars(chars)
+  string = random.stringWithBytes(30, bytes)
+  t.is(string, 'gbheeeahgc')
 })
 
 test('Custom 4 chars', t => {
-  let charSet = CharSet.base4
-  try {
-    charSet.use('atcg')
-    let string = random.stringWithBytes(16, new Uint8Array([0x20, 0xf1]), charSet)
-    t.is(string, 'acaaggat')
-  }
-  catch(error) {
-    console.log('Error: ' + error)
-    t.fail()
-  }
+  let chars = 'atcg'
+  let random = new Random(chars)
+
+  let bytes = new Uint8Array([0x20, 0xf1])
+  let string = random.stringWithBytes(16, bytes)
+  t.is(string, 'acaaggat')
+
+  random = new Random()
+  random.useChars(chars)
+  string = random.stringWithBytes(16, bytes)
+  t.is(string, 'acaaggat')
 })
 
 test('Custom 2 chars', t => {
-  let charSet = CharSet.base2
-  try {
-    charSet.use('HT')
-    let string = random.stringWithBytes(16, new Uint8Array([0xe3, 0xe9]),  charSet)
-    t.is(string, 'TTTHHHTTTTTHTHHT')
-  }
-  catch(error) {
-    console.log('Error: ' + error)
-    t.fail()
-  }
+  let chars = 'HT'
+  let random = new Random(chars)
+
+  let bytes = new Uint8Array([0xe3, 0xe9])
+  let string = random.stringWithBytes(16, bytes)
+  t.is(string, 'TTTHHHTTTTTHTHHT')
+
+  random = new Random()
+  random.useChars(chars)
+  string = random.stringWithBytes(16, bytes)
+  t.is(string, 'TTTHHHTTTTTHTHHT')
 })
 
-test('Invalid Char Set', t => {
+test('Use Invalid Char Set', t => {
   try {
-    random.string(5, CharSet.base6)
+    let string = random.use(CharSet.base6)
     t.fail()
   }
   catch(error) {
@@ -293,30 +235,35 @@ test('Invalid Char Set', t => {
   }
 })
 
-test('No crypto', t => {
-  let charSet = CharSet.base32
-  t.is(randomStringLengthNoCrypto(5, charSet), 1)
-  t.is(randomStringLengthNoCrypto(6, charSet), 2)
+test('Invalid chars', t => {
+  let error = t.throws(() => {
+    new Random('123')
+  }, Error)
+  t.regex(error.message, /Invalid.*count/)
+
+  let random = new Random()
+  error = t.throws(() => {
+    random.useChars('123')
+  }, Error)
+  t.regex(error.message, /Invalid.*count/)
 })
 
-const randomString = (bits, charSet, arr) => {
-  return random.stringWithBytes(bits, Buffer.from(arr), charSet)
-}
+test('Invalid CharSet', t => {
+  let error = t.throws(() => {
+    new Random(false)
+  }, Error)
+  t.regex(error.message, /Invalid arg/)
+})
 
-const randomStringLength = (bits, charSet) => {
-  return random.string(bits, charSet).length
-}
-
-const randomStringLengthNoCrypto = (bits, charSet) => {
-  return random.stringRandom(bits, charSet).length
-}
-
-const invalidBytes = (bits, bytes, charSet) => {
+//
+// Convenience functions
+//
+const invalidBytes = (random, bits, bytes) => {
   try {
-    randomString(bits, bytes, charSet)
-    return false
+    random.stringWithBytes(bits, bytes)
+    return 'false'
   }
   catch(error) {
-    return true
+    return error.message
   }
 }

@@ -1,5 +1,18 @@
 'use strict';
 
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.charSet2 = exports.charSet4 = exports.charSet8 = exports.charSet16 = exports.charSet32 = exports.charSet64 = undefined;
+
+var _classCallCheck2 = require('babel-runtime/helpers/classCallCheck');
+
+var _classCallCheck3 = _interopRequireDefault(_classCallCheck2);
+
+var _createClass2 = require('babel-runtime/helpers/createClass');
+
+var _createClass3 = _interopRequireDefault(_createClass2);
+
 var _charSet = require('./charSet');
 
 var _charSet2 = _interopRequireDefault(_charSet);
@@ -8,32 +21,107 @@ var _entropy = require('./entropy');
 
 var _entropy2 = _interopRequireDefault(_entropy);
 
+var _weakMap = require('weak-map');
+
+var _weakMap2 = _interopRequireDefault(_weakMap);
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+var charSet64 = exports.charSet64 = new _charSet2.default('ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789-_');
+var charSet32 = exports.charSet32 = new _charSet2.default('2346789bdfghjmnpqrtBDFGHJLMNPQRT');
+var charSet16 = exports.charSet16 = new _charSet2.default('0123456789abcdef');
+var charSet8 = exports.charSet8 = new _charSet2.default('01234567');
+var charSet4 = exports.charSet4 = new _charSet2.default('ATCG');
+var charSet2 = exports.charSet2 = new _charSet2.default('01');
+
+var propMap = new _weakMap2.default();
+
+var _class = function () {
+  function _class(arg) {
+    (0, _classCallCheck3.default)(this, _class);
+
+    var charSet = void 0;
+    if (arg === undefined) {
+      charSet = charSet32;
+    } else if (arg instanceof _charSet2.default) {
+      charSet = arg;
+    } else if (typeof arg === 'string' || arg instanceof String) {
+      charSet = new _charSet2.default(arg);
+    } else {
+      throw new Error('Invalid arg: must be either valid CharSet or valid chars');
+    }
+    var hideProps = {
+      charSet: charSet
+    };
+    propMap.set(this, hideProps);
+  }
+
+  (0, _createClass3.default)(_class, [{
+    key: 'sessionID',
+    value: function sessionID() {
+      var charSet = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : propMap.get(this).charSet;
+
+      return this.string(128, charSet);
+    }
+  }, {
+    key: 'string',
+    value: function string(entropyBits) {
+      var charSet = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : propMap.get(this).charSet;
+
+      return this.stringWithBytes(entropyBits, _cryptoBytes(entropyBits, charSet), charSet);
+    }
+  }, {
+    key: 'stringRandom',
+    value: function stringRandom(entropyBits) {
+      var charSet = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : propMap.get(this).charSet;
+
+      return this.stringWithBytes(entropyBits, _randomBytes(entropyBits, charSet), charSet);
+    }
+  }, {
+    key: 'stringWithBytes',
+    value: function stringWithBytes(entropyBits, bytes) {
+      var charSet = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : propMap.get(this).charSet;
+
+      return _stringWithBytes(entropyBits, bytes, charSet);
+    }
+  }, {
+    key: 'bytesNeeded',
+    value: function bytesNeeded(entropyBits) {
+      var charSet = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : propMap.get(this).charSet;
+
+      return _bytesNeeded(entropyBits, charSet);
+    }
+  }, {
+    key: 'chars',
+    value: function chars() {
+      return propMap.get(this).charSet.chars();
+    }
+  }, {
+    key: 'use',
+    value: function use(charSet) {
+      if (!(charSet instanceof _charSet2.default)) {
+        throw new Error('Invalid CharSet');
+      }
+      propMap.get(this).charSet = charSet;
+    }
+  }, {
+    key: 'useChars',
+    value: function useChars(chars) {
+      if (!(typeof chars === 'string' || chars instanceof String)) {
+        throw new Error('Invalid chars: Must be string');
+      }
+      this.use(new _charSet2.default(chars));
+    }
+  }]);
+  return _class;
+}();
+
+exports.default = _class;
+
 
 var _bitsPerByte = 8;
 
-var sessionID = function sessionID() {
-  return string(128, _charSet2.default.base64);
-};
-
-var string = function string(entropyBits) {
-  var charSet = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : _charSet2.default.base32;
-
-  return stringWithBytes(entropyBits, _cryptoBytes(entropyBits, charSet), charSet);
-};
-
-var stringRandom = function stringRandom(entropyBits) {
-  var charSet = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : _charSet2.default.base32;
-
-  return stringWithBytes(entropyBits, _randomBytes(entropyBits, charSet), charSet);
-};
-
-var stringWithBytes = function stringWithBytes(entropyBits, bytes) {
-  var charSet = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : _charSet2.default.base32;
-
-  if (!_charSet2.default.isValid(charSet)) {
-    throw new Error('Invalid CharSet');
-  }
+var _stringWithBytes = function _stringWithBytes(entropyBits, bytes, charSet) {
   if (entropyBits <= 0) {
     return '';
   }
@@ -46,7 +134,7 @@ var stringWithBytes = function stringWithBytes(entropyBits, bytes) {
 
   var needed = Math.ceil(count * (bitsPerChar / _bitsPerByte));
   if (bytes.length < needed) {
-    throw new Error('Insufficient bytes');
+    throw new Error('Insufficient bytes. Need ' + needed);
   }
 
   var charsPerChunk = charSet.getCharsPerChunk();
@@ -70,11 +158,7 @@ var stringWithBytes = function stringWithBytes(entropyBits, bytes) {
   return string;
 };
 
-var bytesNeeded = function bytesNeeded(entropyBits, charSet) {
-  if (!_charSet2.default.isValid(charSet)) {
-    throw new Error('Invalid CharSet');
-  }
-
+var _bytesNeeded = function _bytesNeeded(entropyBits, charSet) {
   var bitsPerChar = charSet.getBitsPerChar();
   var count = Math.ceil(entropyBits / bitsPerChar);
   if (count <= 0) {
@@ -87,11 +171,11 @@ var bytesNeeded = function bytesNeeded(entropyBits, charSet) {
 
 var _cryptoBytes = function _cryptoBytes(entropyBits, charSet) {
   var crypto = require('crypto');
-  return Buffer.from(crypto.randomBytes(bytesNeeded(entropyBits, charSet)));
+  return Buffer.from(crypto.randomBytes(_bytesNeeded(entropyBits, charSet)));
 };
 
 var _randomBytes = function _randomBytes(entropyBits, charSet) {
-  var byteCount = bytesNeeded(entropyBits, charSet);
+  var byteCount = _bytesNeeded(entropyBits, charSet);
   var randCount = Math.ceil(byteCount / 6);
 
   var buffer = new Buffer(byteCount);
@@ -115,11 +199,3 @@ var _endianByteNum = function () {
   buf32[0] = 0xff;
   return buf8[0] === 0xff ? [2, 3, 4, 5, 6, 7] : [0, 1, 2, 3, 6, 7];
 }();
-
-module.exports = {
-  sessionID: sessionID,
-  string: string,
-  stringRandom: stringRandom,
-  stringWithBytes: stringWithBytes,
-  bytesNeeded: bytesNeeded
-};
