@@ -1,20 +1,10 @@
 import Random from '../lib/random'
-import CharSet from '../lib/charSet'
+import CharSet, {charSet64, charSet32, charSet16, charSet8, charSet4, charSet2} from '../lib/charSet'
 
 import test from 'ava'
 
-test.beforeEach('Create CharSets', t => {
-  t.context.charSet64 = new CharSet('ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789-_')
-  t.context.charSet32 = new CharSet('2346789bdfghjmnpqrtBDFGHJLMNPQRT')
-  t.context.charSet16 = new CharSet('0123456789abcdef')
-  t.context.charSet8  = new CharSet('01234567')
-  t.context.charSet4  = new CharSet('ATCG')
-  t.context.charSet2  = new CharSet('01')
-})
-
-
 test('Char Set Base 64 Strings', t => {
-  let random = new Random(t.context.charSet64)
+  let random = new Random(charSet64)
   t.is(random.stringWithBytes( 6, Buffer.from([0xdd])), '3')
   t.is(random.stringWithBytes(12, Buffer.from([0x78, 0xfc])), 'eP')
   t.is(random.stringWithBytes(18, Buffer.from([0xc5, 0x6f, 0x21])), 'xW8')
@@ -30,7 +20,7 @@ test('Char Set Base 64 Strings', t => {
 })
 
 test('Char Set Base 32 Strings', t => {
-  let random = new Random(t.context.charSet32)
+  let random = new Random(charSet32)
   t.is(random.stringWithBytes( 5, Buffer.from([0xdd])), 'N')
   t.is(random.stringWithBytes(10, Buffer.from([0x78, 0xfc])), 'p6')
   t.is(random.stringWithBytes(15, Buffer.from([0x78, 0xfc])), 'p6R')
@@ -45,7 +35,7 @@ test('Char Set Base 32 Strings', t => {
 })
 
 test('Char Set Base 16 Strings', t => {
-  let random = new Random(t.context.charSet16)
+  let random = new Random(charSet16)
   t.is(random.stringWithBytes( 4, Buffer.from([0x9d])), '9')
   t.is(random.stringWithBytes( 8, Buffer.from([0xae])), 'ae')
   t.is(random.stringWithBytes(12, Buffer.from([0x01, 0xf2])), '01f')
@@ -54,7 +44,7 @@ test('Char Set Base 16 Strings', t => {
 })
 
 test('Char Set Base 8 Strings', t => {
-  let random = new Random(t.context.charSet8)
+  let random = new Random(charSet8)
   t.is(random.stringWithBytes( 3, Buffer.from([0x5a])), '2')
   t.is(random.stringWithBytes( 6, Buffer.from([0x5a])), '26')
   t.is(random.stringWithBytes( 9, Buffer.from([0x21, 0xa4])), '103')
@@ -68,7 +58,7 @@ test('Char Set Base 8 Strings', t => {
 })
 
 test('Char Set Base 4 Strings', t => {
-  let random = new Random(t.context.charSet4)
+  let random = new Random(charSet4)
   t.is(random.stringWithBytes( 2, Buffer.from([0x5a])), 'T')
   t.is(random.stringWithBytes( 4, Buffer.from([0x5a])), 'TT')
   t.is(random.stringWithBytes( 6, Buffer.from([0x93])), 'CTA')
@@ -80,7 +70,7 @@ test('Char Set Base 4 Strings', t => {
 })
 
 test('Char Set Base 2 Strings', t => {
-  let random = new Random(t.context.charSet2)
+  let random = new Random(charSet2)
   t.is(random.stringWithBytes( 1, Buffer.from([0x27])), '0')
   t.is(random.stringWithBytes( 2, Buffer.from([0x27])), '00')
   t.is(random.stringWithBytes( 3, Buffer.from([0x27])), '001')
@@ -95,25 +85,25 @@ test('Char Set Base 2 Strings', t => {
 
 test('Char Set Strings', t => {
   let random = new Random()
-  t.is(random.stringWithBytes(30, [0xa5, 0x62, 0x20, 0x87], t.context.charSet64), 'pWIgh')
-  t.is(random.stringWithBytes(25, [0xa5, 0x62, 0x20, 0x87], t.context.charSet32), 'DFr43')
-  t.is(random.stringWithBytes(16, [0xc7, 0xc9], t.context.charSet16), 'c7c9')
-  t.is(random.stringWithBytes(24, [0xfd, 0x93, 0xd1], t.context.charSet8), '77311721')
-  t.is(random.stringWithBytes(12, [0x20, 0xf1], t.context.charSet4), 'ACAAGG') 
-  t.is(random.stringWithBytes( 6, [0x27], t.context.charSet2), '001001')
+  t.is(random.stringWithBytes(30, [0xa5, 0x62, 0x20, 0x87], charSet64), 'pWIgh')
+  t.is(random.stringWithBytes(25, [0xa5, 0x62, 0x20, 0x87], charSet32), 'DFr43')
+  t.is(random.stringWithBytes(16, [0xc7, 0xc9], charSet16), 'c7c9')
+  t.is(random.stringWithBytes(24, [0xfd, 0x93, 0xd1], charSet8), '77311721')
+  t.is(random.stringWithBytes(12, [0x20, 0xf1], charSet4), 'ACAAGG') 
+  t.is(random.stringWithBytes( 6, [0x27], charSet2), '001001')
 })
 
 test('Invalid bytes', t => {
   let random
   let regex = /Insufficient/
 
-  random = new Random(t.context.charSet64)
+  random = new Random(charSet64)
   t.regex(invalidBytes(random, 7, [1]), regex)
   t.regex(invalidBytes(random, 13, [1,2]), regex)
   t.regex(invalidBytes(random, 25, [1,2,3]), regex)
   t.regex(invalidBytes(random, 31, [1,2,3,4]), regex)
   
-  random = new Random(t.context.charSet32)
+  random = new Random(charSet32)
   t.regex(invalidBytes(random,  6, [1]), regex)
   t.regex(invalidBytes(random, 16, [1,2]), regex)
   t.regex(invalidBytes(random, 21, [1,2,3]), regex)
@@ -122,21 +112,21 @@ test('Invalid bytes', t => {
   t.regex(invalidBytes(random, 46, [1,2,3,4,5,6]), regex)
   t.regex(invalidBytes(random, 32, [250, 200, 150, 100]), regex)
   
-  random = new Random(t.context.charSet16)
+  random = new Random(charSet16)
   t.regex(invalidBytes(random,  9, [1]), regex)
   t.regex(invalidBytes(random, 17, [1,2]), regex)
   
-  random = new Random(t.context.charSet8)
+  random = new Random(charSet8)
   t.regex(invalidBytes(random,  7, [1]), regex)
   t.regex(invalidBytes(random, 16, [1,2]), regex)
   t.regex(invalidBytes(random, 25, [1,2,3]), regex)
   t.regex(invalidBytes(random, 31, [1,2,3,4]), regex)
 
-  random = new Random(t.context.charSet4)
+  random = new Random(charSet4)
   t.regex(invalidBytes(random,  9, [1]), regex)
   t.regex(invalidBytes(random, 17, [1,2]), regex)
   
-  random = new Random(t.context.charSet2)
+  random = new Random(charSet2)
   t.regex(invalidBytes(random,  9, [1]), regex)
   t.regex(invalidBytes(random, 17, [1,2]), regex)
 })

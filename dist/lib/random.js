@@ -3,7 +3,6 @@
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.charSet2 = exports.charSet4 = exports.charSet8 = exports.charSet16 = exports.charSet32 = exports.charSet64 = undefined;
 
 var _classCallCheck2 = require('babel-runtime/helpers/classCallCheck');
 
@@ -27,13 +26,6 @@ var _weakMap2 = _interopRequireDefault(_weakMap);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-var charSet64 = exports.charSet64 = new _charSet2.default('ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789-_');
-var charSet32 = exports.charSet32 = new _charSet2.default('2346789bdfghjmnpqrtBDFGHJLMNPQRT');
-var charSet16 = exports.charSet16 = new _charSet2.default('0123456789abcdef');
-var charSet8 = exports.charSet8 = new _charSet2.default('01234567');
-var charSet4 = exports.charSet4 = new _charSet2.default('ATCG');
-var charSet2 = exports.charSet2 = new _charSet2.default('01');
-
 var propMap = new _weakMap2.default();
 
 var _class = function () {
@@ -42,7 +34,7 @@ var _class = function () {
 
     var charSet = void 0;
     if (arg === undefined) {
-      charSet = charSet32;
+      charSet = _charSet.charSet32;
     } else if (arg instanceof _charSet2.default) {
       charSet = arg;
     } else if (typeof arg === 'string' || arg instanceof String) {

@@ -45,7 +45,7 @@ Example usage:
 48-bit string using base32 characters:
 
   ```js
-  import {Random, Entropy, CharSet} from './entropy-string'
+  import {Random} from './entropy-string'
   
   let random = new Random()
   let string = random.string(48)

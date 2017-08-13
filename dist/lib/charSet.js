@@ -3,6 +3,7 @@
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
+exports.charSet2 = exports.charSet4 = exports.charSet8 = exports.charSet16 = exports.charSet32 = exports.charSet64 = undefined;
 
 var _log = require('babel-runtime/core-js/math/log2');
 
@@ -29,9 +30,9 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 var propMap = new _weakMap2.default();
 var bitsPerByte = 8;
 
-var _class = function () {
-  function _class(chars) {
-    (0, _classCallCheck3.default)(this, _class);
+var CharSet = function () {
+  function CharSet(chars) {
+    (0, _classCallCheck3.default)(this, CharSet);
 
     if (!(typeof chars === 'string' || chars instanceof String)) {
       throw new Error('Invalid chars: Must be string');
@@ -60,7 +61,7 @@ var _class = function () {
     propMap.set(this, privProps);
   }
 
-  (0, _createClass3.default)(_class, [{
+  (0, _createClass3.default)(CharSet, [{
     key: 'getChars',
     value: function getChars() {
       return propMap.get(this).chars;
@@ -104,10 +105,10 @@ var _class = function () {
       return this.getNdxFn();
     }
   }]);
-  return _class;
+  return CharSet;
 }();
 
-exports.default = _class;
+exports.default = CharSet;
 
 
 var _ndxFn = function _ndxFn(bitsPerChar) {
@@ -142,3 +143,10 @@ var _ndxFn = function _ndxFn(bitsPerChar) {
       };
     }
 };
+
+var charSet64 = exports.charSet64 = new CharSet('ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789-_');
+var charSet32 = exports.charSet32 = new CharSet('2346789bdfghjmnpqrtBDFGHJLMNPQRT');
+var charSet16 = exports.charSet16 = new CharSet('0123456789abcdef');
+var charSet8 = exports.charSet8 = new CharSet('01234567');
+var charSet4 = exports.charSet4 = new CharSet('ATCG');
+var charSet2 = exports.charSet2 = new CharSet('01');

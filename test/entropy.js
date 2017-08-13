@@ -1,5 +1,6 @@
 import Entropy from '../lib/entropy'
-import Random, {charSet64, charSet32, charSet16, charSet8, charSet4, charSet2} from '../lib/random'
+import Random from '../lib/random'
+import {charSet64, charSet32, charSet16, charSet8, charSet4, charSet2} from '../lib/charSet'
 
 import test from 'ava'
 
