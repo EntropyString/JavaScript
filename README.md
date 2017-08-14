@@ -34,18 +34,9 @@ Efficiently generate cryptographically strong random strings of specified entrop
 
 ### <a name="TLDR"></a>TL;DR
 
-##### Examples
-
-Run the examples file using
-
-  ```bash
-  yarn examples
-  node dist/examples.js
-  ```
-
 ##### Example Usage
 
-OWASP session ID using base32 characters:
+OWASP session ID using base 32 characters:
   ```js
   import {Random} from 'entropy-string'
   
@@ -111,6 +102,15 @@ Base 64 character string with a 1 in a trillion chance of a repeat in 100 millio
   ```
 
   > emzRPXRudAjZnOme
+
+##### Examples
+
+Run any of the examples in the `examples` directory by:
+
+  ```bash
+  yarn examples
+  node examples/dist/tldr.js
+  ```
 
 [TOC](#TOC)
 
@@ -398,7 +398,7 @@ The 3rd option above will throw an `Error` if the characters string isn't approp
 
 ### <a name="Efficiency"></a>Efficiency
 
-To efficiently create random strings, `entropy-string` generates the necessary number of bytes needed for each string and uses those bytes in a bit shifting scheme to index into a character set. For example, consider generating strings from the `base32` character set. There are __32__ characters in the set, so an index into an array of those characters would be in the range `[0,31]`. Generating a random string of `base32` characters is thus reduced to generating a random sequence of indices in the range `[0,31]`.
+To efficiently create random strings, `entropy-string` generates the necessary number of bytes needed for each string and uses those bytes in a bit shifting scheme to index into a character set. For example, consider generating strings from the `charSet32` character set. There are __32__ characters in the set, so an index into an array of those characters would be in the range `[0,31]`. Generating a random string of `charSet32` characters is thus reduced to generating a random sequence of indices in the range `[0,31]`.
 
 To generate the indices, `entropy-string` slices just enough bits from the array of bytes to create each index. In the example at hand, 5 bits are needed to create an index in the range `[0,31]`. `entropy-string` processes the byte array 5 bits at a time to create the indices. The first index comes from the first 5 bits of the first byte, the second index comes from the last 3 bits of the first byte combined with the first 2 bits of the second byte, and so on as the byte array is systematically sliced to form indices into the character set. And since bit shifting and addition of byte values is really efficient, this scheme is quite fast.
 
@@ -447,7 +447,7 @@ Fortunately you don't need to really understand how the bytes are efficiently sl
 
 As described in [Efficiency](#Efficiency), `entropy-string` automatically generates random bytes using the `crypto` library. But you may have a need to provide your own bytes, say for deterministic testing or to use a specialized byte generator. The `random.string` function allows passing in your own bytes to create a string.
 
-Suppose we want a string capable of 30 bits of entropy using 32 characters. We pass in 4 bytes to cover the 30 bits needed to generate 6 base32 characters:
+Suppose we want a string capable of 30 bits of entropy using 32 characters. We pass in 4 bytes to cover the 30 bits needed to generate six base 32 characters:
 
   ```js
   import {Random} from 'entropy-string'
