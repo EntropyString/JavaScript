@@ -54,7 +54,7 @@
     "require": "babel-core/register"
   },
   "devDependencies": {
-    "ava": "^0.20.0",
+    "ava": "^0.21.0",
     "babel-cli": "^6.4.0",
     "babel-core": "^6.4.0",
     "babel-plugin-transform-runtime": "^6.4.3",

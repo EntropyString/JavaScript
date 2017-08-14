@@ -333,7 +333,7 @@ You may, of course, want to choose the characters used, which is covered next in
 Being able to easily generate random strings is great, but what if you want to specify your own characters. For example, suppose you want to visualize flipping a coin to produce entropy of 10 bits.
 
   ```js
-  import {Random, charSet2} from './entropy-string'
+  import {Random, charSet2} from 'entropy-string'
 
   let random = new Random(charSet2)
   let flips = random.string(10)
@@ -353,7 +353,7 @@ The resulting string of __0__'s and __1__'s doesn't look quite right. Perhaps yo
 As another example, we saw in [Character Sets](#CharacterSets) the default characters for CharSet 16 are **0123456789abcdef**. Suppose you like uppercase hexadecimal letters instead.
 
   ```js
-  import {Random} from './entropy-string'
+  import {Random} from 'entropy-string'
 
   let random = new Random('0123456789ABCDEF')
   let string = random.string(48)
@@ -371,7 +371,7 @@ The `Random` constructor allows for 3 separate cases:
 The 3rd option above will throw an `Error` if the characters string isn't appropriate.
 
   ```js
-  import {Random} from './entropy-string'
+  import {Random} from 'entropy-string'
 
   try {
     let random = new Random('123456')
@@ -419,7 +419,7 @@ There are two significant issues with this code. `Math.random` returns a random 
 Compare that to the `entropy-string` scheme. For the example above, slicing off 5 bits at a time requires a total of 80 bits (10 bytes). Creating the same strings as above, `entropy-string` uses 80 bits of randomness per string with no wasted bits. In general, the `entropy-string` scheme can waste up to 7 bits per string, but that's the worst case scenario and that's *per string*, not *per character*!
 
   ```js
-  import {Random} from './entropy-string'
+  import {Random} from 'entropy-string'
 
   let random = new Random()
   let string = random.string(80)
@@ -493,7 +493,7 @@ Note how the number of bytes needed is dependent on the number of characters in 
   
 ##### In a *million* strings, a *1 in a billion* chance of a repeat (using 32 possible characters):
   ```js
-  import {Random, Entropy} from './entropy-string'
+  import {Random, Entropy} from 'entropy-string'
   
   let bits = Entropy.bitsWithPowers(6,9)
   let random = new Random()
