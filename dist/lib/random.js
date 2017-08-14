@@ -126,7 +126,7 @@ var _stringWithBytes = function _stringWithBytes(entropyBits, bytes, charSet) {
 
   var needed = Math.ceil(count * (bitsPerChar / _bitsPerByte));
   if (bytes.length < needed) {
-    throw new Error('Insufficient bytes. Need ' + needed);
+    throw new Error('Insufficient bytes: need ' + needed + ' and got ' + bytes.length);
   }
 
   var charsPerChunk = charSet.getCharsPerChunk();
