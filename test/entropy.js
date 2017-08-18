@@ -75,69 +75,6 @@ test('Bits using total power, risk power', t => {
   t.is(round(Entropy.bitsWithPowers(5, 5)), 49)
 })
 
-test('String lengths using bits', t => {
-  t.is(bitsStringLength(30, 1000000, charSet64),  5)
-  t.is(bitsStringLength(30, 1000000, charSet32),  6)
-  t.is(bitsStringLength(30, 1000000, charSet16),  8)
-  t.is(bitsStringLength(30, 1000000, charSet8),  10)
-  t.is(bitsStringLength(30, 1000000, charSet4),  15)
-  t.is(bitsStringLength(30, 1000000, charSet2),  29)
-})
-
-test('String lengths using bitsWithRiskPower', t => {
-  t.is(bitsWithRiskPowerStringLength(30, 6, charSet64),  5)
-  t.is(bitsWithRiskPowerStringLength(30, 6, charSet32),  6)
-  t.is(bitsWithRiskPowerStringLength(30, 6, charSet16),  8)
-  t.is(bitsWithRiskPowerStringLength(30, 6, charSet8),  10)
-  t.is(bitsWithRiskPowerStringLength(30, 6, charSet4),  15)
-  t.is(bitsWithRiskPowerStringLength(30, 6, charSet2),  29)
-
-  t.is(bitsWithRiskPowerStringLength(1000,   10, charSet64),  9)
-  t.is(bitsWithRiskPowerStringLength(1000,   10, charSet32), 11)
-  t.is(bitsWithRiskPowerStringLength(1000,   10, charSet16), 14)
-  t.is(bitsWithRiskPowerStringLength(1000,   10, charSet8),  18)
-  t.is(bitsWithRiskPowerStringLength(1000,   10, charSet4),  27)
-  t.is(bitsWithRiskPowerStringLength(1000,   10, charSet2),  53)
-
-  t.is(bitsWithRiskPowerStringLength(100000, 12, charSet64), 13)
-  t.is(bitsWithRiskPowerStringLength(100000, 12, charSet32), 15)
-  t.is(bitsWithRiskPowerStringLength(100000, 12, charSet16), 19)
-  t.is(bitsWithRiskPowerStringLength(100000, 12, charSet8),  25)
-  t.is(bitsWithRiskPowerStringLength(100000, 12, charSet4),  37)
-  t.is(bitsWithRiskPowerStringLength(100000, 12, charSet2),  73)
-
-  let uint64 = 18446744073709551615
-  t.is(bitsWithRiskPowerStringLength(uint64, 15, charSet64), 30)
-  t.is(bitsWithRiskPowerStringLength(uint64, 15, charSet32), 36)
-  t.is(bitsWithRiskPowerStringLength(uint64, 15, charSet16), 45)
-  t.is(bitsWithRiskPowerStringLength(uint64, 15, charSet8),  59)
-  t.is(bitsWithRiskPowerStringLength(uint64, 15, charSet4),  89)
-  t.is(bitsWithRiskPowerStringLength(uint64, 15, charSet2), 177)
-})
-
-test('String lengths using bitsWithPowers', t => {
-  t.is(bitsWithPowersStringLength( 3,  10, charSet64),  9)
-  t.is(bitsWithPowersStringLength( 3,  10, charSet32), 11)
-  t.is(bitsWithPowersStringLength( 3,  10, charSet16), 14)
-  t.is(bitsWithPowersStringLength( 3,  10, charSet8),  18)
-  t.is(bitsWithPowersStringLength( 3,  10, charSet4),  27)
-  t.is(bitsWithPowersStringLength( 3,  10, charSet2),  53)
-  
-  t.is(bitsWithPowersStringLength( 5, 12, charSet64), 13)
-  t.is(bitsWithPowersStringLength( 5, 12, charSet32), 15)
-  t.is(bitsWithPowersStringLength( 5, 12, charSet16), 19)
-  t.is(bitsWithPowersStringLength( 5, 12, charSet8),  25)
-  t.is(bitsWithPowersStringLength( 5, 12, charSet4),  37)
-  t.is(bitsWithPowersStringLength( 5, 12, charSet2),  73)
-  
-  t.is(bitsWithPowersStringLength(10,  9, charSet64), 16)
-  t.is(bitsWithPowersStringLength(10,  9, charSet32), 20)
-  t.is(bitsWithPowersStringLength(10,  9, charSet16), 24)
-  t.is(bitsWithPowersStringLength(10,  9, charSet8),  32)
-  t.is(bitsWithPowersStringLength(10,  9, charSet4),  48)
-  t.is(bitsWithPowersStringLength(10,  9, charSet2),  96)
-})
-
 // preshing.com tests come from table at http://preshing.com/20110504/hash-collision-probabilities/
 test('preshing.com, 32-bit column', t => {
   t.is(round(Entropy.bits(30084,        10)), 32)
@@ -242,19 +179,3 @@ test('preshing.com, 160-bit column, modified and extended', t => {
   t.is(round(Entropy.bitsWithPowers(10, 30)), 165)
   t.is(round(Entropy.bitsWithPowers( 9, 30)), 158)
 })
-
-const bitsStringLength = (total, risk, charSet) => {
-  let random = new Random(charSet)
-  return random.string(Entropy.bits(total, risk)).length
-}
-
-const bitsWithRiskPowerStringLength = (total, rPower, charSet) => {
-  let random = new Random(charSet)
-  return random.string(Entropy.bitsWithRiskPower(total, rPower)).length
-}
-
-const bitsWithPowersStringLength = (tPower, rPower, charSet) => {
-  let random = new Random(charSet)
-  return random.string(Entropy.bitsWithPowers(tPower, rPower)).length
-}
-
