@@ -103,29 +103,6 @@ test('Session ID', t => {
   t.is(random.sessionID(charSet2).length,  128)
 })
 
-test('Bytes needed', t => {
-  let random = new Random()
-  let charSets = [charSet64, charSet32, charSet16, charSet8, charSet4, charSet2]
-
-  let doTest = (charSet, bits) => {
-    let bytesNeeded = charSet.bytesNeeded(bits)
-    let atLeast = Math.ceil(bits/8)
-    t.true(atLeast <= bytesNeeded, 'CharSet: ' + charSet.chars() + ', Bits ' + bits)
-    let atMost = atLeast + 1
-    t.true(bytesNeeded <= atMost, 'CharSet: ' + charSet.chars() + ', Bits ' + bits)
-  }
-  
-  charSets.forEach( (charSet) => {
-    random.use(charSet)
-    for (let bits = 0; bits < 10; bits++) {
-      doTest(charSet, bits)
-    }
-    for (let bits = 12; bits < 133; bits += 5) {
-      doTest(charSet, bits)
-    }
-  })
-})
-
 test('Invalid bytes', t => {
   let random
   let regex = /Insufficient/

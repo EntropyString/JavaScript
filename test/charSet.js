@@ -1,6 +1,6 @@
 import test from 'ava'
 
-import CharSet from '../lib/charSet';
+import CharSet, {charSet64, charSet32, charSet16, charSet8, charSet4, charSet2} from '../lib/charSet'
 
 test.beforeEach('Create CharSets', t => {
   t.context.charSet64 = new CharSet('ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789-_')
@@ -167,3 +167,23 @@ test('Custom chars: 2', t => {
   t.regex(error.message, /.*count/)
 })
 
+test('Bytes needed', t => {
+  let BITS_PER_BYTE = 8
+  let doTest = (charSet, bits) => {
+    let bytesNeeded = charSet.bytesNeeded(bits)
+    let atLeast = Math.ceil(bits/BITS_PER_BYTE)
+    t.true(atLeast <= bytesNeeded, 'CharSet: ' + charSet.chars() + ', Bits ' + bits)
+    let atMost = atLeast + 1
+    t.true(bytesNeeded <= atMost, 'CharSet: ' + charSet.chars() + ', Bits ' + bits)
+  }
+  
+  let charSets = [charSet64, charSet32, charSet16, charSet8, charSet4, charSet2]
+  charSets.forEach( (charSet) => {
+    for (let bits = 0; bits <= 10; bits++) {
+      doTest(charSet, bits)
+    }
+    for (let bits = 12; bits <= 132; bits += 5) {
+      doTest(charSet, bits)
+    }
+  })
+})
