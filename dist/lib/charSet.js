@@ -28,7 +28,8 @@ var _weakMap2 = _interopRequireDefault(_weakMap);
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 var propMap = new _weakMap2.default();
-var bitsPerByte = 8;
+
+var BITS_PER_BYTE = 8;
 
 var CharSet = function () {
   function CharSet(chars) {
@@ -56,7 +57,7 @@ var CharSet = function () {
       bitsPerChar: bitsPerChar,
       length: length,
       ndxFn: _ndxFn(bitsPerChar),
-      charsPerChunk: (0, _lcm2.default)(bitsPerChar, bitsPerByte) / bitsPerChar
+      charsPerChunk: (0, _lcm2.default)(bitsPerChar, BITS_PER_BYTE) / bitsPerChar
     };
     propMap.set(this, privProps);
   }
@@ -91,6 +92,12 @@ var CharSet = function () {
     value: function getNdxFn() {
       return propMap.get(this).ndxFn;
     }
+  }, {
+    key: 'bytesNeeded',
+    value: function bytesNeeded(entropyBits) {
+      var count = Math.ceil(entropyBits / this.bitsPerChar());
+      return Math.ceil(count * this.bitsPerChar() / BITS_PER_BYTE);
+    }
 
     // Aliases
 
@@ -104,6 +111,11 @@ var CharSet = function () {
     value: function ndxFn() {
       return this.getNdxFn();
     }
+  }, {
+    key: 'bitsPerChar',
+    value: function bitsPerChar() {
+      return this.getBitsPerChar();
+    }
   }]);
   return CharSet;
 }();
@@ -112,30 +124,32 @@ exports.default = CharSet;
 
 
 var _ndxFn = function _ndxFn(bitsPerChar) {
-  // If bitsPerBytes is a multiple of bitsPerChar, we can slice off an integer number
+  // If BITS_PER_BYTEs is a multiple of bitsPerChar, we can slice off an integer number
   // of chars per byte.
-  if ((0, _lcm2.default)(bitsPerChar, bitsPerByte) === bitsPerByte) {
+  if ((0, _lcm2.default)(bitsPerChar, BITS_PER_BYTE) === BITS_PER_BYTE) {
     return function (chunk, slice, bytes) {
       var lShift = bitsPerChar;
-      var rShift = bitsPerByte - bitsPerChar;
+      var rShift = BITS_PER_BYTE - bitsPerChar;
       return (bytes[chunk] << lShift * slice & 0xff) >> rShift;
     };
   }
   // Otherwise, while slicing off bits per char, we will possibly straddle a couple
   // of bytes, so a bit more work is involved
   else {
+      var slicesPerChunk = (0, _lcm2.default)(bitsPerChar, BITS_PER_BYTE) / BITS_PER_BYTE;
       return function (chunk, slice, bytes) {
-        var slicesPerChunk = (0, _lcm2.default)(bitsPerChar, bitsPerByte) / bitsPerByte;
         var bNum = chunk * slicesPerChunk;
 
-        var rShift = bitsPerByte - bitsPerChar;
-        var lOffset = Math.floor(slice * bitsPerChar / bitsPerByte);
-        var lShift = slice * bitsPerChar % bitsPerByte;
+        var offset = slice * bitsPerChar / BITS_PER_BYTE;
+        var lOffset = Math.floor(offset);
+        var rOffset = Math.ceil(offset);
+
+        var rShift = BITS_PER_BYTE - bitsPerChar;
+        var lShift = slice * bitsPerChar % BITS_PER_BYTE;
 
         var ndx = (bytes[bNum + lOffset] << lShift & 0xff) >> rShift;
 
-        var rOffset = Math.ceil(slice * bitsPerChar / bitsPerByte);
-        var rShiftIt = ((rOffset + 1) * bitsPerByte - (slice + 1) * bitsPerChar) % bitsPerByte;
+        var rShiftIt = ((rOffset + 1) * BITS_PER_BYTE - (slice + 1) * bitsPerChar) % BITS_PER_BYTE;
         if (rShift < rShiftIt) {
           ndx += bytes[bNum + rOffset] >> rShiftIt;
         }
