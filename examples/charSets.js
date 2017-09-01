@@ -1,3 +1,5 @@
+// Predefined character sets
+
 import {charSet64, charSet32, charSet16, charSet8, charSet4, charSet2} from './entropy-string'
 
 console.log('\n  charSet64: ' + charSet64.chars())

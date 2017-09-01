@@ -1,5 +1,10 @@
-import {Random} from './entropy-string'
-  
-let random = new Random()
-let string = random.sessionID()
-console.log('\n  OWASP session ID using base32 characters: ' + string + '\n')
+// Potential of _1 million_ random strings with _1 in a billion_ chance of repeat
+
+import {Random, Entropy} from './entropy-string'
+
+const random = new Random()
+const bits = Entropy.bitsWithPowers(6, 9)
+
+const string = random.string(bits)
+
+console.log('\n  Potential 1 million random strings with 1 in a billion chance of repeat: ' + string  + '\n')

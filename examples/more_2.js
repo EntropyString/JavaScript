@@ -1,7 +1,9 @@
+// Base 16 (hex) and base 4
+
 import {Random, Entropy, charSet16, charSet4} from './entropy-string'
 
-let random = new Random(charSet16)
-let bits = Entropy.bits(30, 100000)
+const random = new Random(charSet16)
+const bits = Entropy.bits(30, 100000)
 let string = random.string(bits)
 console.log('\n  Base 16 string : ' + string)
 

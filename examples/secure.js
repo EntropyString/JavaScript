@@ -1,6 +1,8 @@
+// Cryptographically strong and not...
+
 import {Random} from './entropy-string'
 
-let random = new Random()
+const random = new Random()
 let string = random.string(80)
 console.log('\n  CSPRNG base 32 80-bit string : ' + string)
 

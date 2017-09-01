@@ -1,6 +1,8 @@
-import {Random, Entropy, charSet64} from './entropy-string'
+// OWASP session ID using RFC 4648 file system and URL safe characters
 
-let random = new Random(charSet64)
-let bits = Entropy.bitsWithPowers(7, 12)
-let string = random.string(bits)
-console.log('\n  Base 64 character string with a 1 in a trillion chance of a repeat in 100 million strings: ' + string + '\n')
+import {Random, charSet64} from './entropy-string'
+  
+const random = new Random(charSet64)
+const string = random.sessionID()
+
+console.log('\n  OWASP session ID using RFC 4648 file system and URL safe characters: ' + string + '\n')

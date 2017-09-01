@@ -1,16 +1,17 @@
+// Custom character errors
+
 import {Random} from './entropy-string'
 
 try {
-  let random = new Random('123456')
+  const random = new Random('123456')
 }
 catch(error) {
-  console.log('Error: ' + error.message)
+  console.log('\n  Error: ' + error.message)
 }
-
 
 try {
-  let random = new Random('01233210')
+  const random = new Random('01233210')
 }
 catch(error) {
-  console.log('Error: ' + error.message)
+  console.log('\n  Error: ' + error.message + '\n')
 }

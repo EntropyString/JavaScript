@@ -1,5 +1,10 @@
-import {Random, charSet16} from './entropy-string'
+// Custom uppercase hexadecimal characters
+
+import {Random, Entropy} from './entropy-string'
   
-let random = new Random(charSet16)
-let string = random.string(48)
-console.log('\n  48-bit string using hex characters: ' + string  + '\n')
+const random = new Random('0123456789ABCDEF')
+const bits = Entropy.bitsWithPowers(6, 9)
+
+const string = random.string(bits)
+
+console.log('\n  Custom uppercase hexadecimal characters: ' + string + '\n')
