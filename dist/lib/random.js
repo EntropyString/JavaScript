@@ -28,6 +28,8 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 
 var propMap = new _weakMap2.default();
 
+var BITS_PER_BYTE = 8;
+
 var _class = function () {
   function _class(arg) {
     (0, _classCallCheck3.default)(this, _class);
@@ -49,6 +51,27 @@ var _class = function () {
   }
 
   (0, _createClass3.default)(_class, [{
+    key: 'smallID',
+    value: function smallID() {
+      var charSet = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : propMap.get(this).charSet;
+
+      return this.string(29, charSet);
+    }
+  }, {
+    key: 'mediumID',
+    value: function mediumID() {
+      var charSet = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : propMap.get(this).charSet;
+
+      return this.string(69, charSet);
+    }
+  }, {
+    key: 'largeID',
+    value: function largeID() {
+      var charSet = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : propMap.get(this).charSet;
+
+      return this.string(99, charSet);
+    }
+  }, {
     key: 'sessionID',
     value: function sessionID() {
       var charSet = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : propMap.get(this).charSet;
@@ -56,18 +79,27 @@ var _class = function () {
       return this.string(128, charSet);
     }
   }, {
+    key: 'token',
+    value: function token() {
+      var charSet = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : propMap.get(this).charSet;
+
+      return this.string(256, charSet);
+    }
+  }, {
     key: 'string',
     value: function string(entropyBits) {
       var charSet = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : propMap.get(this).charSet;
 
-      return this.stringWithBytes(entropyBits, _cryptoBytes(entropyBits, charSet), charSet);
+      var bytesNeeded = charSet.bytesNeeded(entropyBits);
+      return this.stringWithBytes(entropyBits, _cryptoBytes(bytesNeeded), charSet);
     }
   }, {
     key: 'stringRandom',
     value: function stringRandom(entropyBits) {
       var charSet = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : propMap.get(this).charSet;
 
-      return this.stringWithBytes(entropyBits, _randomBytes(entropyBits, charSet), charSet);
+      var bytesNeeded = charSet.bytesNeeded(entropyBits);
+      return this.stringWithBytes(entropyBits, _randomBytes(bytesNeeded), charSet);
     }
   }, {
     key: 'stringWithBytes',
@@ -81,7 +113,7 @@ var _class = function () {
     value: function bytesNeeded(entropyBits) {
       var charSet = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : propMap.get(this).charSet;
 
-      return _bytesNeeded(entropyBits, charSet);
+      return charSet.bytesNeeded(entropyBits);
     }
   }, {
     key: 'chars',
@@ -111,8 +143,6 @@ var _class = function () {
 exports.default = _class;
 
 
-var _bitsPerByte = 8;
-
 var _stringWithBytes = function _stringWithBytes(entropyBits, bytes, charSet) {
   if (entropyBits <= 0) {
     return '';
@@ -124,9 +154,9 @@ var _stringWithBytes = function _stringWithBytes(entropyBits, bytes, charSet) {
     return '';
   }
 
-  var needed = Math.ceil(count * (bitsPerChar / _bitsPerByte));
-  if (bytes.length < needed) {
-    throw new Error('Insufficient bytes: need ' + needed + ' and got ' + bytes.length);
+  var need = Math.ceil(count * (bitsPerChar / BITS_PER_BYTE));
+  if (bytes.length < need) {
+    throw new Error('Insufficient bytes: need ' + need + ' and got ' + bytes.length);
   }
 
   var charsPerChunk = charSet.getCharsPerChunk();
@@ -150,34 +180,23 @@ var _stringWithBytes = function _stringWithBytes(entropyBits, bytes, charSet) {
   return string;
 };
 
-var _bytesNeeded = function _bytesNeeded(entropyBits, charSet) {
-  var bitsPerChar = charSet.getBitsPerChar();
-  var count = Math.ceil(entropyBits / bitsPerChar);
-  if (count <= 0) {
-    return 0;
-  }
-
-  var bytesPerSlice = bitsPerChar / _bitsPerByte;
-  return Math.ceil(count * bytesPerSlice);
-};
-
-var _cryptoBytes = function _cryptoBytes(entropyBits, charSet) {
+var _cryptoBytes = function _cryptoBytes(count) {
   var crypto = require('crypto');
-  return Buffer.from(crypto.randomBytes(_bytesNeeded(entropyBits, charSet)));
+  return Buffer.from(crypto.randomBytes(count));
 };
 
-var _randomBytes = function _randomBytes(entropyBits, charSet) {
-  var byteCount = _bytesNeeded(entropyBits, charSet);
-  var randCount = Math.ceil(byteCount / 6);
+var _randomBytes = function _randomBytes(count) {
+  var BYTES_USED_PER_RANDOM_CALL = 6;
+  var randCount = Math.ceil(count / BYTES_USED_PER_RANDOM_CALL);
 
-  var buffer = new Buffer(byteCount);
-  var dataView = new DataView(new ArrayBuffer(_bitsPerByte));
+  var buffer = new Buffer(count);
+  var dataView = new DataView(new ArrayBuffer(BITS_PER_BYTE));
   for (var rNum = 0; rNum < randCount; rNum++) {
     dataView.setFloat64(0, Math.random());
-    for (var n = 0; n < 6; n++) {
+    for (var n = 0; n < BYTES_USED_PER_RANDOM_CALL; n++) {
       var fByteNum = _endianByteNum[n];
-      var bByteNum = 6 * rNum + n;
-      if (bByteNum < byteCount) {
+      var bByteNum = rNum * BYTES_USED_PER_RANDOM_CALL + n;
+      if (bByteNum < count) {
         buffer[bByteNum] = dataView.getUint8(fByteNum);
       }
     }

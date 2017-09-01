@@ -93,52 +93,59 @@ test('Char Set Strings', t => {
   t.is(random.stringWithBytes( 6, [0x27], charSet2), '001001')
 })
 
+test('Small ID', t => {
+  let random = new Random()
+  t.is(random.smallID().length,           6)
+  t.is(random.smallID(charSet64).length,  5)
+  t.is(random.smallID(charSet32).length,  6)
+  t.is(random.smallID(charSet16).length,  8)
+  t.is(random.smallID(charSet8).length,  10)
+  t.is(random.smallID(charSet4).length,  15)
+  t.is(random.smallID(charSet2).length,  29)
+})
+
+test('Medium ID', t => {
+  let random = new Random()
+  t.is(random.mediumID().length,          14)
+  t.is(random.mediumID(charSet64).length, 12)
+  t.is(random.mediumID(charSet32).length, 14)
+  t.is(random.mediumID(charSet16).length, 18)
+  t.is(random.mediumID(charSet8).length,  23)
+  t.is(random.mediumID(charSet4).length,  35)
+  t.is(random.mediumID(charSet2).length,  69)
+})
+
+test('Large ID', t => {
+  let random = new Random()
+  t.is(random.largeID().length,          20)
+  t.is(random.largeID(charSet64).length, 17)
+  t.is(random.largeID(charSet32).length, 20)
+  t.is(random.largeID(charSet16).length, 25)
+  t.is(random.largeID(charSet8).length,  33)
+  t.is(random.largeID(charSet4).length,  50)
+  t.is(random.largeID(charSet2).length,  99)
+})
+
 test('Session ID', t => {
   let random = new Random()
-  t.is(random.sessionID(charSet64).length,  22)
   t.is(random.sessionID().length,           26)
+  t.is(random.sessionID(charSet64).length,  22)
+  t.is(random.sessionID(charSet32).length,  26)
   t.is(random.sessionID(charSet16).length,  32)
   t.is(random.sessionID(charSet8).length,   43)
   t.is(random.sessionID(charSet4).length,   64)
   t.is(random.sessionID(charSet2).length,  128)
 })
 
-test('Invalid bytes', t => {
-  let random
-  let regex = /Insufficient/
-
-  random = new Random(charSet64)
-  t.regex(invalidBytes(random, 7,  [1]), regex)
-  t.regex(invalidBytes(random, 13, [1,2]), regex)
-  t.regex(invalidBytes(random, 25, [1,2,3]), regex)
-  t.regex(invalidBytes(random, 31, [1,2,3,4]), regex)
-  
-  random = new Random(charSet32)
-  t.regex(invalidBytes(random,  6, [1]), regex)
-  t.regex(invalidBytes(random, 16, [1,2]), regex)
-  t.regex(invalidBytes(random, 21, [1,2,3]), regex)
-  t.regex(invalidBytes(random, 31, [1,2,3,4]), regex)
-  t.regex(invalidBytes(random, 32, [1,2,3,4]), regex)
-  t.regex(invalidBytes(random, 41, [1,2,3,4,5]), regex)
-  t.regex(invalidBytes(random, 46, [1,2,3,4,5,6]), regex)
-  
-  random = new Random(charSet16)
-  t.regex(invalidBytes(random,  9, [1]), regex)
-  t.regex(invalidBytes(random, 17, [1,2]), regex)
-  
-  random = new Random(charSet8)
-  t.regex(invalidBytes(random,  7, [1]), regex)
-  t.regex(invalidBytes(random, 16, [1,2]), regex)
-  t.regex(invalidBytes(random, 25, [1,2,3]), regex)
-  t.regex(invalidBytes(random, 31, [1,2,3,4]), regex)
-
-  random = new Random(charSet4)
-  t.regex(invalidBytes(random,  9, [1]), regex)
-  t.regex(invalidBytes(random, 17, [1,2]), regex)
-  
-  random = new Random(charSet2)
-  t.regex(invalidBytes(random,  9, [1]), regex)
-  t.regex(invalidBytes(random, 17, [1,2]), regex)
+test('Token', t => {
+  let random = new Random()
+  t.is(random.token().length,           52)
+  t.is(random.token(charSet64).length,  43)
+  t.is(random.token(charSet32).length,  52)
+  t.is(random.token(charSet16).length,  64)
+  t.is(random.token(charSet8).length,   86)
+  t.is(random.token(charSet4).length,  128)
+  t.is(random.token(charSet2).length,  256)
 })
 
 test('Custom 64 chars', t => {
@@ -253,6 +260,44 @@ test('Invalid CharSet', t => {
     new Random(false)
   }, Error)
   t.regex(error.message, /Invalid arg/)
+})
+
+test('Invalid bytes', t => {
+  let random
+  let regex = /Insufficient/
+
+  random = new Random(charSet64)
+  t.regex(invalidBytes(random, 7,  [1]), regex)
+  t.regex(invalidBytes(random, 13, [1,2]), regex)
+  t.regex(invalidBytes(random, 25, [1,2,3]), regex)
+  t.regex(invalidBytes(random, 31, [1,2,3,4]), regex)
+  
+  random = new Random(charSet32)
+  t.regex(invalidBytes(random,  6, [1]), regex)
+  t.regex(invalidBytes(random, 16, [1,2]), regex)
+  t.regex(invalidBytes(random, 21, [1,2,3]), regex)
+  t.regex(invalidBytes(random, 31, [1,2,3,4]), regex)
+  t.regex(invalidBytes(random, 32, [1,2,3,4]), regex)
+  t.regex(invalidBytes(random, 41, [1,2,3,4,5]), regex)
+  t.regex(invalidBytes(random, 46, [1,2,3,4,5,6]), regex)
+  
+  random = new Random(charSet16)
+  t.regex(invalidBytes(random,  9, [1]), regex)
+  t.regex(invalidBytes(random, 17, [1,2]), regex)
+  
+  random = new Random(charSet8)
+  t.regex(invalidBytes(random,  7, [1]), regex)
+  t.regex(invalidBytes(random, 16, [1,2]), regex)
+  t.regex(invalidBytes(random, 25, [1,2,3]), regex)
+  t.regex(invalidBytes(random, 31, [1,2,3,4]), regex)
+
+  random = new Random(charSet4)
+  t.regex(invalidBytes(random,  9, [1]), regex)
+  t.regex(invalidBytes(random, 17, [1,2]), regex)
+  
+  random = new Random(charSet2)
+  t.regex(invalidBytes(random,  9, [1]), regex)
+  t.regex(invalidBytes(random, 17, [1,2]), regex)
 })
 
 //

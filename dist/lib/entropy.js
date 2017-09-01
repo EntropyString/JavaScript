@@ -29,7 +29,7 @@ var _totalOf = function _totalOf(numStrings, log2Risk) {
   }
 
   var N = void 0;
-  if (numStrings < 10001) {
+  if (numStrings < 1000) {
     N = _log2(numStrings) + _log2(numStrings - 1);
   } else {
     N = 2 * _log2(numStrings);
@@ -51,7 +51,7 @@ var bitsWithRiskPower = function bitsWithRiskPower(total, rPower) {
 
 var bitsWithPowers = function bitsWithPowers(tPower, rPower) {
   var N = 0;
-  if (tPower < 5) {
+  if (tPower < 4) {
     return bitsWithRiskPower(Math.pow(10, tPower), rPower);
   } else {
     return (2 * tPower + rPower) * _log2_10 - 1;
