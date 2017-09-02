@@ -3,7 +3,7 @@
 import {Random, Entropy} from './entropy-string'
 
 const random = new Random()
-const bits = Entropy.bitsWithPowers(6, 9)
+const bits = Entropy.bits(1e6, 1e9)
 
 const string = random.string(bits)
 

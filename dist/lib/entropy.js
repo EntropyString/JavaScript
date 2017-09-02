@@ -44,11 +44,13 @@ var bits = function bits(total, risk) {
   return _totalOf(total, _log2(risk));
 };
 
+// CxTBD Mark as obsolete
 var bitsWithRiskPower = function bitsWithRiskPower(total, rPower) {
   var log2Risk = _log2_10 * rPower;
   return _totalOf(total, log2Risk);
 };
 
+// CxTBD Mark as obsolete
 var bitsWithPowers = function bitsWithPowers(tPower, rPower) {
   var N = 0;
   if (tPower < 4) {

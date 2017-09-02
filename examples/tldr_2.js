@@ -4,7 +4,7 @@
 import {Random, Entropy, charSet16} from './entropy-string'
   
 const random = new Random(charSet16)
-const bits = Entropy.bitsWithPowers(6, 9)
+const bits = Entropy.bits(1e6, 1e9)
 
 const string = random.string(bits)
 

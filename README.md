@@ -51,7 +51,7 @@ Generate a potential of _1 million_ random strings with _1 in a billion_ chance 
   import {Random, Entropy} from 'entropy-string'
   
   const random = new Random()
-  const bits = Entropy.bitsWithPowers(6, 9)
+  const bits = Entropy.bits(1e6, 1e9)
 
   const string = random.string(bits)
   ```
@@ -63,10 +63,10 @@ See [Real Need](#RealNeed) for description of what entropy bits represents.
 `EntropyString` uses predefined `charset32` characters by default (see [Character Sets](#CharacterSets)). To get a random hexadecimal string with the same entropy `bits` as above:
 
   ```js
-  import {Random, Entropy} from 'entropy-string'
+  import {Random, Entropy, charSet16} from 'entropy-string'
   
   const random = new Random(charSet16)
-  const bits = Entropy.bitsWithPowers(6, 9)
+  const bits = Entropy.bits(1e6, 1e9)
   
   const string = random.string(bits)
   ```
@@ -79,7 +79,7 @@ Custom characters may be specified. Using uppercase hexadecimal characters:
   import {Random, Entropy} from 'entropy-string'
   
   const random = new Random('0123456789ABCDEF')
-  const bits = Entropy.bitsWithPowers(6, 9)
+  const bits = Entropy.bits(1e6, 1e9)
   
   const string = random.string(bits)
   ```
@@ -234,13 +234,13 @@ Finally, given that the strings are 12 hexadecimals long, each string actually h
 
 In [Real Need](#RealNeed) our developer used hexadecimal characters for the strings.  Let's look at using other characters instead.
 
-We'll start with using 32 characters. What 32 characters, you ask? The [Character Sets](#CharacterSets) section discusses the predefined characters available in `entropy-string` and the [Custom Characters](#CustomCharacters) section describes how you can use whatever characters you want. By default, `entropy-string` uses `charSet32` characters, so we don't need to pass that parameter into `new Random()`. We also use `bitsWithRiskPower` that allows passing the `risk` as a power of 10.
+We'll start with using 32 characters. What 32 characters, you ask? The [Character Sets](#CharacterSets) section discusses the predefined characters available in `entropy-string` and the [Custom Characters](#CustomCharacters) section describes how you can use whatever characters you want. By default, `entropy-string` uses `charSet32` characters, so we don't need to pass that parameter into `new Random()`.
 
   ```js
   import {Random, Entropy} from 'entropy-string'
 
   const random = new Random()
-  const bits = Entropy.bitsWithRiskPower(10000, 6)
+  const bits = Entropy.bits(10000, 1e6)
   const string = random.string(bits)
   ```
 
@@ -277,7 +277,7 @@ Suppose we have a more extreme need. We want less than a 1 in a trillion chance 
   import {Random, Entropy} from 'entropy-string'
 
   const random = new Random()
-  const bits = Entropy.bitsWithPowers(10, 12)
+  const bits = Entropy.bits(1e10, 1e12)
   const string = random.string(bits)
   ```
 
@@ -516,7 +516,7 @@ Note the number of bytes needed is dependent on the number of characters in our 
   import {Random, Entropy} from 'entropy-string'
   
   const random = new Random()
-  const bits = Entropy.bitsWithPowers(6,9)
+  const bits = Entropy.bits(1e6,1e9)
   const string = random.string(bits)
   ```
 
