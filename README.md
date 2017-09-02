@@ -170,7 +170,7 @@ Ah, now we're getting somewhere. The answer to question 3 might lead to the furt
 
 *I need to generate 10,000 random, unique IDs*.
 
-And the cat's out of the bag. We're getting at the real need, and it's not the same as the original statement. The developer needs *uniqueness* across a total of some number of strings. The length of the string is a by-product of the uniqueness, not the goal.
+And the cat's out of the bag. We're getting at the real need, and it's not the same as the original statement. The developer needs *uniqueness* across a total of some number of strings. The length of the string is a by-product of the uniqueness, not the goal, and should not be the primary specification for the random string.
 
 As noted in the [Overview](#Overview), guaranteeing uniqueness is difficult, so we'll replace that declaration with one of *probabilistic uniqueness* by asking:
 
@@ -325,19 +325,23 @@ The available `CharSet`s are *charSet64*, *charSet32*, *charSet16*, *charSet8*, 
 
   - CharSet 64: **ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789-_**
       * The file system and URL safe char set from [RFC 4648](https://tools.ietf.org/html/rfc4648#section-5).
+      &nbsp;
   - CharSet 32: **2346789bdfghjmnpqrtBDFGHJLMNPQRT**
       * Remove all upper and lower case vowels (including y)
       * Remove all numbers that look like letters
       * Remove all letters that look like numbers
       * Remove all letters that have poor distinction between upper and lower case values.
       The resulting strings don't look like English words and are easy to parse visually.
-
+      &nbsp;
   - CharSet 16: **0123456789abcdef**
       * Hexadecimal
+      &nbsp;
   - CharSet  8: **01234567**
       * Octal
+      &nbsp;
   - CharSet  4: **ATCG**
       * DNA alphabet. No good reason; just wanted to get away from the obvious.
+      &nbsp;
   - CharSet  2: **01**
       * Binary
 
@@ -367,7 +371,7 @@ The resulting string of __0__'s and __1__'s doesn't look quite right. Perhaps yo
 
   > flips: THHTHTTHHT
 
-As another example, we saw in [Character Sets](#CharacterSets) the predefined characters for `charSet16` are **0123456789abcdef**. Suppose you like uppercase hexadecimal letters instead.
+As another example, we saw in [Character Sets](#CharacterSets) the predefined hex characters for `charSet16` are lowercase. Suppose you like uppercase hexadecimal letters instead.
 
   ```js
   import {Random} from 'entropy-string'
@@ -385,7 +389,7 @@ The `Random` constructor allows for three separate cases:
   - One of six predefined `CharSet`s can be specified.
   - A string representing the characters to use can be specified.
 
-The 3rd option above will throw an `EntropyStringError` if the characters string isn't appropriate for creating a `CharSet`.
+The last option above will throw an `EntropyStringError` if the characters string isn't appropriate for creating a `CharSet`.
   ```js
   import {Random} from 'entropy-string'
 
