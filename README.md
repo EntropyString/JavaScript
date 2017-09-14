@@ -86,7 +86,7 @@ Custom characters may be specified. Using uppercase hexadecimal characters:
 
   > 16E26779479356B516
   
-Convenience functions `smallID`, `mediumID`, `largeID`, `sessionID` and `token` provide random strings of various entropy bits.
+Convenience functions `smallID`, `mediumID`, `largeID`, `sessionID` and `token` provide random strings for various predefined bits of entropy.
 
 Small ID represents a potential of 30 strings with a 1 in a million chance of repeat:
 
@@ -118,7 +118,7 @@ OWASP session ID using [RFC 4648](https://tools.ietf.org/html/rfc4648#section-5)
 
   > HRU1M7VR5u-N6B0Xo4ZSjx
 
-Base 64 character 256 bits token
+Base 64 character, 256-bit token
 
   ```js
   import {Random, Entropy, charSet64} from 'entropy-string'
@@ -500,15 +500,15 @@ Note the number of bytes needed is dependent on the number of characters in our 
 
 #### Take Away
 
-  - You don't need random strings of length L.
+  - Don't specify randomness using strings of length.
     - String length is a by-product, not a goal.
-  - You don't need truly unique strings.
-    - Uniqueness is too onerous. You'll do fine with probabilistically unique strings.
-  - Probabilistic uniqueness involves measured risk.
-    - Risk measured as *"1 in __n__ chance of generating a repeat"*
-    - Bits of entropy gives you that measure.
-  - You need to a total of **_N_** strings with a risk **_1/n_** of repeat.
-    - The characters are arbitrary.
+  - Don't require truly uniqueness.
+    - You'll do fine with probabilistically uniqueness.
+  - Probabilistic uniqueness involves specified risk.
+    - Risk is specified as *"1 in __n__ chance of generating a repeat"*
+  - Do specify bits of entropy.
+    - Specified as the risk of repeat in a total number of strings
+  - Characters used are arbitrary.
   - You need `entropy-string`.
   
 ##### Base 32 character string with a 1 in a million chance of a repeat a billion strings:
