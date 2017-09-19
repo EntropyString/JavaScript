@@ -14,6 +14,7 @@ Efficiently generate cryptographically strong random strings of specified entrop
  - [Custom Characters](#CustomCharacters)
  - [Efficiency](#Efficiency)
  - [Custom Bytes](#CustomBytes)
+ - [Entropy Bits](#EntropyBits)
  - [TL;DR 2](#TLDR2)
 
 ### <a name="Installation"></a>Installation
@@ -86,9 +87,7 @@ Custom characters may be specified. Using uppercase hexadecimal characters:
 
   > 16E26779479356B516
   
-Convenience functions `smallID`, `mediumID`, `largeID`, `sessionID` and `token` provide random strings for various predefined bits of entropy.
-
-Small ID represents a potential of 30 strings with a 1 in a million chance of repeat:
+Convenience functions `smallID`, `mediumID`, `largeID`, `sessionID` and `token` provide random strings for various predefined bits of entropy. For example, a small id represents a potential of 30 strings with a 1 in a million chance of repeat:
 
   ```js
   import {Random} from 'entropy-string'
@@ -97,7 +96,9 @@ Small ID represents a potential of 30 strings with a 1 in a million chance of re
   const string = random.smallID()
   ```
 
-OWASP session ID using base 32 characters:
+  > DpTQqg
+  
+Or, to generate an OWASP session ID:
 
   ```js
   import {Random} from 'entropy-string'
@@ -108,24 +109,13 @@ OWASP session ID using base 32 characters:
 
   > nqqBt2P669nmjPQRqh4NtmTPn9
   
-OWASP session ID using [RFC 4648](https://tools.ietf.org/html/rfc4648#section-5) file system and URL safe characters:
-  ```js
-  import {Random, charSet64} from 'entropy-string'
-  
-  const random = new Random(charSet64)
-  const string = random.sessionID()
-  ```
-
-  > HRU1M7VR5u-N6B0Xo4ZSjx
-
-Base 64 character, 256-bit token
-
+Or perhaps you need an 256-bit token using [RFC 4648](https://tools.ietf.org/html/rfc4648#section-5) file system and URL safe characters:
   ```js
   import {Random, Entropy, charSet64} from 'entropy-string'
 
   const random = new Random(charSet64)
 
-  const string = random.string(bits)
+  const string = random.token()
   ```
 
   > t-Z8b9FLvpc-roln2BZnGYLZAX_pn5U7uO_cbfldsIt
@@ -134,15 +124,15 @@ Base 64 character, 256-bit token
 
 ### <a name="Overview"></a>Overview
 
-`entropy-string` provides easy creation of randomly generated strings of specific entropy using various character sets. Such strings are needed when generating, for example, random IDs and you don't want the overkill of a GUID, or for ensuring that some number of items have unique identifiers.
+`entropy-string` provides easy creation of randomly generated strings of specific entropy using various character sets. Such strings are needed as unique identifiers when generating, for example, random IDs and you don't want the overkill of a GUID.
 
-A key concern when generating such strings is that they be unique. To truly guarantee uniqueness requires either deterministic generation (e.g., a counter) that is not random, or that each newly created random string be compared against all existing strings. When ramdoness is required, the overhead of storing and comparing strings is often too onerous and a different tack is needed.
+A key concern when generating such strings is that they be unique. Guaranteed uniqueness, however,, requires either deterministic generation (e.g., a counter) that is not random, or that each newly created random string be compared against all existing strings. When ramdoness is required, the overhead of storing and comparing strings is often too onerous and a different tack is chosen.
 
-A common strategy is to replace the *guarantee of uniqueness* with a weaker but often sufficient *probabilistic uniqueness*. Specifically, rather than being absolutely sure of uniqueness, we settle for a statement such as *"there is less than a 1 in a billion chance that two of my strings are the same"*. This strategy requires much less overhead, but does require we have some manner of qualifying what we mean by, for example, *"there is less than a 1 in a billion chance that 1 million strings of this form will have a repeat"*.
+A common strategy is to replace the *guarantee of uniqueness* with a weaker but often sufficient *probabilistic uniqueness*. Specifically, rather than being absolutely sure of uniqueness, we settle for a statement such as *"there is less than a 1 in a billion chance that two of my strings are the same"*. This strategy requires much less overhead, but does require we have some manner of qualifying what we mean by *"there is less than a 1 in a billion chance that 1 million strings of this form will have a repeat"*.
 
-Understanding probabilistic uniqueness requires some understanding of [*entropy*](https://en.wikipedia.org/wiki/Entropy_(information_theory)) and of estimating the probability of a [*collision*](https://en.wikipedia.org/wiki/Birthday_problem#Cast_as_a_collision_problem) (i.e., the probability that two strings in a set of randomly generated strings might be the same).  Happily, you can use `entropy-string` without a deep understanding of these topics.
+Understanding probabilistic uniqueness of random strings requires an understanding of [*entropy*](https://en.wikipedia.org/wiki/Entropy_(information_theory)) and of estimating the probability of a [*collision*](https://en.wikipedia.org/wiki/Birthday_problem#Cast_as_a_collision_problem) (i.e., the probability that two strings in a set of randomly generated strings might be the same). The blog posting [Hash Collision Probabilities](http://preshing.com/20110504/hash-collision-probabilities/) provides an excellent overview of deriving an expression for calculating the probability of a collision in some number of hashes using a perfect hash with an N-bit output. The [Entropy Bits](#EntropyBits) section below discribes how `entropy-string` takes this idea a step further to address a common need in generating unique identifiers.
 
-We'll begin investigating `entropy-string` by considering our [Real Need](#RealNeed) when generating random strings.
+We'll begin investigating `entropy-string` and this common need by considering our [Real Need](#RealNeed) when generating random strings.
 
 [TOC](#TOC)
 
@@ -188,13 +178,14 @@ Not only is this statement more specific, there is no mention of string length. 
 
 How do you address this need using a library designed to generate strings of specified length?  Well, you don't directly, because that library was designed to answer the originally stated need, not the real need we've uncovered. We need a library that deals with probabilistic uniqueness of a total number of some strings. And that's exactly what `entropy-string` does.
 
-Let's use `entropy-string` to help this developer generate 5 IDs:
+Let's use `entropy-string` to help this developer generate 5 hexadecimal IDs from a pool of a potentail 10,000 IDs with a 1 in a milllion chance of a repeat:
 
   ```js
   import {Random, Entropy, charSet16} from 'entropy-string'
 
-  const random = new Random(charSet16)
   const bits = Entropy.bits(10000, 1000000)
+  const random = new Random(charSet16)
+  
   const strings = Array()
   for (let i = 0; i < 5; i++) {
      string = random.string(bits)
@@ -204,29 +195,29 @@ Let's use `entropy-string` to help this developer generate 5 IDs:
 
   > ["85e442fa0e83", "a74dc126af1e", "368cd13b1f6e", "81bf94e1278d", "fe7dec099ac9"]
 
-To generate the IDs, we first use
+Examining the above code,
 
   ```js
   const bits = Entropy.bits(10000, 1000000)
   ```
 
-to determine how much entropy is needed to satisfy the probabilistic uniqueness of a **1 in a million** risk of repeat in a total of **10,000** strings. We didn't print the result, but if you did you'd see it's about **45.51** bits. 
-
-The following line creates a `Random` instance configured to generated strings using the predefined hexadecimal characters provided by `charSet16`:
+is used to determine how much entropy is needed to satisfy the probabilistic uniqueness of a **1 in a million** risk of repeat in a total of **10,000** potential strings. We didn't print the result, but if you did you'd see it's about **45.51** bits. Then
 
   ```js
   const random = new Random(charSet16)
   ```
 
-Then inside a loop we used
+creates a `Random` instance configured to generated strings using the predefined hexadecimal characters provided by `charSet16`. Finally
 
   ```js
   const string = random.string(bits)
   ```
 
-to actually generate a random string of the specified entropy. Looking at the IDs, we can see each is 12 characters long. Again, the string length is a by-product of the characters used to represent the entropy we needed. And it seems the developer didn't really need 16 characters after all.
+is used to actually generate a random string of the specified entropy.
 
-Finally, given that the strings are 12 hexadecimals long, each string actually has an information carrying capacity of `12 * 4 = 48` bits of entropy (a hexadecimal character carries 4 bits). That's fine. Assuming all characters are equally probable, a string can only carry entropy equal to a multiple of the amount of entropy represented per character. `entropy-string` produces the smallest strings that *exceed* the specified entropy.
+Looking at the IDs, we can see each is 12 characters long. Again, the string length is a by-product of the characters used to represent the entropy we needed. And it seems the developer didn't really need 16 characters after all.
+
+Given that the strings are 12 hexadecimals long, each string actually has an information carrying capacity of `12 * 4 = 48` bits of entropy (a hexadecimal character carries 4 bits). That's fine. Assuming all characters are equally probable, a string can only carry entropy equal to a multiple of the amount of entropy represented per character. `entropy-string` produces the smallest strings that *exceed* the specified entropy.
 
 [TOC](#TOC)
 
@@ -493,6 +484,28 @@ The __bytes__ provided can come from any source. However, the number of bytes mu
   > error: Insufficient bytes: need 5 and got 4
 
 Note the number of bytes needed is dependent on the number of characters in our set. In using a string to represent entropy, we can only have multiples of the bits of entropy per character used. So in the example above, to get at least 32 bits of entropy using a character set of 32 characters (5 bits per char), we'll need enough bytes to cover 35 bits, not 32, so an `Error` is thrown.
+
+[TOC](#TOC)
+
+### <a name="EntropyBits"></a>Entropy Bits
+
+Thus far we've avoided the mathematics behind the calculation of the entropy bits required to specify a risk that some number random strings will not have a repeat. As noted in the [Overview](#Overview), the posting [Hash Collision Probabilities](http://preshing.com/20110504/hash-collision-probabilities/) derives an expression, based on the well-known [Birthday Problem](https://en.wikipedia.org/wiki/Birthday_problem#Approximations), for calculating the probability of a collision in some number of hashes (denoted by `k`) using a perfect hash with an output of `M` bits:
+
+![Hash Collision Probability](images/HashCollision.png)
+
+There are two slight tweaks to this equation as compared to the one in the referenced posting. `M` is used for the total number of possible hashes and an equation is formed by explicitly specifying that the expression in the posting is approximately equal to `1/n`.
+
+More importantly, the above equation isn't in a form conducive to our entropy string needs. The equation was derived for a set number of possible hashes and yields a probability, which is fine for hash collisions but isn't quite right for calculating the bits of entropy needed for our random strings.
+
+The first thing we'll change is to use `M = 2^N`, where `N` is the number of entropy bits. This simply states that the number of possible strings is equal to the number of possible values using `N` bits:
+
+![N-Bit Collision Probability](images/NBitCollision.png)
+
+Now we massage the equation to represent `N` as a function of `k` and `n`:
+
+![Entropy Bits Equation](images/EntropyBits.png)
+
+The final line represents the number of entropy bits `N` as a function of the number of potential strings `k` and the risk of repeat of 1 in `n`, exactly what we want. Furthermore, the equation is in a form that avoids really large numbers in calculating `N` since we immediately take a logarithm of each large value `k` and `n`.
 
 [TOC](#TOC)
 
