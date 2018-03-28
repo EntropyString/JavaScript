@@ -2,7 +2,7 @@ const Random = require('../lib/random').default
 const CharSet = require('../lib/charset').default
 const {
   charset64, charset32, charset16, charset8, charset4, charset2
-} = require('../lib/charset')
+} = require('../lib/entropy')
 
 const test = require('ava')
 

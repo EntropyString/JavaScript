@@ -1,5 +1,5 @@
-const { Random, Entropy, charset16 } = require('./entropy-string')
-const { entropyBits } = require('./entropy')
+const { Random } = require('./entropy-string')
+const { entropyBits, charset16 } = require('./entropy')
 
 const random = new Random(charset16)
 const bits = entropyBits(10000, 1000000)
