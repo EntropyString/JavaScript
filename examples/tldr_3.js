@@ -1,9 +1,10 @@
 // Custom uppercase hexadecimal characters
 
-const { Random, Entropy } = require('./entropy-string')
+const { Random } = require('./entropy-string')
+const { entropyBits } = require('./entropy')
 
 const random = new Random('0123456789ABCDEF')
-const bits = Entropy.bits(1e6, 1e9)
+const bits = entropyBits(1e6, 1e9)
 
 const string = random.string(bits)
 
