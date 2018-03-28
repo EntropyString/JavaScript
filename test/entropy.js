@@ -29,51 +29,6 @@ test('Bits using total, risk', (t) => {
   t.is(round(Entropy.bits(100000, 100000)), 49)
 })
 
-// CxTBD Remove bitsWithRiskPower in next release
-test('Bits using total, risk power', (t) => {
-  t.is(round(Entropy.bitsWithRiskPower(10, 3)), 15)
-  t.is(round(Entropy.bitsWithRiskPower(10, 4)), 19)
-  t.is(round(Entropy.bitsWithRiskPower(10, 5)), 22)
-
-  t.is(round(Entropy.bitsWithRiskPower(100, 3)), 22)
-  t.is(round(Entropy.bitsWithRiskPower(100, 4)), 26)
-  t.is(round(Entropy.bitsWithRiskPower(100, 5)), 29)
-
-  t.is(round(Entropy.bitsWithRiskPower(1000, 3)), 29)
-  t.is(round(Entropy.bitsWithRiskPower(1000, 4)), 32)
-  t.is(round(Entropy.bitsWithRiskPower(1000, 5)), 36)
-  t.is(round(Entropy.bitsWithRiskPower(10000, 3)), 36)
-  t.is(round(Entropy.bitsWithRiskPower(10000, 4)), 39)
-  t.is(round(Entropy.bitsWithRiskPower(10000, 5)), 42)
-
-  t.is(round(Entropy.bitsWithRiskPower(100000, 3)), 42)
-  t.is(round(Entropy.bitsWithRiskPower(100000, 4)), 46)
-  t.is(round(Entropy.bitsWithRiskPower(100000, 5)), 49)
-})
-
-// CxTBD Remove bitsWithPowers in next release
-test('Bits using total power, risk power', (t) => {
-  t.is(round(Entropy.bitsWithPowers(1, 3)), 15)
-  t.is(round(Entropy.bitsWithPowers(1, 4)), 19)
-  t.is(round(Entropy.bitsWithPowers(1, 5)), 22)
-
-  t.is(round(Entropy.bitsWithPowers(2, 3)), 22)
-  t.is(round(Entropy.bitsWithPowers(2, 4)), 26)
-  t.is(round(Entropy.bitsWithPowers(2, 5)), 29)
-
-  t.is(round(Entropy.bitsWithPowers(3, 3)), 29)
-  t.is(round(Entropy.bitsWithPowers(3, 4)), 32)
-  t.is(round(Entropy.bitsWithPowers(3, 5)), 36)
-
-  t.is(round(Entropy.bitsWithPowers(4, 3)), 36)
-  t.is(round(Entropy.bitsWithPowers(4, 4)), 39)
-  t.is(round(Entropy.bitsWithPowers(4, 5)), 42)
-
-  t.is(round(Entropy.bitsWithPowers(5, 3)), 42)
-  t.is(round(Entropy.bitsWithPowers(5, 4)), 46)
-  t.is(round(Entropy.bitsWithPowers(5, 5)), 49)
-})
-
 // preshing.com tests come from table at http://preshing.com/20110504/hash-collision-probabilities/
 test('preshing.com, 32-bit column', (t) => {
   t.is(round(Entropy.bits(30084, 10)), 32)
