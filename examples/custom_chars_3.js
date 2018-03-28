@@ -1,17 +1,17 @@
 // Custom character errors
 
-import {Random} from './entropy-string'
+const { Random } = require('./entropy-string')
 
 try {
   const random = new Random('123456')
-}
-catch(error) {
-  console.log('\n  Error: ' + error.message)
+  console.error('variable \'random\' should not exist', random)
+} catch (error) {
+  console.log(`\n  Error: ${error.message}`)
 }
 
 try {
   const random = new Random('01233210')
-}
-catch(error) {
-  console.log('\n  Error: ' + error.message + '\n')
+  console.error('variable \'random\' should not exist', random)
+} catch (error) {
+  console.log(`\n  Error: ${error.message}\n`)
 }

@@ -1,7 +1,7 @@
 // Custom characters: Uppercase hex
 
-import {Random} from './entropy-string'
+const { Random } = require('./entropy-string')
 
 const random = new Random('0123456789ABCDEF')
 const string = random.string(48)
-console.log('\n  Uppercase hex: ' + string + '\n')
+console.log(`\n  Uppercase hex: ${string}\n`)

@@ -1,0 +1,19 @@
+{
+  "files.exclude": {
+    ".vscode": true,
+    ".eslintrc.json": true,
+    "**/node_modules": true,
+    ".babelrc": true,
+    ".gitignore": true,
+    ".npmignore": true,
+    ".travis.yml": true,
+    "yarn.lock": true,
+    "package-lock.json": true,
+    "dist": true,
+    "images": true,
+    "ISC.svg": true,
+    "LICENSE": true,
+    "**/*~": true
+  },
+  "git.ignoreLimitWarning": true
+}

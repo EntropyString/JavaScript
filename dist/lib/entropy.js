@@ -1,63 +1,55 @@
-'use strict';
+"use strict";
 
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
 
-var _log = require('babel-runtime/core-js/math/log10');
+var _log = require("babel-runtime/core-js/math/log2");
 
-var _log3 = _interopRequireDefault(_log);
-
-var _log4 = require('babel-runtime/core-js/math/log2');
-
-var _log5 = _interopRequireDefault(_log4);
-
-var _lcm = require('./lcm');
-
-var _lcm2 = _interopRequireDefault(_lcm);
+var _log2 = _interopRequireDefault(_log);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-var _log2 = _log5.default;
-var _log10 = _log3.default;
-var _log2_10 = _log2(10);
-var _bitsPerByte = 8;
+var log2 = _log2.default;
 
-var _totalOf = function _totalOf(numStrings, log2Risk) {
-  if (numStrings == 0) {
+var LOG2_OF_10 = log2(10);
+
+var totalOf = function totalOf(numStrings, log2Risk) {
+  if (numStrings === 0) {
     return 0;
   }
 
   var N = void 0;
   if (numStrings < 1000) {
-    N = _log2(numStrings) + _log2(numStrings - 1);
+    N = log2(numStrings) + log2(numStrings - 1);
   } else {
-    N = 2 * _log2(numStrings);
+    N = 2 * log2(numStrings);
   }
   return N + log2Risk - 1;
 };
 
 var bits = function bits(total, risk) {
-  if (total == 0) {
+  if (total === 0) {
     return 0;
   }
-  return _totalOf(total, _log2(risk));
+  return totalOf(total, log2(risk));
 };
 
 // CxTBD Mark as obsolete
 var bitsWithRiskPower = function bitsWithRiskPower(total, rPower) {
-  var log2Risk = _log2_10 * rPower;
-  return _totalOf(total, log2Risk);
+  var log2Risk = LOG2_OF_10 * rPower;
+  return totalOf(total, log2Risk);
 };
 
 // CxTBD Mark as obsolete
 var bitsWithPowers = function bitsWithPowers(tPower, rPower) {
-  var N = 0;
+  var nBits = void 0;
   if (tPower < 4) {
-    return bitsWithRiskPower(Math.pow(10, tPower), rPower);
+    nBits = bitsWithRiskPower(10 ** tPower, rPower);
   } else {
-    return (2 * tPower + rPower) * _log2_10 - 1;
+    nBits = (2 * tPower + rPower) * LOG2_OF_10 - 1;
   }
+  return nBits;
 };
 
 exports.default = {

@@ -49,7 +49,7 @@ Run any of the examples in the `examples` directory by:
 Generate a potential of _1 million_ random strings with _1 in a billion_ chance of repeat:
 
   ```js
-  import {Random, Entropy} from 'entropy-string'
+  const {Random, Entropy} = require('entropy-string')
   
   const random = new Random()
   const bits = Entropy.bits(1e6, 1e9)
@@ -64,7 +64,7 @@ See [Real Need](#RealNeed) for description of what entropy bits represents.
 `EntropyString` uses predefined `charset32` characters by default (see [Character Sets](#CharacterSets)). To get a random hexadecimal string with the same entropy `bits` as above:
 
   ```js
-  import {Random, Entropy, charSet16} from 'entropy-string'
+  const {Random, Entropy, charSet16} = require('entropy-string')
   
   const random = new Random(charSet16)
   const bits = Entropy.bits(1e6, 1e9)
@@ -77,7 +77,7 @@ See [Real Need](#RealNeed) for description of what entropy bits represents.
 Custom characters may be specified. Using uppercase hexadecimal characters:
 
   ```js
-  import {Random, Entropy} from 'entropy-string'
+  const {Random, Entropy} = require('entropy-string')
   
   const random = new Random('0123456789ABCDEF')
   const bits = Entropy.bits(1e6, 1e9)
@@ -90,7 +90,7 @@ Custom characters may be specified. Using uppercase hexadecimal characters:
 Convenience functions `smallID`, `mediumID`, `largeID`, `sessionID` and `token` provide random strings for various predefined bits of entropy. For example, a small id represents a potential of 30 strings with a 1 in a million chance of repeat:
 
   ```js
-  import {Random} from 'entropy-string'
+  const {Random} = require('entropy-string')
   
   const random = new Random()
   const string = random.smallID()
@@ -101,7 +101,7 @@ Convenience functions `smallID`, `mediumID`, `largeID`, `sessionID` and `token` 
 Or, to generate an OWASP session ID:
 
   ```js
-  import {Random} from 'entropy-string'
+  const {Random} = require('entropy-string')
   
   const random = new Random()
   const string = random.sessionID()
@@ -111,7 +111,7 @@ Or, to generate an OWASP session ID:
   
 Or perhaps you need an 256-bit token using [RFC 4648](https://tools.ietf.org/html/rfc4648#section-5) file system and URL safe characters:
   ```js
-  import {Random, Entropy, charSet64} from 'entropy-string'
+  const {Random, Entropy, charSet64} = require('entropy-string')
 
   const random = new Random(charSet64)
 
@@ -181,7 +181,7 @@ How do you address this need using a library designed to generate strings of spe
 Let's use `entropy-string` to help this developer generate 5 hexadecimal IDs from a pool of a potentail 10,000 IDs with a 1 in a milllion chance of a repeat:
 
   ```js
-  import {Random, Entropy, charSet16} from 'entropy-string'
+  const {Random, Entropy, charSet16} = require('entropy-string')
 
   const bits = Entropy.bits(10000, 1000000)
   const random = new Random(charSet16)
@@ -228,7 +228,7 @@ In [Real Need](#RealNeed) our developer used hexadecimal characters for the stri
 We'll start with using 32 characters. What 32 characters, you ask? The [Character Sets](#CharacterSets) section discusses the predefined characters available in `entropy-string` and the [Custom Characters](#CustomCharacters) section describes how you can use whatever characters you want. By default, `entropy-string` uses `charSet32` characters, so we don't need to pass that parameter into `new Random()`.
 
   ```js
-  import {Random, Entropy} from 'entropy-string'
+  const {Random, Entropy} = require('entropy-string')
 
   const random = new Random()
   const bits = Entropy.bits(10000, 1e6)
@@ -242,7 +242,7 @@ We're using the same `Entropy.bits` calculation since we haven't changed the num
 As another example, let's assume we need to ensure the names of a handful of items are unique.  Let's say 30 items. And suppose we decide we can live with a 1 in 100,000 probability of collision (we're just futzing with some coding ideas). Using the predefined provided hex characters:
 
   ```js
-  import {Random, Entropy, charSet16, charSet4} from 'entropy-string'
+  const {Random, Entropy, charSet16, charSet4} = require('entropy-string')
 
   const random = new Random(charSet16)
   const bits = Entropy.bits(30, 100000)
@@ -265,7 +265,7 @@ Okay, we probably wouldn't use 4 characters (and what's up with those characters
 Suppose we have a more extreme need. We want less than a 1 in a trillion chance that 10 billion base 32 strings repeat. Let's see, our total (10 billion) is 10<sup>10</sup> and our risk (1 trillion) is 10<sup>12</sup>, so:
 
   ```js
-  import {Random, Entropy} from 'entropy-string'
+  const {Random, Entropy} = require('entropy-string')
 
   const random = new Random()
   const bits = Entropy.bits(1e10, 1e12)
@@ -277,7 +277,7 @@ Suppose we have a more extreme need. We want less than a 1 in a trillion chance 
 Finally, let say we're generating session IDs. Since session IDs are ephemeral, we aren't interested in uniqueness per se, but in ensuring our IDs aren't predictable since we can't have the bad guys guessing a valid session ID. In this case, we're using entropy as a measure of unpredictability of the IDs. Rather than calculate our entropy, we declare it as 128 bits (since we read on the OWASP web site that session IDs should be 128 bits).
 
   ```js
-  import {Random} from 'entropy-string'
+  const {Random} = require('entropy-string')
 
   const random = new Random()
   const string = random.string(128)
@@ -288,7 +288,7 @@ Finally, let say we're generating session IDs. Since session IDs are ephemeral, 
 Since session ID are such an important need, `entropy-string` provides a convenience function for generating them:
 
   ```js
-  import {Random, charSet64} from 'entropy-string'
+  const {Random, charSet64} = require('entropy-string')
 
   const random = new Random(charSet64)
   const string = random.sessionID()
@@ -306,7 +306,7 @@ In using 64 characters, note our string length is 22 characters. That's actually
 As we've seen in the previous sections, `entropy-string` provides predefined character sets. Let's see what's under the hood.
 
   ```js
-  import {charSet64} from 'entropy-string'
+  const {charSet64} = require('entropy-string')
   const chars = charSet64.chars()
   ```
 
@@ -345,7 +345,7 @@ You may, of course, want to choose the characters used, which is covered next in
 Being able to easily generate random strings is great, but what if you want to specify your own characters. For example, suppose you want to visualize flipping a coin to produce entropy of 10 bits.
 
   ```js
-  import {Random, charSet2} from 'entropy-string'
+  const {Random, charSet2} = require('entropy-string')
 
   const random = new Random(charSet2)
   let flips = random.string(10)
@@ -365,7 +365,7 @@ The resulting string of __0__'s and __1__'s doesn't look quite right. Perhaps yo
 As another example, we saw in [Character Sets](#CharacterSets) the predefined hex characters for `charSet16` are lowercase. Suppose you like uppercase hexadecimal letters instead.
 
   ```js
-  import {Random} from 'entropy-string'
+  const {Random} = require('entropy-string')
 
   const random = new Random('0123456789ABCDEF')
   const string = random.string(48)
@@ -382,7 +382,7 @@ The `Random` constructor allows for three separate cases:
 
 The last option above will throw an `EntropyStringError` if the characters string isn't appropriate for creating a `CharSet`.
   ```js
-  import {Random} from 'entropy-string'
+  const {Random} = require('entropy-string')
 
   try {
     const random = new Random('123456')
@@ -430,7 +430,7 @@ There are two significant issues with this code. `Math.random` returns a random 
 Compare that to the `entropy-string` scheme. For the example above, slicing off 5 bits at a time requires a total of 80 bits (10 bytes). Creating the same strings as above, `entropy-string` uses 80 bits of randomness per string with no wasted bits. In general, the `entropy-string` scheme can waste up to 7 bits per string, but that's the worst case scenario and that's *per string*, not *per character*!
 
   ```js
-  import {Random} from 'entropy-string'
+  const {Random} = require('entropy-string')
 
   const random = new Random()
   let string = random.string(80)
@@ -461,7 +461,7 @@ As described in [Efficiency](#Efficiency), `entropy-string` automatically genera
 Suppose we want a string capable of 30 bits of entropy using 32 characters. We pass in 4 bytes to cover the 30 bits needed to generate six base 32 characters:
 
   ```js
-  import {Random} from 'entropy-string'
+  const {Random} = require('entropy-string')
 
   const random = new Random()
   const bytes = Buffer.from([250, 200, 150, 100])
@@ -526,7 +526,7 @@ The final line represents the number of entropy bits `N` as a function of the nu
   
 ##### Base 32 character string with a 1 in a million chance of a repeat a billion strings:
   ```js
-  import {Random, Entropy} from 'entropy-string'
+  const {Random, Entropy} = require('entropy-string')
   
   const random = new Random()
   const bits = Entropy.bits(1e6,1e9)

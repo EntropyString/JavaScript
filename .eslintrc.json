@@ -1,0 +1,12 @@
+{
+  "extends": "airbnb",
+  "env": {
+    "node": true
+  },
+  "rules": {
+    "semi": ["error", "never"],
+    "comma-dangle": ["error", "never"],
+    "no-bitwise": ["error", { "allow": ["<<", ">>", "&"] }],
+    "no-console": ["error", { "allow": ["error", "log"] }]
+  }  
+}
