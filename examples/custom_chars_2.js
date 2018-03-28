@@ -1,7 +1,7 @@
 // Custom characters: Uppercase hex
 
-const { Random } = require('./entropy-string')
+const { default: Entropy } = require('./entropy')
 
-const random = new Random('0123456789ABCDEF')
-const string = random.string(48)
+const entropy = new Entropy('0123456789ABCDEF')
+const string = entropy.string(48)
 console.log(`\n  Uppercase hex: ${string}\n`)

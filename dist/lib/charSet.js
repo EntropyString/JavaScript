@@ -3,7 +3,6 @@
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.charSet2 = exports.charSet4 = exports.charSet8 = exports.charSet16 = exports.charSet32 = exports.charSet64 = undefined;
 
 var _log = require('babel-runtime/core-js/math/log2');
 
@@ -150,9 +149,3 @@ var CharSet = function () {
 }();
 
 exports.default = CharSet;
-var charSet64 = exports.charSet64 = new CharSet('ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789-_');
-var charSet32 = exports.charSet32 = new CharSet('2346789bdfghjmnpqrtBDFGHJLMNPQRT');
-var charSet16 = exports.charSet16 = new CharSet('0123456789abcdef');
-var charSet8 = exports.charSet8 = new CharSet('01234567');
-var charSet4 = exports.charSet4 = new CharSet('ATCG');
-var charSet2 = exports.charSet2 = new CharSet('01');

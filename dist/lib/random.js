@@ -16,7 +16,7 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 
 var CharSet = require('./charset').default;
 
-var _require = require('./charset'),
+var _require = require('./entropy'),
     charset32 = _require.charset32;
 
 var Crypto = require('crypto');

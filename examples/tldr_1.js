@@ -1,11 +1,10 @@
 // Potential of _1 million_ random strings with _1 in a billion_ chance of repeat
 
-const { Random } = require('./entropy-string')
-const { entropyBits } = require('./entropy')
+const { default: Entropy, entropyBits } = require('./entropy')
 
-const random = new Random()
+const entropy = new Entropy()
 const bits = entropyBits(1e6, 1e9)
 
-const string = random.string(bits)
+const string = entropy.string(bits)
 
 console.log(`\n  Potential 1 million random strings with 1 in a billion chance of repeat: ${string}\n`)

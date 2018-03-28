@@ -1,8 +1,8 @@
 // OWASP session ID using base32 characters
 
-const { Random } = require('./entropy-string')
+const { default: Entropy } = require('./entropy')
 
-const random = new Random()
-const string = random.sessionID()
+const entropy = new Entropy()
+const string = entropy.sessionID()
 
 console.log(`\n  OWASP session ID using base32 characters: ${string}\n`)

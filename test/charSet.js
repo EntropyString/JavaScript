@@ -1,9 +1,10 @@
-const CharSet = require('../lib/charset').default
+const test = require('ava')
+
+const { default: CharSet } = require('../lib/charset')
+
 const {
   charset64, charset32, charset16, charset8, charset4, charset2
 } = require('../lib/entropy')
-
-const test = require('ava')
 
 test('char set 64', (t) => {
   const charset = new CharSet('ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789-_')
