@@ -1,62 +1,62 @@
-const CharSet = require('../lib/charSet').default
+const CharSet = require('../lib/charset').default
 const {
-  charSet64, charSet32, charSet16, charSet8, charSet4, charSet2
-} = require('../lib/charSet')
+  charset64, charset32, charset16, charset8, charset4, charset2
+} = require('../lib/charset')
 
 const test = require('ava')
 
 test('char set 64', (t) => {
-  const charSet = new CharSet('ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789-_')
-  const { length } = charSet.getChars()
+  const charset = new CharSet('ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789-_')
+  const { length } = charset.getChars()
   t.is(length, 64)
   const bitsPerChar = Math.log2(length)
-  t.is(charSet.getBitsPerChar(), bitsPerChar)
-  t.is(charSet.getCharsPerChunk(), 4)
+  t.is(charset.getBitsPerChar(), bitsPerChar)
+  t.is(charset.getCharsPerChunk(), 4)
 })
 
 test('char set 32', (t) => {
-  const charSet = new CharSet('2346789bdfghjmnpqrtBDFGHJLMNPQRT')
-  const { length } = charSet.getChars()
+  const charset = new CharSet('2346789bdfghjmnpqrtBDFGHJLMNPQRT')
+  const { length } = charset.getChars()
   t.is(length, 32)
   const bitsPerChar = Math.log2(length)
-  t.is(charSet.getBitsPerChar(), bitsPerChar)
-  t.is(charSet.getCharsPerChunk(), 8)
+  t.is(charset.getBitsPerChar(), bitsPerChar)
+  t.is(charset.getCharsPerChunk(), 8)
 })
 
 test('char set 16', (t) => {
-  const charSet = new CharSet('0123456789abcdef')
-  const { length } = charSet.getChars()
+  const charset = new CharSet('0123456789abcdef')
+  const { length } = charset.getChars()
   t.is(length, 16)
   const bitsPerChar = Math.log2(length)
-  t.is(charSet.getBitsPerChar(), bitsPerChar)
-  t.is(charSet.getCharsPerChunk(), 2)
+  t.is(charset.getBitsPerChar(), bitsPerChar)
+  t.is(charset.getCharsPerChunk(), 2)
 })
 
 test('char set 8', (t) => {
-  const charSet = new CharSet('01234567')
-  const { length } = charSet.getChars()
+  const charset = new CharSet('01234567')
+  const { length } = charset.getChars()
   t.is(length, 8)
   const bitsPerChar = Math.log2(length)
-  t.is(charSet.getBitsPerChar(), bitsPerChar)
-  t.is(charSet.getCharsPerChunk(), 8)
+  t.is(charset.getBitsPerChar(), bitsPerChar)
+  t.is(charset.getCharsPerChunk(), 8)
 })
 
 test('char set 4', (t) => {
-  const charSet = new CharSet('ATCG')
-  const { length } = charSet.getChars()
+  const charset = new CharSet('ATCG')
+  const { length } = charset.getChars()
   t.is(length, 4)
   const bitsPerChar = Math.log2(length)
-  t.is(charSet.getBitsPerChar(), bitsPerChar)
-  t.is(charSet.getCharsPerChunk(), 4)
+  t.is(charset.getBitsPerChar(), bitsPerChar)
+  t.is(charset.getCharsPerChunk(), 4)
 })
 
 test('char set 2', (t) => {
-  const charSet = new CharSet('01')
-  const { length } = charSet.getChars()
+  const charset = new CharSet('01')
+  const { length } = charset.getChars()
   t.is(length, 2)
   const bitsPerChar = Math.log2(length)
-  t.is(charSet.getBitsPerChar(), bitsPerChar)
-  t.is(charSet.getCharsPerChunk(), 8)
+  t.is(charset.getBitsPerChar(), bitsPerChar)
+  t.is(charset.getCharsPerChunk(), 8)
 })
 
 test('Custom chars: 64', (t) => {
@@ -181,21 +181,21 @@ test('Custom chars: 2', (t) => {
 
 test('Bytes needed', (t) => {
   const BITS_PER_BYTE = 8
-  const doTest = (charSet, bits) => {
-    const bytesNeeded = charSet.bytesNeeded(bits)
+  const doTest = (charset, bits) => {
+    const bytesNeeded = charset.bytesNeeded(bits)
     const atLeast = Math.ceil(bits / BITS_PER_BYTE)
-    t.true(atLeast <= bytesNeeded, `CharSet: ${charSet.chars()}, Bits ${bits}`)
+    t.true(atLeast <= bytesNeeded, `CharSet: ${charset.chars()}, Bits ${bits}`)
     const atMost = atLeast + 1
-    t.true(bytesNeeded <= atMost, `CharSet: ${charSet.chars()}, Bits ${bits}`)
+    t.true(bytesNeeded <= atMost, `CharSet: ${charset.chars()}, Bits ${bits}`)
   }
 
-  const charSets = [charSet64, charSet32, charSet16, charSet8, charSet4, charSet2]
-  charSets.forEach((charSet) => {
+  const charsets = [charset64, charset32, charset16, charset8, charset4, charset2]
+  charsets.forEach((charset) => {
     for (let bits = 0; bits <= 10; bits += 1) {
-      doTest(charSet, bits)
+      doTest(charset, bits)
     }
     for (let bits = 12; bits <= 132; bits += 5) {
-      doTest(charSet, bits)
+      doTest(charset, bits)
     }
   })
 })

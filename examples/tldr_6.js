@@ -1,8 +1,8 @@
 // Base 64 character 256 bit token
 
-const { Random, charSet64 } = require('./entropy-string')
+const { Random, charset64 } = require('./entropy-string')
 
-const random = new Random(charSet64)
+const random = new Random(charset64)
 
 const string = random.token()
 

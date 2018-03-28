@@ -1,13 +1,13 @@
 const Random = require('../lib/random').default
-const CharSet = require('../lib/charSet').default
+const CharSet = require('../lib/charset').default
 const {
-  charSet64, charSet32, charSet16, charSet8, charSet4, charSet2
-} = require('../lib/charSet')
+  charset64, charset32, charset16, charset8, charset4, charset2
+} = require('../lib/charset')
 
 const test = require('ava')
 
 test('Char Set Base 64 Strings', (t) => {
-  const random = new Random(charSet64)
+  const random = new Random(charset64)
   t.is(random.stringWithBytes(6, [0xdd]), '3')
   t.is(random.stringWithBytes(12, [0x78, 0xfc]), 'eP')
   t.is(random.stringWithBytes(18, [0xc5, 0x6f, 0x21]), 'xW8')
@@ -23,7 +23,7 @@ test('Char Set Base 64 Strings', (t) => {
 })
 
 test('Char Set Base 32 Strings', (t) => {
-  const random = new Random(charSet32)
+  const random = new Random(charset32)
   t.is(random.stringWithBytes(5, [0xdd]), 'N')
   t.is(random.stringWithBytes(10, [0x78, 0xfc]), 'p6')
   t.is(random.stringWithBytes(15, [0x78, 0xfc]), 'p6R')
@@ -38,7 +38,7 @@ test('Char Set Base 32 Strings', (t) => {
 })
 
 test('Char Set Base 16 Strings', (t) => {
-  const random = new Random(charSet16)
+  const random = new Random(charset16)
   t.is(random.stringWithBytes(4, [0x9d]), '9')
   t.is(random.stringWithBytes(8, [0xae]), 'ae')
   t.is(random.stringWithBytes(12, [0x01, 0xf2]), '01f')
@@ -47,7 +47,7 @@ test('Char Set Base 16 Strings', (t) => {
 })
 
 test('Char Set Base 8 Strings', (t) => {
-  const random = new Random(charSet8)
+  const random = new Random(charset8)
   t.is(random.stringWithBytes(3, [0x5a]), '2')
   t.is(random.stringWithBytes(6, [0x5a]), '26')
   t.is(random.stringWithBytes(9, [0x21, 0xa4]), '103')
@@ -61,7 +61,7 @@ test('Char Set Base 8 Strings', (t) => {
 })
 
 test('Char Set Base 4 Strings', (t) => {
-  const random = new Random(charSet4)
+  const random = new Random(charset4)
   t.is(random.stringWithBytes(2, [0x5a]), 'T')
   t.is(random.stringWithBytes(4, [0x5a]), 'TT')
   t.is(random.stringWithBytes(6, [0x93]), 'CTA')
@@ -73,7 +73,7 @@ test('Char Set Base 4 Strings', (t) => {
 })
 
 test('Char Set Base 2 Strings', (t) => {
-  const random = new Random(charSet2)
+  const random = new Random(charset2)
   t.is(random.stringWithBytes(1, [0x27]), '0')
   t.is(random.stringWithBytes(2, [0x27]), '00')
   t.is(random.stringWithBytes(3, [0x27]), '001')
@@ -88,67 +88,67 @@ test('Char Set Base 2 Strings', (t) => {
 
 test('Char Set Strings', (t) => {
   const random = new Random()
-  t.is(random.stringWithBytes(30, [0xa5, 0x62, 0x20, 0x87], charSet64), 'pWIgh')
-  t.is(random.stringWithBytes(25, [0xa5, 0x62, 0x20, 0x87], charSet32), 'DFr43')
-  t.is(random.stringWithBytes(16, [0xc7, 0xc9], charSet16), 'c7c9')
-  t.is(random.stringWithBytes(24, [0xfd, 0x93, 0xd1], charSet8), '77311721')
-  t.is(random.stringWithBytes(12, [0x20, 0xf1], charSet4), 'ACAAGG')
-  t.is(random.stringWithBytes(6, [0x27], charSet2), '001001')
+  t.is(random.stringWithBytes(30, [0xa5, 0x62, 0x20, 0x87], charset64), 'pWIgh')
+  t.is(random.stringWithBytes(25, [0xa5, 0x62, 0x20, 0x87], charset32), 'DFr43')
+  t.is(random.stringWithBytes(16, [0xc7, 0xc9], charset16), 'c7c9')
+  t.is(random.stringWithBytes(24, [0xfd, 0x93, 0xd1], charset8), '77311721')
+  t.is(random.stringWithBytes(12, [0x20, 0xf1], charset4), 'ACAAGG')
+  t.is(random.stringWithBytes(6, [0x27], charset2), '001001')
 })
 
 test('Small ID', (t) => {
   const random = new Random()
   t.is(random.smallID().length, 6)
-  t.is(random.smallID(charSet64).length, 5)
-  t.is(random.smallID(charSet32).length, 6)
-  t.is(random.smallID(charSet16).length, 8)
-  t.is(random.smallID(charSet8).length, 10)
-  t.is(random.smallID(charSet4).length, 15)
-  t.is(random.smallID(charSet2).length, 29)
+  t.is(random.smallID(charset64).length, 5)
+  t.is(random.smallID(charset32).length, 6)
+  t.is(random.smallID(charset16).length, 8)
+  t.is(random.smallID(charset8).length, 10)
+  t.is(random.smallID(charset4).length, 15)
+  t.is(random.smallID(charset2).length, 29)
 })
 
 test('Medium ID', (t) => {
   const random = new Random()
   t.is(random.mediumID().length, 14)
-  t.is(random.mediumID(charSet64).length, 12)
-  t.is(random.mediumID(charSet32).length, 14)
-  t.is(random.mediumID(charSet16).length, 18)
-  t.is(random.mediumID(charSet8).length, 23)
-  t.is(random.mediumID(charSet4).length, 35)
-  t.is(random.mediumID(charSet2).length, 69)
+  t.is(random.mediumID(charset64).length, 12)
+  t.is(random.mediumID(charset32).length, 14)
+  t.is(random.mediumID(charset16).length, 18)
+  t.is(random.mediumID(charset8).length, 23)
+  t.is(random.mediumID(charset4).length, 35)
+  t.is(random.mediumID(charset2).length, 69)
 })
 
 test('Large ID', (t) => {
   const random = new Random()
   t.is(random.largeID().length, 20)
-  t.is(random.largeID(charSet64).length, 17)
-  t.is(random.largeID(charSet32).length, 20)
-  t.is(random.largeID(charSet16).length, 25)
-  t.is(random.largeID(charSet8).length, 33)
-  t.is(random.largeID(charSet4).length, 50)
-  t.is(random.largeID(charSet2).length, 99)
+  t.is(random.largeID(charset64).length, 17)
+  t.is(random.largeID(charset32).length, 20)
+  t.is(random.largeID(charset16).length, 25)
+  t.is(random.largeID(charset8).length, 33)
+  t.is(random.largeID(charset4).length, 50)
+  t.is(random.largeID(charset2).length, 99)
 })
 
 test('Session ID', (t) => {
   const random = new Random()
   t.is(random.sessionID().length, 26)
-  t.is(random.sessionID(charSet64).length, 22)
-  t.is(random.sessionID(charSet32).length, 26)
-  t.is(random.sessionID(charSet16).length, 32)
-  t.is(random.sessionID(charSet8).length, 43)
-  t.is(random.sessionID(charSet4).length, 64)
-  t.is(random.sessionID(charSet2).length, 128)
+  t.is(random.sessionID(charset64).length, 22)
+  t.is(random.sessionID(charset32).length, 26)
+  t.is(random.sessionID(charset16).length, 32)
+  t.is(random.sessionID(charset8).length, 43)
+  t.is(random.sessionID(charset4).length, 64)
+  t.is(random.sessionID(charset2).length, 128)
 })
 
 test('Token', (t) => {
   const random = new Random()
   t.is(random.token().length, 52)
-  t.is(random.token(charSet64).length, 43)
-  t.is(random.token(charSet32).length, 52)
-  t.is(random.token(charSet16).length, 64)
-  t.is(random.token(charSet8).length, 86)
-  t.is(random.token(charSet4).length, 128)
-  t.is(random.token(charSet2).length, 256)
+  t.is(random.token(charset64).length, 43)
+  t.is(random.token(charset32).length, 52)
+  t.is(random.token(charset16).length, 64)
+  t.is(random.token(charset8).length, 86)
+  t.is(random.token(charset4).length, 128)
+  t.is(random.token(charset2).length, 256)
 })
 
 test('Custom 64 chars', (t) => {
@@ -279,13 +279,13 @@ test('Invalid bytes', (t) => {
   let random
   const regex = /Insufficient/
 
-  random = new Random(charSet64)
+  random = new Random(charset64)
   t.regex(invalidBytes(random, 7, [1]), regex)
   t.regex(invalidBytes(random, 13, [1, 2]), regex)
   t.regex(invalidBytes(random, 25, [1, 2, 3]), regex)
   t.regex(invalidBytes(random, 31, [1, 2, 3, 4]), regex)
 
-  random = new Random(charSet32)
+  random = new Random(charset32)
   t.regex(invalidBytes(random, 6, [1]), regex)
   t.regex(invalidBytes(random, 16, [1, 2]), regex)
   t.regex(invalidBytes(random, 21, [1, 2, 3]), regex)
@@ -294,21 +294,21 @@ test('Invalid bytes', (t) => {
   t.regex(invalidBytes(random, 41, [1, 2, 3, 4, 5]), regex)
   t.regex(invalidBytes(random, 46, [1, 2, 3, 4, 5, 6]), regex)
 
-  random = new Random(charSet16)
+  random = new Random(charset16)
   t.regex(invalidBytes(random, 9, [1]), regex)
   t.regex(invalidBytes(random, 17, [1, 2]), regex)
 
-  random = new Random(charSet8)
+  random = new Random(charset8)
   t.regex(invalidBytes(random, 7, [1]), regex)
   t.regex(invalidBytes(random, 16, [1, 2]), regex)
   t.regex(invalidBytes(random, 25, [1, 2, 3]), regex)
   t.regex(invalidBytes(random, 31, [1, 2, 3, 4]), regex)
 
-  random = new Random(charSet4)
+  random = new Random(charset4)
   t.regex(invalidBytes(random, 9, [1]), regex)
   t.regex(invalidBytes(random, 17, [1, 2]), regex)
 
-  random = new Random(charSet2)
+  random = new Random(charset2)
   t.regex(invalidBytes(random, 9, [1]), regex)
   t.regex(invalidBytes(random, 17, [1, 2]), regex)
 })

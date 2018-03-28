@@ -1,12 +1,12 @@
 // Predefined character sets
 
 const {
-  charSet64, charSet32, charSet16, charSet8, charSet4, charSet2
+  charset64, charset32, charset16, charset8, charset4, charset2
 } = require('./entropy-string')
 
-console.log(`\n  charSet64: ${charSet64.chars()}`)
-console.log(`\n  charSet32: ${charSet32.chars()}`)
-console.log(`\n  charSet16: ${charSet16.chars()}`)
-console.log(`\n  charSet8:  ${charSet8.chars()}`)
-console.log(`\n  charSet4:  ${charSet4.chars()}`)
-console.log(`\n  charSet2:  ${charSet2.chars()}\n`)
+console.log(`\n  charset64: ${charset64.chars()}`)
+console.log(`\n  charset32: ${charset32.chars()}`)
+console.log(`\n  charset16: ${charset16.chars()}`)
+console.log(`\n  charset8:  ${charset8.chars()}`)
+console.log(`\n  charset4:  ${charset4.chars()}`)
+console.log(`\n  charset2:  ${charset2.chars()}\n`)
