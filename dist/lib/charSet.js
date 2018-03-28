@@ -20,7 +20,8 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 
 var WeakMap = require('weak-map');
 
-var lcm = require('./lcm').default;
+var _require = require('./lcm'),
+    lcm = _require.default;
 
 var propMap = new WeakMap();
 

@@ -2,15 +2,17 @@ const test = require('ava')
 
 const {
   default: Entropy,
-  entropyBits, charset64, charset32, charset16, charset8, charset4, charset2
+  charset64, charset32, charset16, charset8, charset4, charset2
 } = require('../lib/entropy')
 
 const { default: CharSet } = require('../lib/charset')
 
-const rbits = (t, r) => Math.round(entropyBits(t, r))
+const { round } = Math
+
+const rbits = (t, r) => round(Entropy.bits(t, r))
 
 test('zero entropy', (t) => {
-  t.is(entropyBits(0, 10), 0)
+  t.is(Entropy.bits(0, 10), 0)
 })
 
 test('Bits using total, risk', (t) => {

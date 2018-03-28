@@ -5,8 +5,8 @@ const {
 } = require('./dist/lib/entropy')
 
 module.exports = {
-  Entropy,
   CharSet,
+  Entropy,
   charset2,
   charset4,
   charset8,

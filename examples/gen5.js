@@ -1,7 +1,7 @@
-const { default: Entropy, entropyBits, charset16 } = require('./entropy')
+const { default: Entropy, charset16 } = require('./entropy')
 
+const bits = Entropy.bits(10000, 1000000)
 const entropy = new Entropy(charset16)
-const bits = entropyBits(10000, 1000000)
 const strings = []
 for (let i = 0; i < 5; i += 1) {
   const string = entropy.string(bits)

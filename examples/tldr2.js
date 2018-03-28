@@ -1,9 +1,9 @@
-// Base32 string with a 1 in a billion chance of repeat in a million strings
+// Base32 string with a 1 in a trillion chance of repeat in 10 million strings
 
-const { default: Entropy, entropyBits } = require('./entropy')
+const { default: Entropy } = require('./entropy')
 
+const bits = Entropy.bits(1e7, 1e12)
 const entropy = new Entropy()
-const bits = entropyBits(1e6, 1e9)
 const string = entropy.string(bits)
 
-console.log(`\n  Base32 string with a 1 in a billion chance of repeat in a million strings: ${string}\n`)
+console.log(`\n  Base32 string with a 1 in a trillion chance of repeat in 10 million strings: ${string}\n`)
