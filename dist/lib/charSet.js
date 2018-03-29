@@ -123,8 +123,8 @@ var CharSet = function () {
     }
   }, {
     key: 'bytesNeeded',
-    value: function bytesNeeded(entropyBits) {
-      var count = Math.ceil(entropyBits / this.bitsPerChar());
+    value: function bytesNeeded(bitLen) {
+      var count = Math.ceil(bitLen / this.bitsPerChar());
       return Math.ceil(count * this.bitsPerChar() / BITS_PER_BYTE);
     }
 

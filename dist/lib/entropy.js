@@ -3,7 +3,11 @@
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.entropyBits = exports.charset2 = exports.charset4 = exports.charset8 = exports.charset16 = exports.charset32 = exports.charset64 = undefined;
+exports.charset2 = exports.charset4 = exports.charset8 = exports.charset16 = exports.charset32 = exports.charset64 = undefined;
+
+var _log = require('babel-runtime/core-js/math/log2');
+
+var _log2 = _interopRequireDefault(_log);
 
 var _classCallCheck2 = require('babel-runtime/helpers/classCallCheck');
 
@@ -12,10 +16,6 @@ var _classCallCheck3 = _interopRequireDefault(_classCallCheck2);
 var _createClass2 = require('babel-runtime/helpers/createClass');
 
 var _createClass3 = _interopRequireDefault(_createClass2);
-
-var _log = require('babel-runtime/core-js/math/log2');
-
-var _log2 = _interopRequireDefault(_log);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -31,23 +31,6 @@ var charset16 = exports.charset16 = new CharSet('0123456789abcdef');
 var charset8 = exports.charset8 = new CharSet('01234567');
 var charset4 = exports.charset4 = new CharSet('ATCG');
 var charset2 = exports.charset2 = new CharSet('01');
-
-var entropyBits = exports.entropyBits = function entropyBits(total, risk) {
-  if (total === 0) {
-    return 0;
-  }
-
-  var log2 = _log2.default;
-
-
-  var N = void 0;
-  if (total < 1000) {
-    N = log2(total) + log2(total - 1);
-  } else {
-    N = 2 * log2(total);
-  }
-  return N + log2(risk) - 1;
-};
 
 var propMap = new WeakMap();
 
@@ -141,11 +124,6 @@ var _class = function () {
   }
 
   (0, _createClass3.default)(_class, [{
-    key: 'bits',
-    value: function bits(total, risk) {
-      return entropyBits(total, risk);
-    }
-  }, {
     key: 'smallID',
     value: function smallID() {
       var charset = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : propMap.get(this).charset;
@@ -230,6 +208,24 @@ var _class = function () {
         throw new Error('Invalid chars: Must be string');
       }
       this.use(new CharSet(chars));
+    }
+  }], [{
+    key: 'bits',
+    value: function bits(total, risk) {
+      if (total === 0) {
+        return 0;
+      }
+
+      var log2 = _log2.default;
+
+
+      var N = void 0;
+      if (total < 1000) {
+        N = log2(total) + log2(total - 1);
+      } else {
+        N = 2 * log2(total);
+      }
+      return N + log2(risk) - 1;
     }
   }]);
   return _class;
