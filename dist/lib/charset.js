@@ -20,12 +20,23 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 
 var WeakMap = require('weak-map');
 
-var _require = require('./lcm'),
-    lcm = _require.default;
-
 var propMap = new WeakMap();
 
 var BITS_PER_BYTE = 8;
+
+var gcd = function gcd(a, b) {
+  var la = a;
+  var lb = b;
+  while (lb !== 0) {
+    var _ref = [lb, la % lb];
+    la = _ref[0];
+    lb = _ref[1];
+  }
+  return Math.abs(la);
+};
+var lcm = function lcm(a, b) {
+  return a / gcd(a, b) * b;
+};
 
 var genNdxFn = function genNdxFn(bitsPerChar) {
   // If BITS_PER_BYTEs is a multiple of bitsPerChar, we can slice off an integer number
