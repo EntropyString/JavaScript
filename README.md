@@ -15,7 +15,7 @@ Efficiently generate cryptographically strong random strings of specified entrop
  - [Efficiency](#Efficiency)
  - [Custom Bytes](#CustomBytes)
  - [Entropy Bits](#EntropyBits)
- - [Upgrading From Version 2 to 3](#Upgrade)
+ - [Upgrading To Version 3](#Upgrade)
  - [TL;DR 2](#TLDR2)
 
 ### <a name="Installation"></a>Installation
@@ -508,7 +508,7 @@ The final line represents the number of entropy bits `N` as a function of the nu
 
 [TOC](#TOC)
 
-### <a name="Upgrade"></a>Upgrading From Version 2 to 3
+### <a name="Upgrade"></a>Upgrading To Version 3
 
 EntropyString version 3 does not introduce any new functionality. The sole purpose of the version 3 release is to simplify and tighten the API. Backward incompatible changes made in this effort necessitated a semantic major release.
 
@@ -569,8 +569,7 @@ becomes
 
   - Remove `bitsWithRiskPower` and `bitsWithPowers` from `Entropy`
   - Move predefined `CharSet` declarations from `CharSet` to `Entropy`
-  - `Entropy.bits` is a class method of the new `Entropy` class
-  
+  - `Entropy.bits` is a class method of the new `Entropy` class  
 
 [TOC](#TOC)
 

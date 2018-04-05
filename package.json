@@ -9,7 +9,8 @@
     "test": "test"
   },
   "scripts": {
-    "build": "BABEL_ENV=production babel --out-dir=dist lib/*.js",
+    "build": "yarn clean && BABEL_ENV=production babel --out-dir=dist lib/*.js",
+    "clean": "rm -f dist/lib/*.js",
     "examples": "cd examples && BABEL_ENV=development babel --out-dir=dist *.js && cd ..",
     "prepare": "yarn build",
     "test": "ava"
