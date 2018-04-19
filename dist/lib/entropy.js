@@ -5,10 +5,6 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.charset2 = exports.charset4 = exports.charset8 = exports.charset16 = exports.charset32 = exports.charset64 = undefined;
 
-var _log = require('babel-runtime/core-js/math/log2');
-
-var _log2 = _interopRequireDefault(_log);
-
 var _classCallCheck2 = require('babel-runtime/helpers/classCallCheck');
 
 var _classCallCheck3 = _interopRequireDefault(_classCallCheck2);
@@ -16,6 +12,10 @@ var _classCallCheck3 = _interopRequireDefault(_classCallCheck2);
 var _createClass2 = require('babel-runtime/helpers/createClass');
 
 var _createClass3 = _interopRequireDefault(_createClass2);
+
+var _log = require('babel-runtime/core-js/math/log2');
+
+var _log2 = _interopRequireDefault(_log);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -103,22 +103,63 @@ var randomBytes = function randomBytes(count) {
   return buffer;
 };
 
+var entropyBits = function entropyBits(total, risk) {
+  if (total === 0) {
+    return 0;
+  }
+  var log2 = _log2.default;
+
+  var N = void 0;
+  if (total < 1000) {
+    N = log2(total) + log2(total - 1);
+  } else {
+    N = 2 * log2(total);
+  }
+  return N + log2(risk) - 1;
+};
+
+var createCharset = function createCharset(arg) {
+  if (arg instanceof CharSet) {
+    return arg;
+  } else if (typeof arg === 'string' || arg instanceof String) {
+    return new CharSet(arg);
+  }
+  return charset32;
+};
+
 var _class = function () {
-  function _class(arg) {
+  function _class() {
+    var arg = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : { bits: 128, charset: CharSet.charset32 };
     (0, _classCallCheck3.default)(this, _class);
 
     var charset = void 0;
-    if (arg === undefined) {
-      charset = charset32;
-    } else if (arg instanceof CharSet) {
-      charset = arg;
-    } else if (typeof arg === 'string' || arg instanceof String) {
-      charset = new CharSet(arg);
+    var bitLen = 0;
+
+    if (arg instanceof CharSet || arg instanceof String || typeof arg === 'string') {
+      charset = createCharset(arg);
+    } else if (arg instanceof Object) {
+      if (typeof arg.bits === 'number') {
+        bitLen = arg.bits;
+      } else if (typeof arg.total === 'number' && typeof arg.risk === 'number') {
+        bitLen = entropyBits(arg.total, arg.risk);
+      } else {
+        throw new Error('Entropy params must include either bits or both total and risk');
+      }
+      charset = createCharset(arg.charset);
     } else {
-      throw new Error('Invalid arg: must be either valid CharSet or valid chars');
+      throw new Error('Constructor arg must either be a valid CharSet, valid characters, or valid Entropy params');
     }
+
+    if (charset === undefined) {
+      throw new Error('Invalid constructor CharSet declaration');
+    } else if (bits < 0) {
+      throw new Error('Invalid constructor declaration of bits less than zero');
+    }
+
     var hideProps = {
-      charset: charset
+      charset: charset,
+      bitLen: bitLen,
+      bytesNeeded: charset.bytesNeeded(bitLen)
     };
     propMap.set(this, hideProps);
   }
@@ -160,9 +201,18 @@ var _class = function () {
     }
   }, {
     key: 'string',
-    value: function string(bitLen) {
+    value: function string() {
+      var bitLen = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : undefined;
       var charset = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : propMap.get(this).charset;
 
+      if (bitLen === undefined) {
+        var _propMap$get = propMap.get(this),
+            classCharset = _propMap$get.charset,
+            classBitLen = _propMap$get.bitLen,
+            _bytesNeeded = _propMap$get.bytesNeeded;
+
+        return this.stringWithBytes(classBitLen, cryptoBytes(_bytesNeeded), classCharset);
+      }
       var bytesNeeded = charset.bytesNeeded(bitLen);
       return this.stringWithBytes(bitLen, cryptoBytes(bytesNeeded), charset);
     }
@@ -194,6 +244,11 @@ var _class = function () {
       return propMap.get(this).charset.chars();
     }
   }, {
+    key: 'bits',
+    value: function bits() {
+      return propMap.get(this).bitLen;
+    }
+  }, {
     key: 'use',
     value: function use(charset) {
       if (!(charset instanceof CharSet)) {
@@ -212,20 +267,7 @@ var _class = function () {
   }], [{
     key: 'bits',
     value: function bits(total, risk) {
-      if (total === 0) {
-        return 0;
-      }
-
-      var log2 = _log2.default;
-
-
-      var N = void 0;
-      if (total < 1000) {
-        N = log2(total) + log2(total - 1);
-      } else {
-        N = 2 * log2(total);
-      }
-      return N + log2(risk) - 1;
+      return entropyBits(total, risk);
     }
   }]);
   return _class;

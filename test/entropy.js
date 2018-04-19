@@ -11,8 +11,38 @@ const { round } = Math
 
 const rbits = (t, r) => round(Entropy.bits(t, r))
 
-test('zero entropy', (t) => {
+test('Entropy constructor', (t) => {
+  let entropy = new Entropy()
+  t.is(entropy.bits(), 128)
+  t.is(entropy.chars(), charset32.chars())
+  t.is(entropy.bytesNeeded(), 17)
+
+  entropy = new Entropy({ bits: 32 })
+  t.is(entropy.bits(), 32)
+  t.is(entropy.chars(), charset32.chars())
+  t.is(entropy.bytesNeeded(), 5)
+
+  entropy = new Entropy({ total: 1000, risk: 1e9 })
+  t.is(entropy.bits(), 49)
+  t.is(entropy.chars(), charset32.chars())
+  t.is(entropy.bytesNeeded(), 7)
+
+  entropy = new Entropy({ bits: 32, charset: charset16 })
+  t.is(entropy.bits(), 32)
+  t.is(entropy.chars(), charset16.chars())
+  t.is(entropy.bytesNeeded(), 4)
+
+  entropy = new Entropy({ total: 1e6, risk: 10000000, charset: charset16 })
+  t.is(entropy.bits(), 62)
+  t.is(entropy.chars(), charset16.chars())
+  t.is(entropy.bytesNeeded(), 8)
+})
+
+test('Zero entropy', (t) => {
   t.is(Entropy.bits(0, 10), 0)
+
+  const entropy = new Entropy()
+  t.is(entropy.string(0), '')
 })
 
 test('Bits using total, risk', (t) => {
@@ -239,117 +269,248 @@ test('Token', (t) => {
 
 test('Custom 64 chars', (t) => {
   const chars = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ9876543210_-'
+  const bits = 72
+  const expected = 'NzLoPDi-JiAa'
+
   let entropy = new Entropy(chars)
 
   const bytes = new Uint8Array([0x9d, 0x99, 0x4e, 0xa5, 0xd2, 0x3f, 0x8c, 0x86, 0x80])
-  let string = entropy.stringWithBytes(72, bytes)
-  t.is(string, 'NzLoPDi-JiAa')
+  t.is(entropy.bytesNeeded(bits), bytes.length)
+  let string = entropy.stringWithBytes(bits, bytes)
+  t.is(string, expected)
 
   entropy = new Entropy()
   entropy.useChars(chars)
-  string = entropy.stringWithBytes(72, bytes)
-  t.is(string, 'NzLoPDi-JiAa')
+  string = entropy.stringWithBytes(bits, bytes)
+  t.is(string, expected)
+
+  entropy = new Entropy({ charset: chars, bits })
+  string = entropy.string()
+  t.is(entropy.string().length, expected.length)
 })
 
 test('Custom 32 chars', (t) => {
   const chars = '2346789BDFGHJMNPQRTbdfghjlmnpqrt'
+  const bits = 55
+  const expected = 'mHRrbgQlTqF'
+
   let entropy = new Entropy(chars)
 
   const bytes = new Uint8Array([0xd2, 0xe3, 0xe9, 0xda, 0x19, 0x97, 0x52])
-  let string = entropy.stringWithBytes(55, bytes)
-  t.is(string, 'mHRrbgQlTqF')
+  t.is(entropy.bytesNeeded(bits), bytes.length)
+  let string = entropy.stringWithBytes(bits, bytes)
+  t.is(string, expected)
 
   entropy = new Entropy()
   entropy.useChars(chars)
-  string = entropy.stringWithBytes(55, bytes)
-  t.is(string, 'mHRrbgQlTqF')
+  string = entropy.stringWithBytes(bits, bytes)
+  t.is(string, expected)
+
+  entropy = new Entropy({ charset: chars, bits })
+  string = entropy.string()
+  t.is(entropy.string().length, expected.length)
 })
 
 test('Custom 16 chars', (t) => {
   const chars = '0123456789ABCDEF'
+  const bits = 20
+  const expected = 'C7C90'
+
   let entropy = new Entropy(chars)
 
   const bytes = new Uint8Array([0xc7, 0xc9, 0x00])
-  let string = entropy.stringWithBytes(20, bytes)
-  t.is(string, 'C7C90')
+  t.is(entropy.bytesNeeded(bits), bytes.length)
+  let string = entropy.stringWithBytes(bits, bytes)
+  t.is(string, expected)
 
   entropy = new Entropy()
   entropy.useChars(chars)
-  string = entropy.stringWithBytes(20, bytes)
-  t.is(string, 'C7C90')
+  string = entropy.stringWithBytes(bits, bytes)
+  t.is(string, expected)
+
+  entropy = new Entropy({ charset: chars, bits })
+  string = entropy.string()
+  t.is(entropy.string().length, expected.length)
 })
 
 test('Custom 8 chars', (t) => {
   const chars = 'abcdefgh'
+  const bits = 30
+  const expected = 'gbheeeahgc'
+
   let entropy = new Entropy(chars)
 
   const bytes = new Uint8Array([0xc7, 0xc9, 0x07, 0xc9])
-  let string = entropy.stringWithBytes(30, bytes)
-  t.is(string, 'gbheeeahgc')
+  t.is(entropy.bytesNeeded(bits), bytes.length)
+  let string = entropy.stringWithBytes(bits, bytes)
+  t.is(string, expected)
 
   entropy = new Entropy()
   entropy.useChars(chars)
-  string = entropy.stringWithBytes(30, bytes)
-  t.is(string, 'gbheeeahgc')
+  string = entropy.stringWithBytes(bits, bytes)
+  t.is(string, expected)
+
+  entropy = new Entropy({ charset: chars, bits })
+  string = entropy.string()
+  t.is(entropy.string().length, expected.length)
 })
 
 test('Custom 4 chars', (t) => {
   const chars = 'atcg'
+  const bits = 16
+  const expected = 'acaaggat'
+
   let entropy = new Entropy(chars)
 
   const bytes = new Uint8Array([0x20, 0xf1])
-  let string = entropy.stringWithBytes(16, bytes)
-  t.is(string, 'acaaggat')
+  t.is(entropy.bytesNeeded(bits), bytes.length)
+  let string = entropy.stringWithBytes(bits, bytes)
+  t.is(string, expected)
 
   entropy = new Entropy()
   entropy.useChars(chars)
-  string = entropy.stringWithBytes(16, bytes)
-  t.is(string, 'acaaggat')
+  string = entropy.stringWithBytes(bits, bytes)
+  t.is(string, expected)
+
+  entropy = new Entropy({ charset: chars, bits })
+  string = entropy.string()
+  t.is(entropy.string().length, expected.length)
 })
 
 test('Custom 2 chars', (t) => {
   const chars = 'HT'
+  const bits = 16
+  const expected = 'TTTHHHTTTTTHTHHT'
+
   let entropy = new Entropy(chars)
 
   const bytes = new Uint8Array([0xe3, 0xe9])
-  let string = entropy.stringWithBytes(16, bytes)
-  t.is(string, 'TTTHHHTTTTTHTHHT')
+  t.is(entropy.bytesNeeded(bits), bytes.length)
+  let string = entropy.stringWithBytes(bits, bytes)
+  t.is(string, expected)
 
   entropy = new Entropy()
   entropy.useChars(chars)
-  string = entropy.stringWithBytes(16, bytes)
-  t.is(string, 'TTTHHHTTTTTHTHHT')
+  string = entropy.stringWithBytes(bits, bytes)
+  t.is(string, expected)
+
+  entropy = new Entropy({ charset: chars, bits })
+  string = entropy.string()
+  t.is(entropy.string().length, expected.length)
+})
+
+test('Entropy params total and risk', (t) => {
+  const entropy = new Entropy({
+    total: 1e6,
+    risk: 1e9
+  })
+
+  t.is(entropy.bits(), 69)
+  t.is(entropy.string().length, 14)
+})
+
+test('Entropy params total, risk and Charset', (t) => {
+  const entropy = new Entropy({
+    total: 1e7,
+    risk: 1e15,
+    charset: charset64
+  })
+  t.is(entropy.string().length, 16)
+})
+
+test('Entropy params total, risk and characters', (t) => {
+  const entropy = new Entropy({
+    total: 100,
+    risk: 1e12,
+    charset: 'dingosky'
+  })
+  t.is(entropy.string().length, 18)
+})
+
+test('Entropy params bits', (t) => {
+  const entropy = new Entropy({
+    bits: 48
+  })
+  t.is(entropy.string().length, 10)
+})
+
+test('PRNG', (t) => {
+  const entropy = new Entropy()
+
+  let string = entropy.stringPRNG()
+  t.is(typeof string, 'string')
+  t.is(string.length, 26)
+
+  string = entropy.stringPRNG(64)
+  t.is(typeof string, 'string')
+  t.is(string.length, 13)
+
+  string = entropy.stringPRNG(64, charset16)
+  t.is(typeof string, 'string')
+  t.is(string.length, 16)
+
+  string = entropy.stringRandom()
+  t.is(typeof string, 'string')
+  t.is(string.length, 26)
+})
+
+test('Invalid bits', (t) => {
+  const error = t.throws(() => {
+    const entropy = new Entropy({ bits: -1 })
+    t.fail('Creating entropy with negative bits should throw error', entropy)
+  }, Error)
+  t.regex(error.message, /Invalid.*bits/)
 })
 
 test('Use Invalid Char Set', (t) => {
   try {
-    const string = Entropy.use(CharSet.base6)
-    t.fail('Creating string should fail', string)
+    const entropy = new Entropy()
+    entropy.use(CharSet.base6)
+    t.fail('Using invalid CharSet should fail')
   } catch (error) {
     t.pass()
   }
 })
 
-test('Invalid chars', (t) => {
+test('Invalid char count', (t) => {
   let error = t.throws(() => {
     const entropy = new Entropy('123')
     t.fail('Creating entropy should throw error', entropy)
   }, Error)
   t.regex(error.message, /Invalid.*count/)
 
-  const entropy = new Entropy()
   error = t.throws(() => {
+    const entropy = new Entropy()
     entropy.useChars('123')
   }, Error)
   t.regex(error.message, /Invalid.*count/)
+
+  error = t.throws(() => {
+    const entropy = new Entropy({
+      total: 100,
+      risk: 1e6,
+      charset: 'dingo'
+    })
+    entropy.bits()
+  }, Error)
+  t.regex(error.message, /Invalid.*count/)
+
+  error = t.throws(() => {
+    const entropy = new Entropy({
+      bits: 100,
+      charset: '12344567'
+    })
+    entropy.bits()
+  }, Error)
+  t.regex(error.message, /unique/)
 })
 
-test('Invalid CharSet', (t) => {
+test('Invalid Constructor Arg', (t) => {
   const error = t.throws(() => {
     const entropy = new Entropy(false)
     t.fail('Creating entropy should throw error', entropy)
   }, Error)
-  t.regex(error.message, /Invalid arg/)
+  t.regex(error.message, /Constructor/)
 })
 
 const invalidBytes = (entropy, bits, bytes) => {
