@@ -2,9 +2,7 @@
 
 const { default: Entropy } = require('./entropy')
 
-const bits = Entropy.bits(10000, 1000000)
-const entropy = new Entropy()
-const string = entropy.string(bits)
+const entropy = new Entropy({ total: 10000, risk: 1e6 })
+const string = entropy.string()
 
 console.log(`\n  Ten thousand potential strings with 1 in a million risk of repeat: ${string}\n`)
-

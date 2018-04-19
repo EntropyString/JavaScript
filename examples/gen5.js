@@ -1,10 +1,8 @@
 const { default: Entropy, charset16 } = require('./entropy')
 
-const bits = Entropy.bits(10000, 1000000)
-const entropy = new Entropy(charset16)
-const strings = []
-for (let i = 0; i < 5; i += 1) {
-  const string = entropy.string(bits)
-  strings.push(string)
-}
+const entropy = new Entropy({ total: 10000,
+                              risk: 1000000,
+                              charset: charset16 })
+
+const strings = Array(5).fill('').map(e => entropy.string())
 console.log(`\n  5 IDs: ${strings.join(', ')}\n`)

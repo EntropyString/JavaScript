@@ -129,7 +129,7 @@ var createCharset = function createCharset(arg) {
 
 var _class = function () {
   function _class() {
-    var arg = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : { bits: 128, charset: CharSet.charset32 };
+    var arg = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : { bits: 128, charset: charset32 };
     (0, _classCallCheck3.default)(this, _class);
 
     var charset = void 0;
@@ -138,12 +138,14 @@ var _class = function () {
     if (arg instanceof CharSet || arg instanceof String || typeof arg === 'string') {
       charset = createCharset(arg);
     } else if (arg instanceof Object) {
+      var round = Math.round;
+
       if (typeof arg.bits === 'number') {
-        bitLen = arg.bits;
+        bitLen = round(arg.bits);
       } else if (typeof arg.total === 'number' && typeof arg.risk === 'number') {
-        bitLen = entropyBits(arg.total, arg.risk);
+        bitLen = round(entropyBits(arg.total, arg.risk));
       } else {
-        throw new Error('Entropy params must include either bits or both total and risk');
+        bitLen = 128;
       }
       charset = createCharset(arg.charset);
     } else {
@@ -152,16 +154,15 @@ var _class = function () {
 
     if (charset === undefined) {
       throw new Error('Invalid constructor CharSet declaration');
-    } else if (bits < 0) {
+    } else if (bitLen < 0) {
       throw new Error('Invalid constructor declaration of bits less than zero');
     }
 
-    var hideProps = {
+    propMap.set(this, {
       charset: charset,
       bitLen: bitLen,
       bytesNeeded: charset.bytesNeeded(bitLen)
-    };
-    propMap.set(this, hideProps);
+    });
   }
 
   (0, _createClass3.default)(_class, [{
@@ -202,27 +203,33 @@ var _class = function () {
   }, {
     key: 'string',
     value: function string() {
-      var bitLen = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : undefined;
+      var bitLen = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : propMap.get(this).bitLen;
       var charset = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : propMap.get(this).charset;
 
-      if (bitLen === undefined) {
-        var _propMap$get = propMap.get(this),
-            classCharset = _propMap$get.charset,
-            classBitLen = _propMap$get.bitLen,
-            _bytesNeeded = _propMap$get.bytesNeeded;
-
-        return this.stringWithBytes(classBitLen, cryptoBytes(_bytesNeeded), classCharset);
-      }
       var bytesNeeded = charset.bytesNeeded(bitLen);
       return this.stringWithBytes(bitLen, cryptoBytes(bytesNeeded), charset);
     }
   }, {
-    key: 'stringRandom',
-    value: function stringRandom(bitLen) {
+    key: 'stringPRNG',
+    value: function stringPRNG() {
+      var bitLen = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : propMap.get(this).bitLen;
       var charset = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : propMap.get(this).charset;
 
       var bytesNeeded = charset.bytesNeeded(bitLen);
       return this.stringWithBytes(bitLen, randomBytes(bytesNeeded), charset);
+    }
+
+    /**
+     * @deprecated Since version 3.1. Will be deleted in version 4.0. Use stringPRNG instead.
+    */
+
+  }, {
+    key: 'stringRandom',
+    value: function stringRandom() {
+      var bitLen = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : propMap.get(this).bitLen;
+      var charset = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : propMap.get(this).charset;
+
+      return this.stringPRNG(bitLen, charset);
     }
   }, {
     key: 'stringWithBytes',
@@ -233,7 +240,8 @@ var _class = function () {
     }
   }, {
     key: 'bytesNeeded',
-    value: function bytesNeeded(bitLen) {
+    value: function bytesNeeded() {
+      var bitLen = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : propMap.get(this).bitLen;
       var charset = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : propMap.get(this).charset;
 
       return charset.bytesNeeded(bitLen);
