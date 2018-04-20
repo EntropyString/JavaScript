@@ -7,9 +7,7 @@ const {
 
 console.log('\n  30 potential strings with 1 in a million risk of repeat: \n')
 
-const entropy = new Entropy({ total: 30,
-                              risk: 100000,
-                              charset: charset16 })
+const entropy = new Entropy({ total: 30, risk: 100000, charset: charset16 })
 let string = entropy.string()
 console.log(`    Base 16: ${string}\n`)
 

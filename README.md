@@ -78,9 +78,7 @@ See [Real Need](#RealNeed) for description of what the `total` and `risk` parame
   ```js
   const { Entropy, charset16 } = require('entropy-string')
   
-  const entropy = new Entropy({ total: 1e6,
-                                risk: 1e9,
-                                charset: charset16 })
+  const entropy = new Entropy({ total: 1e6, risk: 1e9, charset: charset16 })
   const string = entropy.string()
   ```
 
@@ -91,9 +89,7 @@ Custom characters may also be specified. Using uppercase hexadecimal characters:
   ```js
   const { Entropy } = require('entropy-string')
 
-  const entropy = new Entropy({ total: 1e6,
-                                risk: 1e9,
-                                charset: '0123456789ABCDEF' })
+  const entropy = new Entropy({ total: 1e6, risk: 1e9, charset: '0123456789ABCDEF' })
   const string = entropy.string()
   ```
 
@@ -195,9 +191,7 @@ Let's use `EntropyString` to help this developer generate 5 hexadecimal IDs from
 
   ```js
   const { Entropy, charset16 } = require('entropy-string')
-  const entropy = new Entropy({ total: 10000,
-                                risk: 1000000,
-                                charset: charset16 })
+  const entropy = new Entropy({ total: 10000, risk: 1000000, charset: charset16 })
   const strings = Array(5).fill('').map(e => entropy.string())
   ```
 
@@ -231,9 +225,7 @@ As another example, let's assume we need to ensure the names of about 30 items a
   ```js
   const { Entropy, charset16, charset4 } = require('entropy-string')
 
-  const entropy = new Entropy({ total: 30,
-                                risk: 100000,
-                                charset: charset16 })
+  const entropy = new Entropy({ total: 30, risk: 100000, charset: charset16 })
   const string = entropy.string()
   ```
 
