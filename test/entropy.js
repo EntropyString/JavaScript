@@ -448,10 +448,6 @@ test('PRNG', (t) => {
   string = entropy.stringPRNG(64, charset16)
   t.is(typeof string, 'string')
   t.is(string.length, 16)
-
-  string = entropy.stringRandom()
-  t.is(typeof string, 'string')
-  t.is(string.length, 26)
 })
 
 test('Invalid bits', (t) => {
