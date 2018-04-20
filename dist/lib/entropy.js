@@ -48,19 +48,23 @@ var _stringWithBytes = function _stringWithBytes(bytes, bitLen, charset) {
     return '';
   }
 
+  var floor = Math.floor,
+      ceil = Math.ceil;
+
+
   var bitsPerChar = charset.getBitsPerChar();
-  var count = Math.ceil(bitLen / bitsPerChar);
+  var count = ceil(bitLen / bitsPerChar);
   if (count <= 0) {
     return '';
   }
 
-  var need = Math.ceil(count * (bitsPerChar / BITS_PER_BYTE));
+  var need = ceil(count * (bitsPerChar / BITS_PER_BYTE));
   if (bytes.length < need) {
     throw new Error('Insufficient bytes: need ' + need + ' and got ' + bytes.length);
   }
 
   var charsPerChunk = charset.getCharsPerChunk();
-  var chunks = Math.floor(count / charsPerChunk);
+  var chunks = floor(count / charsPerChunk);
   var partials = count % charsPerChunk;
 
   var ndxFn = charset.getNdxFn();
@@ -118,51 +122,85 @@ var entropyBits = function entropyBits(total, risk) {
   return N + log2(risk) - 1;
 };
 
-var createCharset = function createCharset(arg) {
-  if (arg instanceof CharSet) {
-    return arg;
-  } else if (typeof arg === 'string' || arg instanceof String) {
-    return new CharSet(arg);
-  }
-  return charset32;
-};
-
 var _class = function () {
   function _class() {
-    var arg = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : { bits: 128, charset: charset32 };
+    var params = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : { bits: 128, charset: charset32 };
     (0, _classCallCheck3.default)(this, _class);
 
-    var charset = void 0;
-    var bitLen = 0;
-
-    if (arg instanceof CharSet || arg instanceof String || typeof arg === 'string') {
-      charset = createCharset(arg);
-    } else if (arg instanceof Object) {
-      var round = Math.round;
-
-      if (typeof arg.bits === 'number') {
-        bitLen = round(arg.bits);
-      } else if (typeof arg.total === 'number' && typeof arg.risk === 'number') {
-        bitLen = round(entropyBits(arg.total, arg.risk));
-      } else {
-        bitLen = 128;
+    if (params !== undefined) {
+      if (!(params instanceof Object)) {
+        throw new Error('Invalid argument for Entropy constructor: Expect params object');
       }
-      charset = createCharset(arg.charset);
+
+      if (params.bits === undefined && params.charset === undefined && params.total === undefined && params.risk === undefined) {
+        throw new Error('Invalid Entropy params');
+      }
+
+      if (params.bits !== undefined) {
+        if (typeof params.bits !== 'number') {
+          throw new Error('Invalid Entropy params: non-numeric bits');
+        }
+        if (params.bits < 0) {
+          throw new Error('Invalid Entropy params: negative bits');
+        }
+      }
+
+      if (params.total !== undefined) {
+        if (typeof params.total !== 'number') {
+          throw new Error('Invalid Entropy params: non-numeric total');
+        }
+        if (params.total < 1) {
+          throw new Error('Invalid Entropy params: non-positive total');
+        }
+      }
+
+      if (params.risk !== undefined) {
+        if (typeof params.risk !== 'number') {
+          throw new Error('Invalid Entropy params: non-numeric risk');
+        }
+        if (params.risk < 1) {
+          throw new Error('Invalid Entropy params: non-positive risk');
+        }
+      }
+
+      if (params.risk !== undefined && typeof params.risk !== 'number') {
+        throw new Error('Invalid Entropy params: non-numeric risk');
+      }
+
+      if (params.total !== undefined && params.risk === undefined || params.total === undefined && params.risk !== undefined) {
+        throw new Error('Invalid Entropy params: total and risk must be paired');
+      }
+
+      if (params.bits !== undefined && (params.total !== undefined || params.risk !== undefined)) {
+        throw new Error('Invalid Entropy params: bits with total and/or risk');
+      }
+    }
+
+    var bitLen = void 0;
+    var round = Math.round;
+
+    if (params.bits) {
+      bitLen = round(params.bits);
+    } else if (params.total && params.risk) {
+      bitLen = round(entropyBits(params.total, params.risk));
     } else {
-      throw new Error('Constructor arg must either be a valid CharSet, valid characters, or valid Entropy params');
+      bitLen = 128;
     }
 
-    if (charset === undefined) {
-      throw new Error('Invalid constructor CharSet declaration');
-    } else if (bitLen < 0) {
-      throw new Error('Invalid constructor declaration of bits less than zero');
+    var charset = void 0;
+    if (params.charset instanceof CharSet) {
+      var cs = params.charset;
+
+      charset = cs;
+    } else if (typeof params.charset === 'string' || params.charset instanceof String) {
+      charset = new CharSet(params.charset);
+    } else {
+      charset = charset32;
     }
 
-    propMap.set(this, {
-      charset: charset,
-      bitLen: bitLen,
-      bytesNeeded: charset.bytesNeeded(bitLen)
-    });
+    var prng = params.prng || false;
+
+    propMap.set(this, { charset: charset, bitLen: bitLen, prng: prng });
   }
 
   (0, _createClass3.default)(_class, [{
@@ -218,22 +256,10 @@ var _class = function () {
       var bytesNeeded = charset.bytesNeeded(bitLen);
       return this.stringWithBytes(randomBytes(bytesNeeded), bitLen, charset);
     }
-
-    /**
-     * @deprecated Since version 3.1. Will be deleted in version 4.0. Use stringPRNG instead.
-    */
-
-  }, {
-    key: 'stringRandom',
-    value: function stringRandom() {
-      var bitLen = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : propMap.get(this).bitLen;
-      var charset = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : propMap.get(this).charset;
-
-      return this.stringPRNG(bitLen, charset);
-    }
   }, {
     key: 'stringWithBytes',
-    value: function stringWithBytes(bytes, bitLen) {
+    value: function stringWithBytes(bytes) {
+      var bitLen = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : propMap.get(this).bitLen;
       var charset = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : propMap.get(this).charset;
 
       return _stringWithBytes(bytes, bitLen, charset);
