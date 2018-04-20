@@ -43,7 +43,7 @@ var endianByteNum = function () {
   return buf8[0] === 0xff ? [2, 3, 4, 5, 6, 7] : [0, 1, 2, 3, 6, 7];
 }();
 
-var _stringWithBytes = function _stringWithBytes(bitLen, bytes, charset) {
+var _stringWithBytes = function _stringWithBytes(bytes, bitLen, charset) {
   if (bitLen <= 0) {
     return '';
   }
@@ -207,7 +207,7 @@ var _class = function () {
       var charset = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : propMap.get(this).charset;
 
       var bytesNeeded = charset.bytesNeeded(bitLen);
-      return this.stringWithBytes(bitLen, cryptoBytes(bytesNeeded), charset);
+      return this.stringWithBytes(cryptoBytes(bytesNeeded), bitLen, charset);
     }
   }, {
     key: 'stringPRNG',
@@ -216,7 +216,7 @@ var _class = function () {
       var charset = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : propMap.get(this).charset;
 
       var bytesNeeded = charset.bytesNeeded(bitLen);
-      return this.stringWithBytes(bitLen, randomBytes(bytesNeeded), charset);
+      return this.stringWithBytes(randomBytes(bytesNeeded), bitLen, charset);
     }
 
     /**
@@ -233,10 +233,10 @@ var _class = function () {
     }
   }, {
     key: 'stringWithBytes',
-    value: function stringWithBytes(bitLen, bytes) {
+    value: function stringWithBytes(bytes, bitLen) {
       var charset = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : propMap.get(this).charset;
 
-      return _stringWithBytes(bitLen, bytes, charset);
+      return _stringWithBytes(bytes, bitLen, charset);
     }
   }, {
     key: 'bytesNeeded',
