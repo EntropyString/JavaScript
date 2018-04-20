@@ -16,8 +16,10 @@ Efficiently generate cryptographically strong random strings of specified entrop
  - [Custom Bytes](#CustomBytes)
  - [Entropy Bits](#EntropyBits)
  - [Why You Don't Need UUIDs](#UUID)
- - [Upgrading To Version 3](#Upgrade)
- - [Version 3.1](#Version31)
+ - [Upgrading](#Upgrading)
+    - [Version 3](#Upgrade3)
+    - [Version 3.1](#Upgrade31)
+    - [Version 4](#Upgrade4)
  - [TL;DR 2](#TLDR2)
 
 ### <a name="Installation"></a>Installation
@@ -38,7 +40,7 @@ Efficiently generate cryptographically strong random strings of specified entrop
 
 ### <a name="TLDR"></a>TL;DR
 
-##### Examples
+#### Examples
 
 Run any of the examples in the `examples` directory by:
 
@@ -47,9 +49,9 @@ Run any of the examples in the `examples` directory by:
   node examples/dist/tldr_1.js
   ```
 
-##### Usage
+#### Usage
 
-Generate strings as an efficient replacement to using UUIDs:
+##### Generate strings as an efficient replacement to using version 4 UUIDs
 
   ```js
   const entropy = new Entropy()
@@ -58,9 +60,9 @@ Generate strings as an efficient replacement to using UUIDs:
 
   > GtTr2h4PT2mjffm2GrDN2rhpqp
 
-See the [UUID](#UUID) section for a discussion of why the above is more efficient than UUIDs.
+See the [UUID](#UUID) section for a discussion of why the above is more efficient than using the string representation of version 4 UUIDs.
 
-Generate a potential of _1 million_ random strings with _1 in a billion_ chance of repeat:
+##### Generate a potential of _1 million_ random strings with _1 in a billion_ chance of repeat
 
   ```js
   const { Entropy } = require('entropy-string')
@@ -73,7 +75,9 @@ Generate a potential of _1 million_ random strings with _1 in a billion_ chance 
   
 See [Real Need](#RealNeed) for description of what the `total` and `risk` parameters represent.
 
-`EntropyString` uses predefined `charset32` characters by default (see [Character Sets](#CharacterSets)). To get a random hexadecimal string with the same entropy `bits` as above:
+##### Hexidecimal strings
+
+`EntropyString` uses predefined `charset32` characters by default (see [Character Sets](#CharacterSets)). To get a random hexadecimal string:
 
   ```js
   const { Entropy, charset16 } = require('entropy-string')
@@ -83,6 +87,8 @@ See [Real Need](#RealNeed) for description of what the `total` and `risk` parame
   ```
 
   > 878114ac513a538e22
+
+##### Custom characters
 
 Custom characters may also be specified. Using uppercase hexadecimal characters:
 
@@ -95,6 +101,8 @@ Custom characters may also be specified. Using uppercase hexadecimal characters:
 
   > 16E26779479356B516
   
+##### Convenience functions 
+
 Convenience functions `smallID`, `mediumID`, `largeID`, `sessionID` and `token` provide random strings for various predefined bits of entropy. For example, a small id represents a potential of 30 strings with a 1 in a million chance of repeat:
 
   ```js
@@ -424,10 +432,13 @@ Compare that to the `EntropyString` scheme. For the example above, slicing off 5
   
 But there is an even bigger issue with the previous code from a security perspective. `Math.random` *is not a cryptographically strong random number generator*. **_Do not_** use `Math.random` to create strings used for security purposes! This highlights an important point. Strings are only capable of carrying information (entropy); it's the random bytes that actually provide the entropy itself. `EntropyString` automatically generates the necessary bytes needed to create cryptographically strong random strings using the `crypto` library.
 
-However, if you don't need cryptographically strong random strings, you can request `EntropyString` use the psuedo-random number generator (PRNG) `Math.random` rather than the `crypto` library by using `entropy.stringPRNG`:
+However, if you don't need cryptographically strong random strings, you can request `EntropyString` use the psuedo-random number generator (PRNG) `Math.random` rather than the `crypto` library by using passing the param `prng: true` to the `Entropy` constructor:
 
   ```js
-  string = entropy.stringPRNG()
+  const { Entropy } = require('entropy-string')
+
+  const entropy = new Entropy({ bits: 80, prng: true })
+  string = entropy.string()
   ```
   
   > fdRp9Q3rTMF7TdFN
@@ -555,7 +566,9 @@ And finally, don't say you use version 4 UUIDs because you don't **_ever_** want
 
 [TOC](#TOC)
 
-### <a name="Upgrade"></a>Upgrading To Version 3
+### <a name="Upgrading"></a>Upgrading
+
+#### <a name="Upgrade3"></a>Version 3
 
 EntropyString version 3 does not introduce any new functionality. The sole purpose of the version 3 release is to simplify and tighten the API. Backward incompatible changes made in this effort necessitated a semantic major release.
 
@@ -618,9 +631,7 @@ becomes
   - Move predefined `CharSet` declarations from `CharSet` to `Entropy`
   - `Entropy.bits` is a class method of the new `Entropy` class  
 
-[TOC](#TOC)
-
-### <a name="Version31"></a>Version 3.1
+#### <a name="Version31"></a>Version 3.1
 
 Version 3.1 introduced a new Entropy constructor API which tracks the specified entropy bits at the Entropy class level. This allows generating strings without passing the bits into the `Entropy.string` function. As example, consider the previous version 3.0 code:
 
@@ -639,7 +650,19 @@ Using the new version 3.1 API, that code becomes:
   const string = entropy.string()
   ```
 
+#### <a name="Upgrade4"></a>Version 4
 
+Version 4 changes:
+
+  - `Entropy` constructor argument must be valid params
+    - Embed `CharSet` or character string in params object using `{ charset: XYZ }`
+  - Default `Entropy` constructor params object is `{ bits: 128, charset: charset32 }`
+    - Default behavior is the same as version 3.x
+  - Remove method `stringPRNG` and deprecated method `stringRandom`
+    - `Entropy` constructor param `{ prng: true }` forces the `Entropy.string()` method to use `Math.random` generated bytes
+  - Change signature of method `stringWithBytes(bitLen, bytes, <charset>)` to `stringWithBytes(bytes, <bitLen>, <charset>)` (i.e., `bitLen` defaults to the `Entropy` class setting)
+    - This change is parallel to the version 3.1 change to `Entropy.string()` but required a semantic major version upgrade to implement
+  
 [TOC](#TOC)
 
 ### <a name="TLDR2"></a>TL;DR 2

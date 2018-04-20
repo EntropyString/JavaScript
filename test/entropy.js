@@ -422,17 +422,17 @@ test('Entropy params bits', (t) => {
 })
 
 test('PRNG', (t) => {
-  const entropy = new Entropy()
+  const entropy = new Entropy({ prng: true })
 
-  let string = entropy.stringPRNG()
+  let string = entropy.string()
   t.is(typeof string, 'string')
   t.is(string.length, 26)
 
-  string = entropy.stringPRNG(64)
+  string = entropy.string(64)
   t.is(typeof string, 'string')
   t.is(string.length, 13)
 
-  string = entropy.stringPRNG(64, charset16)
+  string = entropy.string(64, charset16)
   t.is(typeof string, 'string')
   t.is(string.length, 16)
 })
