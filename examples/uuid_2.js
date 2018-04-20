@@ -1,4 +1,4 @@
-const { default: Entropy, charset64 } = require('./entropy')
+const { default: Entropy } = require('./entropy')
 
 const total = 1e6
 console.log('For 1 million IDs, the entropy bits for a risk of repeat of:')
