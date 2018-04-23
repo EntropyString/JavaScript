@@ -33,8 +33,13 @@ var charset4 = exports.charset4 = new CharSet('ATCG');
 var charset2 = exports.charset2 = new CharSet('01');
 
 var propMap = new WeakMap();
-
 var BITS_PER_BYTE = 8;
+var ceil = Math.ceil,
+    floor = Math.floor,
+    log2 = _log2.default,
+    random = Math.random,
+    round = Math.round;
+
 
 var endianByteNum = function () {
   var buf32 = new Uint32Array(1);
@@ -47,10 +52,6 @@ var _stringWithBytes = function _stringWithBytes(bytes, bitLen, charset) {
   if (bitLen <= 0) {
     return '';
   }
-
-  var floor = Math.floor,
-      ceil = Math.ceil;
-
 
   var bitsPerChar = charset.getBitsPerChar();
   var count = ceil(bitLen / bitsPerChar);
@@ -84,18 +85,18 @@ var _stringWithBytes = function _stringWithBytes(bytes, bitLen, charset) {
   return string;
 };
 
-var cryptoBytes = function cryptoBytes(count) {
+var csprngBytes = function csprngBytes(count) {
   return Buffer.from(Crypto.randomBytes(count));
 };
 
 var prngBytes = function prngBytes(count) {
   var BYTES_USED_PER_RANDOM_CALL = 6;
-  var randCount = Math.ceil(count / BYTES_USED_PER_RANDOM_CALL);
+  var randCount = ceil(count / BYTES_USED_PER_RANDOM_CALL);
 
   var buffer = Buffer.alloc(count);
   var dataView = new DataView(new ArrayBuffer(BITS_PER_BYTE));
   for (var rNum = 0; rNum < randCount; rNum += 1) {
-    dataView.setFloat64(0, Math.random());
+    dataView.setFloat64(0, random());
     for (var n = 0; n < BYTES_USED_PER_RANDOM_CALL; n += 1) {
       var fByteNum = endianByteNum[n];
       var bByteNum = rNum * BYTES_USED_PER_RANDOM_CALL + n;
@@ -111,8 +112,6 @@ var entropyBits = function entropyBits(total, risk) {
   if (total === 0) {
     return 0;
   }
-  var log2 = _log2.default;
-
   var N = void 0;
   if (total < 1000) {
     N = log2(total) + log2(total - 1);
@@ -177,8 +176,6 @@ var _class = function () {
     }
 
     var bitLen = void 0;
-    var round = Math.round;
-
     if (params.bits) {
       bitLen = round(params.bits);
     } else if (params.total && params.risk) {
@@ -245,7 +242,7 @@ var _class = function () {
       var charset = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : propMap.get(this).charset;
 
       var bytesNeeded = charset.bytesNeeded(bitLen);
-      var bytes = propMap.get(this).prng ? prngBytes(bytesNeeded) : cryptoBytes(bytesNeeded);
+      var bytes = propMap.get(this).prng ? prngBytes(bytesNeeded) : csprngBytes(bytesNeeded);
       return this.stringWithBytes(bytes, bitLen, charset);
     }
   }, {

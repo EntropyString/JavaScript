@@ -4,10 +4,6 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 
-var _log = require('babel-runtime/core-js/math/log2');
-
-var _log2 = _interopRequireDefault(_log);
-
 var _classCallCheck2 = require('babel-runtime/helpers/classCallCheck');
 
 var _classCallCheck3 = _interopRequireDefault(_classCallCheck2);
@@ -16,13 +12,21 @@ var _createClass2 = require('babel-runtime/helpers/createClass');
 
 var _createClass3 = _interopRequireDefault(_createClass2);
 
+var _log = require('babel-runtime/core-js/math/log2');
+
+var _log2 = _interopRequireDefault(_log);
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 var WeakMap = require('weak-map');
 
 var propMap = new WeakMap();
-
 var BITS_PER_BYTE = 8;
+var abs = Math.abs,
+    ceil = Math.ceil,
+    floor = Math.floor,
+    log2 = _log2.default;
+
 
 var gcd = function gcd(a, b) {
   var la = a;
@@ -32,7 +36,7 @@ var gcd = function gcd(a, b) {
     la = _ref[0];
     lb = _ref[1];
   }
-  return Math.abs(la);
+  return abs(la);
 };
 var lcm = function lcm(a, b) {
   return a / gcd(a, b) * b;
@@ -48,16 +52,16 @@ var genNdxFn = function genNdxFn(bitsPerChar) {
       return (bytes[chunk] << lShift * slice & 0xff) >> rShift;
     };
   }
-  // Otherwise, while slicing off bits per char, we will possibly straddle a couple
-  // of bytes, so a bit more work is involved
 
+  // Otherwise, while slicing off bits per char, we can possibly straddle two
+  // of bytes, so a more work is involved
   var slicesPerChunk = lcm(bitsPerChar, BITS_PER_BYTE) / BITS_PER_BYTE;
   return function (chunk, slice, bytes) {
     var bNum = chunk * slicesPerChunk;
 
     var offset = slice * bitsPerChar / BITS_PER_BYTE;
-    var lOffset = Math.floor(offset);
-    var rOffset = Math.ceil(offset);
+    var lOffset = floor(offset);
+    var rOffset = ceil(offset);
 
     var rShift = BITS_PER_BYTE - bitsPerChar;
     var lShift = slice * bitsPerChar % BITS_PER_BYTE;
@@ -87,7 +91,7 @@ var CharSet = function () {
     if (![2, 4, 8, 16, 32, 64].includes(length)) {
       throw new Error('Invalid char count: must be one of 2,4,8,16,32,64');
     }
-    var bitsPerChar = Math.floor((0, _log2.default)(length));
+    var bitsPerChar = floor(log2(length));
     // Ensure no repeated characters
     for (var i = 0; i < length; i += 1) {
       var c = chars.charAt(i);
@@ -135,8 +139,8 @@ var CharSet = function () {
   }, {
     key: 'bytesNeeded',
     value: function bytesNeeded(bitLen) {
-      var count = Math.ceil(bitLen / this.bitsPerChar());
-      return Math.ceil(count * this.bitsPerChar() / BITS_PER_BYTE);
+      var count = ceil(bitLen / this.bitsPerChar());
+      return ceil(count * this.bitsPerChar() / BITS_PER_BYTE);
     }
 
     // Aliases
