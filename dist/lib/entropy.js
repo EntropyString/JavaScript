@@ -88,7 +88,7 @@ var cryptoBytes = function cryptoBytes(count) {
   return Buffer.from(Crypto.randomBytes(count));
 };
 
-var randomBytes = function randomBytes(count) {
+var prngBytes = function prngBytes(count) {
   var BYTES_USED_PER_RANDOM_CALL = 6;
   var randCount = Math.ceil(count / BYTES_USED_PER_RANDOM_CALL);
 
@@ -132,7 +132,7 @@ var _class = function () {
         throw new Error('Invalid argument for Entropy constructor: Expect params object');
       }
 
-      if (params.bits === undefined && params.charset === undefined && params.total === undefined && params.risk === undefined) {
+      if (params.bits === undefined && params.charset === undefined && params.total === undefined && params.risk === undefined && params.prng === undefined) {
         throw new Error('Invalid Entropy params');
       }
 
@@ -245,16 +245,8 @@ var _class = function () {
       var charset = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : propMap.get(this).charset;
 
       var bytesNeeded = charset.bytesNeeded(bitLen);
-      return this.stringWithBytes(cryptoBytes(bytesNeeded), bitLen, charset);
-    }
-  }, {
-    key: 'stringPRNG',
-    value: function stringPRNG() {
-      var bitLen = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : propMap.get(this).bitLen;
-      var charset = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : propMap.get(this).charset;
-
-      var bytesNeeded = charset.bytesNeeded(bitLen);
-      return this.stringWithBytes(randomBytes(bytesNeeded), bitLen, charset);
+      var bytes = propMap.get(this).prng ? prngBytes(bytesNeeded) : cryptoBytes(bytesNeeded);
+      return this.stringWithBytes(bytes, bitLen, charset);
     }
   }, {
     key: 'stringWithBytes',
