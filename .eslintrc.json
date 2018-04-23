@@ -1,7 +1,8 @@
 {
   "extends": "airbnb",
   "env": {
-    "node": true
+    "node": true,
+    "jest": true
   },
   "rules": {
     "semi": ["error", "never"],
