@@ -6,7 +6,7 @@ Efficiently generate cryptographically strong random strings of specified entrop
 
 ### <a name="TOC"></a>TOC
  - [Installation](#Installation)
- - [TL;DR](#TLDR)
+ - [Usage](#Usage)
  - [Overview](#Overview)
  - [Real Need](#RealNeed)
  - [More Examples](#MoreExamples)
@@ -38,18 +38,7 @@ Efficiently generate cryptographically strong random strings of specified entrop
 
 [TOC](#TOC)
 
-### <a name="TLDR"></a>TL;DR
-
-#### Examples
-
-Run any of the examples in the `examples` directory by:
-
-  ```bash
-  yarn examples
-  node examples/dist/tldr_1.js
-  ```
-
-#### Usage
+### <a name="Usage"></a>Usage
 
 ##### Generate strings as an efficient replacement to using version 4 UUIDs
 
@@ -134,6 +123,15 @@ Or perhaps you need an 256-bit token using [RFC 4648](https://tools.ietf.org/htm
   ```
 
   > t-Z8b9FLvpc-roln2BZnGYLZAX_pn5U7uO_cbfldsIt
+
+#### Examples
+
+Run any of the examples in the `examples` directory by:
+
+  ```bash
+  yarn examples
+  node examples/dist/tldr_1.js
+  ```
 
 [TOC](#TOC)
 
@@ -665,22 +663,20 @@ Version 4 changes:
   
 [TOC](#TOC)
 
-### <a name="TLDR2"></a>TL;DR 2
+### <a name="TakeAway"></a>Take Away
 
-#### Take Away
-
-  - Don't specify randomness using strings of length
+  - Don't specify randomness using string length
     - String length is a by-product, not a goal
   - Don't require truly uniqueness
     - You'll do fine with probabilistically uniqueness
-  - Probabilistic uniqueness involves specified risk
+  - Probabilistic uniqueness involves risk
     - Risk is specified as *"1 in __n__ chance of generating a repeat"*
-  - Do specify bits of entropy
-    - Specified as the risk of repeat in a total number of strings
+  - Explicity specify your intent
+    - Specified entropy as the risk of repeat in a total number of strings
   - Characters used are arbitrary
   - You need `EntropyString`, not UUIDs
   
-##### Base 32 character string with a 1 in a trillion chance of a repeat for 10 million strings:
+##### 10 million strings with a 1 in a trillion chance of a repeat:
 
 ```js
   const { Entropy } = require('entropy-string')
