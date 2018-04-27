@@ -12,7 +12,7 @@
     "build": "yarn clean && BABEL_ENV=production babel --out-dir=dist lib/*.js",
     "clean": "rm -f dist/lib/*.js",
     "examples": "cd examples && BABEL_ENV=development babel --out-dir=dist *.js && cd ..",
-    "lint": "./node_modules/.bin/eslint lib/*js __test__/*js examples/*js",
+    "lint": "./node_modules/.bin/eslint lib/*js tests/*js examples/*js",
     "prepare": "yarn build",
     "test": "yarn lint && yarn jest"
   },
@@ -43,17 +43,9 @@
     "url": "https://github.com/EntropyString/JavaScript/issues"
   },
   "homepage": "https://github.com/EntropyString/JavaScript#README",
-  "ava": {
-    "files": [
-      "test/*.js"
-    ],
-    "source": [
-      "lib/*.js"
-    ],
-    "concurrency": 6,
-    "failFast": true,
-    "failWithoutAssertions": false,
-    "require": "babel-core/register"
+  "jest": {
+    "testRegex": "tests/.*\\.(js|jsx)$",
+    "bail": true
   },
   "devDependencies": {
     "ava": "^0.25.0",
