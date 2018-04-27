@@ -9,6 +9,6 @@
     "comma-dangle": ["error", "never"],
     "no-bitwise": ["error", { "allow": ["<<", ">>", "&"] }],
     "no-console": ["error", { "allow": ["error", "log"] }],
-    "no-unused-vars": ["error", { "argsIgnorePattern": "^_" }]
+    "no-unused-vars": ["error", { "varsIgnorePattern": "_", "argsIgnorePattern": "_" }]
   }  
 }
