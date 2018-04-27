@@ -20,7 +20,7 @@ Efficiently generate cryptographically strong random strings of specified entrop
     - [Version 3](#Upgrade3)
     - [Version 3.1](#Upgrade31)
     - [Version 4](#Upgrade4)
- - [TL;DR 2](#TLDR2)
+ - [Take Away](#TakeAway)
 
 ### <a name="Installation"></a>Installation
 
@@ -504,7 +504,7 @@ The final line represents the number of entropy bits `N` as a function of the nu
 
 ### <a name="UUID"></a>Why You Don't Need UUIDs
 
-It is quite common in the JavaScript community, and other languages as well, to simply use string representations of UUIDs as random strings. While this isn't necessarily wrong, it is not efficient. It's somewhat akin to using a BigInt library to do math with small integers. The answers might be right, but the process seems wrong.
+It is quite common in most (all?) programming languages to simply use string representations of UUIDs as random strings. While this isn't necessarily wrong, it is not efficient. It's somewhat akin to using a BigInt library to do math with small integers. The answers might be right, but the process seems wrong.
 
 By UUID, we almost always mean the version 4 string representation, which looks like this:
 
@@ -560,7 +560,7 @@ But that's not the primary reason for using `EntropyString` over UUIDs. With ver
 
 What you should actually ask is, "how many strings do I need and what level of risk of a repeat am I willing to accept"? Rather than one-size fits all solutions, you should seek understanding and explicit control. Rather than swallowing 122-bits without thinking, investigate your real need and act accordingly. If you need IDs for a database table that could have 1 million entries, explicitly declare how much risk of repeat you're willing to accept. 1 in a million? Then you need 59 bits. 1 in a billion? 69 bits. 1 in a trillion? 79 bits. But **_openly declare_** and quit using UUIDs just because you didn't think about it! Now you know better, so do better :)
 
-And finally, don't say you use version 4 UUIDs because you don't **_ever_** want a repeat. The term 'unique' in the name is misleading. Perhaps we should call them PUID for probabilistically unique identifiers. (I left the "universal" out since that designation never really made sense anyway.) Regardless, there is a chance of repeat. It just depends on how many you produce in a given "collision" context. Granted, it may be small, be is **_is not zero_**!
+And finally, don't say you use version 4 UUIDs because you don't **_ever_** want a repeat. The term 'unique' in the name is misleading. Perhaps we should call them PUID for probabilistically unique identifiers. (I left out "universal" since that designation never really made sense anyway.) Regardless, there is a chance of repeat. It just depends on how many UUIDs you produce in a given "collision" context. Granted, it may be small, but it **_is not zero_**! It's just a probability that you didn't explicitly specify and may not even have really understood.
 
 [TOC](#TOC)
 
