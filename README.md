@@ -14,6 +14,7 @@ Efficiently generate cryptographically strong random strings of specified entrop
  - [Custom Characters](#CustomCharacters)
  - [Efficiency](#Efficiency)
  - [Custom Bytes](#CustomBytes)
+ - [No Crypto](#NoCrypto)
  - [Entropy Bits](#EntropyBits)
  - [Why You Don't Need UUIDs](#UUID)
  - [Upgrading](#Upgrading)
@@ -55,13 +56,13 @@ See the [UUID](#UUID) section for a discussion of why the above is more efficien
 
   ```js
   const { Entropy } = require('entropy-string')
-  
+
   const entropy = new Entropy({ total: 1e6, risk: 1e9 })
   const string = entropy.string()
   ```
 
   > pbbnBD4MQ3rbRN
-  
+
 See [Real Need](#RealNeed) for description of what the `total` and `risk` parameters represent.
 
 ##### Hexidecimal strings
@@ -70,7 +71,7 @@ See [Real Need](#RealNeed) for description of what the `total` and `risk` parame
 
   ```js
   const { Entropy, charset16 } = require('entropy-string')
-  
+
   const entropy = new Entropy({ total: 1e6, risk: 1e9, charset: charset16 })
   const string = entropy.string()
   ```
@@ -89,31 +90,31 @@ Custom characters may also be specified. Using uppercase hexadecimal characters:
   ```
 
   > 16E26779479356B516
-  
-##### Convenience functions 
+
+##### Convenience functions
 
 Convenience functions `smallID`, `mediumID`, `largeID`, `sessionID` and `token` provide random strings for various predefined bits of entropy. For example, a small id represents a potential of 30 strings with a 1 in a million chance of repeat:
 
   ```js
   const { Entropy } = require('entropy-string')
-  
+
   const entropy = new Entropy()
   const string = entropy.smallID()
   ```
 
   > DpTQqg
-  
+
 Or, to generate an OWASP session ID:
 
   ```js
   const { Entropy } = require('entropy-string')
-  
+
   const entropy = new Entropy()
   const string = entropy.sessionID()
   ```
 
   > nqqBt2P669nmjPQRqh4NtmTPn9
-  
+
 Or perhaps you need an 256-bit token using [RFC 4648](https://tools.ietf.org/html/rfc4648#section-5) file system and URL safe characters:
   ```js
   const { Entropy, charset64} = require('entropy-string')
@@ -269,7 +270,7 @@ Finally, let say we're generating session IDs. Since session IDs are ephemeral, 
   ```
 
   > String: Rm9gDFn6Q9DJ9rbrtrttBjR97r
-            
+
 Since session ID are such an important need, `EntropyString` provides a convenience function for generating them:
 
   ```js
@@ -368,7 +369,7 @@ The `Entropy` constructor allows for the following cases:
     - One of six predefined `CharSet`s can be specified
   - { charset: **chars** }:
     - A string representing the characters to use can be specified
-  - A combination of `charset` and either `bits` or `total`,`risk` 
+  - A combination of `charset` and either `bits` or `total`,`risk`
 
 If a string of characters is used, an `EntropyStringError` will be thrown if the characters aren't appropriate for creating a valid `CharSet`.
   ```js
@@ -392,7 +393,7 @@ If a string of characters is used, an `EntropyStringError` will be thrown if the
     console.log(error.message)
   }
   ```
-  
+
   > Characters not unique
 
 [TOC](#TOC)
@@ -425,9 +426,9 @@ Compare that to the `EntropyString` scheme. For the example above, slicing off 5
   const entropy = new Entropy({ bits: 80 })
   let string = entropy.string()
   ```
-  
+
   > HFtgHQ9q9fH6B8HM
-  
+
 But there is an even bigger issue with the previous code from a security perspective. `Math.random` *is not a cryptographically strong random number generator*. **_Do not_** use `Math.random` to create strings used for security purposes! This highlights an important point. Strings are only capable of carrying information (entropy); it's the random bytes that actually provide the entropy itself. `EntropyString` automatically generates the necessary bytes needed to create cryptographically strong random strings using the `crypto` library.
 
 However, if you don't need cryptographically strong random strings, you can request `EntropyString` use the psuedo-random number generator (PRNG) `Math.random` rather than the `crypto` library by using passing the param `prng: true` to the `Entropy` constructor:
@@ -438,9 +439,9 @@ However, if you don't need cryptographically strong random strings, you can requ
   const entropy = new Entropy({ bits: 80, prng: true })
   string = entropy.string()
   ```
-  
+
   > fdRp9Q3rTMF7TdFN
-  
+
 When using `Math.random`, the `EntropyString` scheme uses 48 of the 52(ish) bits of randomness from each call to `Math.random`. That's much more efficient than the previous code snippet but a bit less so than using bytes from `crypto`. And of course, being a PRNG, `Math.random` yields a deterministic sequence.
 
 Fortunately you don't need to really understand how the bytes are efficiently sliced and diced to get the string. But you may want to provide your own [Custom Bytes](#CustomBytes) to create a string, which is the next topic.
@@ -462,7 +463,7 @@ Suppose we want a string capable of 30 bits of entropy using 32 characters. We p
   ```
 
   > Th7fjL
- 
+
 The __bytes__ provided can come from any source. However, the number of bytes must be sufficient to generate the string as described in the [Efficiency](#Efficiency) section.  `entropy.stringWithBytes` throws an `Error` if the string cannot be formed from the passed bytes.
 
   ```js
@@ -477,6 +478,21 @@ The __bytes__ provided can come from any source. However, the number of bytes mu
   > error: Insufficient bytes: need 5 and got 4
 
 Note the number of bytes needed is dependent on the number of characters in our set. In using a string to represent entropy, we can only have multiples of the bits of entropy per character used. So in the example above, to get at least 32 bits of entropy using a character set of 32 characters (5 bits per char), we'll need enough bytes to cover 35 bits, not 32, so an `Error` is thrown.
+
+[TOC](#TOC)
+
+### <a name="NoCrypto"></a>No crypto
+
+`EntropyString` uses the `crypto` library by default when generating the random bits used to systematically index into the chosen character set. In environments where the `crypto` library is not available, `EntropyString` can use the psuedo-random number generator `Math.random` by passing `prng: true` to the `Entropy` constructor:
+
+```js
+const { Entropy } = require('entropy-string')
+
+const entropy = new Entropy({ total: 1e5, risk: 1e7, prng: true })
+const string = entropy.string()
+```
+
+> MJNhBg842J6
 
 [TOC](#TOC)
 
@@ -520,7 +536,7 @@ Per [Section 4.4 of RFC 4122](https://tools.ietf.org/html/rfc4122#section-4.4), 
     - The 17th hex char will be one of **8**, **9**, **A** or **B**
   - Set all the other bits to randomly (or pseudo-randomly) chosen values
 
-The algorithm designates how to create the 32 byte UUID. The string representation shown above is specified in Section 3 of the RFC. 
+The algorithm designates how to create the 32 byte UUID. The string representation shown above is specified in Section 3 of the RFC.
 
 The ramifications of the algorithm and string representation are:
 
@@ -546,7 +562,7 @@ Let's create a 122 entropy bit string using `charset64`:
   const string = entropy.string()
   ```
 
-  - Entropy String: 
+  - Entropy String:
     - Entropy bits: 126
     - String length: 21
     - String bits: 168
@@ -595,7 +611,7 @@ becomes
   const string = random.sessionID()
 ```
 
-or 
+or
 
 ```js
   const { Entropy } = require('entropy-string')
@@ -615,7 +631,7 @@ For example,
   const string = random.sessionID()
 ```
 
-becomes 
+becomes
 
 ```js
   const { Entropy, charset64 } = require('entropy-string')
@@ -627,7 +643,7 @@ becomes
 
   - Remove `bitsWithRiskPower` and `bitsWithPowers` from `Entropy`
   - Move predefined `CharSet` declarations from `CharSet` to `Entropy`
-  - `Entropy.bits` is a class method of the new `Entropy` class  
+  - `Entropy.bits` is a class method of the new `Entropy` class
 
 #### <a name="Version31"></a>Version 3.1
 
@@ -660,7 +676,7 @@ Version 4 changes:
     - `Entropy` constructor param `{ prng: true }` forces the `Entropy.string()` method to use `Math.random` generated bytes
   - Change signature of method `stringWithBytes(bitLen, bytes, <charset>)` to `stringWithBytes(bytes, <bitLen>, <charset>)` (i.e., `bitLen` defaults to the `Entropy` class setting)
     - This change is parallel to the version 3.1 change to `Entropy.string()` but required a semantic major version upgrade to implement
-  
+
 [TOC](#TOC)
 
 ### <a name="TakeAway"></a>Take Away
@@ -675,12 +691,12 @@ Version 4 changes:
     - Specified entropy as the risk of repeat in a total number of strings
   - Characters used are arbitrary
   - You need `EntropyString`, not UUIDs
-  
+
 ##### 10 million strings with a 1 in a trillion chance of a repeat:
 
 ```js
   const { Entropy } = require('entropy-string')
-  
+
   const entropy = new Entropy({ total: 1e7, risk: 1e12 })
   const string = entropy.string()
   ```
