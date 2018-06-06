@@ -15,6 +15,7 @@ Efficiently generate cryptographically strong random strings of specified entrop
  - [Efficiency](#Efficiency)
  - [Custom Bytes](#CustomBytes)
  - [No Crypto](#NoCrypto)
+ - [Browser Version](#BrowserVersion)
  - [Entropy Bits](#EntropyBits)
  - [Why You Don't Need UUIDs](#UUID)
  - [Upgrading](#Upgrading)
@@ -481,9 +482,9 @@ Note the number of bytes needed is dependent on the number of characters in our 
 
 [TOC](#TOC)
 
-### <a name="NoCrypto"></a>No crypto
+### <a name="NoCrypto"></a>No Crypto
 
-`EntropyString` uses the `crypto` library by default when generating the random bits used to systematically index into the chosen character set. In environments where the `crypto` library is not available, `EntropyString` can use the psuedo-random number generator `Math.random` by passing `prng: true` to the `Entropy` constructor:
+By default, `EntropyString` uses the `crypto` library for the cryptographically strong random bits used to systematically index into the chosen character set. If cryptographically strong strings are not required, `EntropyString` can use the psuedo-random number generator `Math.random` by passing `prng: true` to the `Entropy` constructor:
 
 ```js
 const { Entropy } = require('entropy-string')
@@ -493,6 +494,12 @@ const string = entropy.string()
 ```
 
 > MJNhBg842J6
+
+[TOC](#TOC)
+
+### <a name="BrowserVersion"></a>Browser Version
+
+A browser version of `EntropyString` is packaged as a UMD bundle in the file `entropy-string.browser.js` with an export name of __EntropyString__ . Rather than use the `crypto` library, the browser version uses `window.crypto.getRandomValues` for generating random bits. See `examples/browser.html` for example usage.
 
 [TOC](#TOC)
 

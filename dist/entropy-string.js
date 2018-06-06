@@ -14,8 +14,6 @@ var _log2 = _interopRequireDefault(_log);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-var WeakMap = require('weak-map');
-
 var _require = require('./lib/csprng-bytes'),
     csprngBytes = _require.csprngBytes;
 
@@ -81,8 +79,6 @@ var genNdxFn = function genNdxFn(bitsPerChar) {
   };
 };
 
-var charsetProps = new WeakMap();
-
 var CharSet = function () {
   function CharSet(chars) {
     (0, _classCallCheck3.default)(this, CharSet);
@@ -96,8 +92,6 @@ var CharSet = function () {
       throw new Error('Invalid char count: must be one of 2,4,8,16,32,64');
     }
 
-    this.bitsPerChar = floor(log2(length));
-
     // Ensure no repeated characters
     for (var i = 0; i < length; i += 1) {
       var c = chars.charAt(i);
@@ -107,61 +101,20 @@ var CharSet = function () {
         }
       }
     }
-    var privProps = {
-      chars: chars,
-      length: length,
-      ndxFn: genNdxFn(this.bitsPerChar),
-      charsPerChunk: lcm(this.bitsPerChar, BITS_PER_BYTE) / this.bitsPerChar
-    };
-    charsetProps.set(this, privProps);
+
+    this.chars = chars;
+    this.bitsPerChar = floor(log2(length));
+    this.length = length;
+    this.ndxFn = genNdxFn(this.bitsPerChar);
+    this.charsPerChunk = lcm(this.bitsPerChar, BITS_PER_BYTE) / this.bitsPerChar;
   }
 
   (0, _createClass3.default)(CharSet, [{
-    key: 'getChars',
-    value: function getChars() {
-      return charsetProps.get(this).chars;
-    }
-  }, {
-    key: 'getBitsPerChar',
-    value: function getBitsPerChar() {
-      return this.bitsPerChar;
-    }
-  }, {
-    key: 'getNdxFn',
-    value: function getNdxFn() {
-      return charsetProps.get(this).ndxFn;
-    }
-  }, {
-    key: 'getCharsPerChunk',
-    value: function getCharsPerChunk() {
-      return charsetProps.get(this).charsPerChunk;
-    }
-  }, {
-    key: 'length',
-    value: function length() {
-      return charsetProps.get(this).length;
-    }
-  }, {
     key: 'bytesNeeded',
     value: function bytesNeeded(bitLen) {
       var count = ceil(bitLen / this.bitsPerChar);
       return ceil(count * this.bitsPerChar / BITS_PER_BYTE);
     }
-
-    // Aliases
-
-  }, {
-    key: 'chars',
-    value: function chars() {
-      return this.getChars();
-    }
-  }, {
-    key: 'ndxFn',
-    value: function ndxFn() {
-      return this.getNdxFn();
-    }
-    // bitsPerChar() { return this.getBitsPerChar() }
-
   }]);
   return CharSet;
 }();
@@ -179,6 +132,7 @@ var _stringWithBytes = function _stringWithBytes(bytes, bitLen, charset) {
   }
 
   var bitsPerChar = charset.bitsPerChar;
+
   var count = ceil(bitLen / bitsPerChar);
   if (count <= 0) {
     return '';
@@ -189,12 +143,13 @@ var _stringWithBytes = function _stringWithBytes(bytes, bitLen, charset) {
     throw new Error('Insufficient bytes: need ' + need + ' and got ' + bytes.length);
   }
 
-  var charsPerChunk = charset.getCharsPerChunk();
+  var ndxFn = charset.ndxFn,
+      charsPerChunk = charset.charsPerChunk,
+      chars = charset.chars;
+
+
   var chunks = floor(count / charsPerChunk);
   var partials = count % charsPerChunk;
-
-  var ndxFn = charset.getNdxFn();
-  var chars = charset.getChars();
 
   var string = '';
   for (var chunk = 0; chunk < chunks; chunk += 1) {
@@ -222,8 +177,6 @@ var entropyBits = function entropyBits(total, risk) {
   }
   return N + log2(risk) - 1;
 };
-
-var entropyProps = new WeakMap();
 
 var Entropy = function () {
   function Entropy() {
@@ -299,81 +252,81 @@ var Entropy = function () {
       charset = charset32;
     }
 
-    var prng = params.prng || false;
-
-    entropyProps.set(this, { charset: charset, bitLen: bitLen, prng: prng });
+    this.charset = charset;
+    this.bitLen = bitLen;
+    this.prng = params.prng || false;
   }
 
   (0, _createClass3.default)(Entropy, [{
     key: 'smallID',
     value: function smallID() {
-      var charset = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : entropyProps.get(this).charset;
+      var charset = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : this.charset;
 
       return this.string(29, charset);
     }
   }, {
     key: 'mediumID',
     value: function mediumID() {
-      var charset = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : entropyProps.get(this).charset;
+      var charset = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : this.charset;
 
       return this.string(69, charset);
     }
   }, {
     key: 'largeID',
     value: function largeID() {
-      var charset = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : entropyProps.get(this).charset;
+      var charset = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : this.charset;
 
       return this.string(99, charset);
     }
   }, {
     key: 'sessionID',
     value: function sessionID() {
-      var charset = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : entropyProps.get(this).charset;
+      var charset = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : this.charset;
 
       return this.string(128, charset);
     }
   }, {
     key: 'token',
     value: function token() {
-      var charset = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : entropyProps.get(this).charset;
+      var charset = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : this.charset;
 
       return this.string(256, charset);
     }
   }, {
     key: 'string',
     value: function string() {
-      var bitLen = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : entropyProps.get(this).bitLen;
-      var charset = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : entropyProps.get(this).charset;
+      var bitLen = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : this.bitLen;
+      var charset = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : this.charset;
 
       var bytesNeeded = charset.bytesNeeded(bitLen);
-      var bytes = entropyProps.get(this).prng ? prngBytes(bytesNeeded) : csprngBytes(bytesNeeded);
+      var bytes = this.prng ? prngBytes(bytesNeeded) : csprngBytes(bytesNeeded);
       return this.stringWithBytes(bytes, bitLen, charset);
     }
   }, {
     key: 'stringWithBytes',
     value: function stringWithBytes(bytes) {
-      var bitLen = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : entropyProps.get(this).bitLen;
-      var charset = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : entropyProps.get(this).charset;
+      var bitLen = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : this.bitLen;
+      var charset = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : this.charset;
 
       return _stringWithBytes(bytes, bitLen, charset);
     }
   }, {
     key: 'bytesNeeded',
     value: function bytesNeeded() {
-      var bitLen = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : entropyProps.get(this).bitLen;
-      var charset = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : entropyProps.get(this).charset;
+      var bitLen = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : this.bitLen;
+      var charset = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : this.charset;
 
       return charset.bytesNeeded(bitLen);
     }
   }, {
     key: 'chars',
     value: function chars() {
-      return entropyProps.get(this).charset.chars();
+      return this.charset.chars;
     }
   }, {
     key: 'bits',
     value: function bits() {
-      return entropyProps.get(this).bitLen;
+      return this.bitLen;
     }
   }, {
     key: 'use',
@@ -381,7 +334,7 @@ var Entropy = function () {
       if (!(charset instanceof CharSet)) {
         throw new Error('Invalid CharSet');
       }
-      entropyProps.get(this).charset = charset;
+      this.charset = charset;
     }
   }, {
     key: 'useChars',
