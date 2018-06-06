@@ -1,5 +1,3 @@
-const WeakMap = require('weak-map')
-
 const { csprngBytes } = require('./lib/csprng-bytes')
 const { prngBytes } = require('./lib/prng-bytes')
 
@@ -137,7 +135,6 @@ const entropyBits = (total, risk) => {
   return (N + log2(risk)) - 1
 }
 
-const entropyProps = new WeakMap()
 class Entropy {
   constructor(params = { bits: 128, charset: charset32 }) {
     if (params !== undefined) {
@@ -214,61 +211,61 @@ class Entropy {
       charset = charset32
     }
 
-    const prng = params.prng || false
-
-    entropyProps.set(this, { charset, bitLen, prng })
+    this.charset = charset
+    this.bitLen = bitLen
+    this.prng = params.prng || false
   }
 
   static bits(total, risk) { return entropyBits(total, risk) }
 
-  smallID(charset = entropyProps.get(this).charset) {
+  smallID(charset = this.charset) {
     return this.string(29, charset)
   }
 
-  mediumID(charset = entropyProps.get(this).charset) {
+  mediumID(charset = this.charset) {
     return this.string(69, charset)
   }
 
-  largeID(charset = entropyProps.get(this).charset) {
+  largeID(charset = this.charset) {
     return this.string(99, charset)
   }
 
-  sessionID(charset = entropyProps.get(this).charset) {
+  sessionID(charset = this.charset) {
     return this.string(128, charset)
   }
 
-  token(charset = entropyProps.get(this).charset) {
+  token(charset = this.charset) {
     return this.string(256, charset)
   }
 
-  string(bitLen = entropyProps.get(this).bitLen, charset = entropyProps.get(this).charset) {
+  string(bitLen = this.bitLen, charset = this.charset) {
     const bytesNeeded = charset.bytesNeeded(bitLen)
-    const bytes = entropyProps.get(this).prng ? prngBytes(bytesNeeded) : csprngBytes(bytesNeeded)
+    const bytes = this.prng ? prngBytes(bytesNeeded) : csprngBytes(bytesNeeded)
     return this.stringWithBytes(bytes, bitLen, charset)
   }
 
   stringWithBytes(
     bytes,
-    bitLen = entropyProps.get(this).bitLen, charset = entropyProps.get(this).charset
+    bitLen = this.bitLen, charset = this.charset
   ) {
     return stringWithBytes(bytes, bitLen, charset)
   }
 
-  bytesNeeded(bitLen = entropyProps.get(this).bitLen, charset = entropyProps.get(this).charset) {
+  bytesNeeded(bitLen = this.bitLen, charset = this.charset) {
     return charset.bytesNeeded(bitLen)
   }
 
   chars() {
-    return entropyProps.get(this).charset.chars
+    return this.charset.chars
   }
 
   bits() {
-    return entropyProps.get(this).bitLen
+    return this.bitLen
   }
 
   use(charset) {
     if (!(charset instanceof CharSet)) { throw new Error('Invalid CharSet') }
-    entropyProps.get(this).charset = charset
+    this.charset = charset
   }
 
   useChars(chars) {
