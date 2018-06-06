@@ -1,6 +1,6 @@
 // Ten billion potential strings with 1 in a trillion risk of repeat
 
-const { default: Entropy } = require('./entropy')
+const { Entropy } = require('./entropy-string')
 
 const entropy = new Entropy({ total: 1e10, risk: 1e12 })
 const string = entropy.string()

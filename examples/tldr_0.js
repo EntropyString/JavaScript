@@ -1,6 +1,6 @@
 // An efficient replacement to a UUID
 
-const { default: Entropy } = require('./entropy')
+const { Entropy } = require('./entropy-string')
 
 const entropy = new Entropy()
 const string = entropy.string()

@@ -1,6 +1,6 @@
 // Using PRNG (not default CSPRNG)
 
-const { default: Entropy } = require('./entropy')
+const { Entropy } = require('./entropy-string')
 
 let entropy = new Entropy({ bits: 80, prng: true })
 let string = entropy.string()

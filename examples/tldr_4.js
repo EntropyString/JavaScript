@@ -1,6 +1,6 @@
 // Small ID with 1 in a million chance of repeat for 30 strings
 
-const { default: Entropy } = require('./entropy')
+const { Entropy } = require('./entropy-string')
 
 const entropy = new Entropy()
 const string = entropy.smallID()

@@ -1,6 +1,6 @@
 // Base 64 character 256 bit token
 
-const { default: Entropy, charset64 } = require('./entropy')
+const { Entropy, charset64 } = require('./entropy-string')
 
 const entropy = new Entropy({ charset: charset64 })
 const string = entropy.token()

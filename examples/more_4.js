@@ -1,6 +1,6 @@
 // 128 bit
 
-const { default: Entropy } = require('./entropy')
+const { Entropy } = require('./entropy-string')
 
 const entropy = new Entropy({ bits: 128 })
 const string = entropy.string()

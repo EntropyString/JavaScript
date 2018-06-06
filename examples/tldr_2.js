@@ -1,7 +1,7 @@
 // Generate a potential of _1 million_ random strings with _1 in a billion_ chance of repeat using
 // hexadecimal strings.
 
-const { default: Entropy, charset16 } = require('./entropy')
+const { Entropy, charset16 } = require('./entropy-string')
 
 const entropy = new Entropy({ total: 1e6, risk: 1e9, charset: charset16 })
 const string = entropy.string()

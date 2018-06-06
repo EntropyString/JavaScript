@@ -1,8 +1,7 @@
-const { default: CharSet } = require('../lib/charset')
-
 const {
+  CharSet,
   charset64, charset32, charset16, charset8, charset4, charset2
-} = require('../lib/entropy')
+} = require('../entropy-string')
 
 test('charset64', () => {
   const charset = new CharSet('ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789-_')

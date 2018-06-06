@@ -1,6 +1,6 @@
 // OWASP session ID using base32 characters
 
-const { default: Entropy } = require('./entropy')
+const { Entropy } = require('./entropy-string')
 
 const entropy = new Entropy()
 const string = entropy.sessionID()

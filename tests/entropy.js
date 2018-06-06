@@ -1,9 +1,8 @@
 const {
-  default: Entropy,
+  Entropy,
+  CharSet,
   charset64, charset32, charset16, charset8, charset4, charset2
-} = require('../lib/entropy')
-
-const { default: CharSet } = require('../lib/charset')
+} = require('../entropy-string')
 
 const { round } = Math
 

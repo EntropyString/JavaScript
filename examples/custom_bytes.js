@@ -1,5 +1,5 @@
 // Custom bytes
-const { default: Entropy } = require('./entropy')
+const { Entropy } = require('./entropy-string')
 
 const entropy = new Entropy({ bits: 30 })
 const bytes = Buffer.from([250, 200, 150, 100])

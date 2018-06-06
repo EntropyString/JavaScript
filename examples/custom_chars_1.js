@@ -1,6 +1,6 @@
 // Custom characters: HT for coin flip
 
-const { default: Entropy, charset2 } = require('./entropy')
+const { Entropy, charset2 } = require('./entropy-string')
 
 const entropy = new Entropy({ charset: charset2, bits: 10 })
 let flips = entropy.string()

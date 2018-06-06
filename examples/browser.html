@@ -1,0 +1,23 @@
+<html>
+  <head>
+    <title>Entropy String Test</title>
+    <script src="../entropy-string.browser.js" type="text/javascript"></script>
+    <script>
+      function global() {
+        entropy = new EntropyString.Entropy({total: 1e5, risk: 1e9});
+      }
+      window.onload = global;
+    </script>    
+  </head>
+  <body>
+    <div>
+      <button onclick="generateString()">Generate String</button>
+      <span id="random_string"></span>
+    </div>
+    <script>
+      function generateString() {
+        document.getElementById("random_string").innerHTML = entropy.string();
+      }
+    </script>
+  </body>
+</html>

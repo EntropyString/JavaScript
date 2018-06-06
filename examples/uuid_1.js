@@ -1,4 +1,4 @@
-const { default: Entropy, charset64 } = require('./entropy')
+const { Entropy, charset64 } = require('./entropy-string')
 
 const uuid = '7416179b-62f4-4ea1-9201-6aa4ef920c12'
 

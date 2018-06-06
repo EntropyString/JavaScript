@@ -1,4 +1,4 @@
-const { default: Entropy, charset16 } = require('./entropy')
+const { Entropy, charset16 } = require('./entropy-string')
 
 const entropy = new Entropy({ total: 10000, risk: 1000000, charset: charset16 })
 

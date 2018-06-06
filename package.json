@@ -1,18 +1,17 @@
 {
   "name": "entropy-string",
-  "version": "4.0.4",
+  "version": "4.1.0",
   "description": "Efficiently generate cryptographically strong random strings of specified entropy from various character sets.",
   "main": "entropy-string.js",
   "directories": {
     "dist": "dist",
-    "lib": "lib",
     "test": "test"
   },
   "scripts": {
-    "build": "yarn clean && BABEL_ENV=production babel --out-dir=dist lib/*.js",
-    "clean": "rm -f dist/lib/*.js",
+    "build": "yarn clean && BABEL_ENV=production babel --out-dir=dist entropy-string.js",
+    "clean": "rm -f dist/*.js",
     "examples": "cd examples && BABEL_ENV=development babel --out-dir=dist *.js && cd ..",
-    "lint": "./node_modules/.bin/eslint lib/*js tests/*js examples/*js",
+    "lint": "eslint entropy-string.js tests/*js examples/*js",
     "prepare": "yarn build",
     "test": "yarn lint && yarn jest"
   },

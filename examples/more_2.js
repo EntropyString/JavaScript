@@ -1,9 +1,9 @@
 // Base 16 (hex) and base 4
 
 const {
-  default: Entropy,
+  Entropy,
   charset16, charset4
-} = require('./entropy')
+} = require('./entropy-string')
 
 console.log('\n  30 potential strings with 1 in a million risk of repeat: \n')
 

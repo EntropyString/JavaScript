@@ -1,6 +1,6 @@
 // Custom character errors
 
-const { default: Entropy } = require('./entropy')
+const { Entropy } = require('./entropy-string')
 
 try {
   const entropy = new Entropy({ charset: '123456' })
