@@ -8,10 +8,10 @@
     "test": "test"
   },
   "scripts": {
-    "build": "yarn clean && BABEL_ENV=production babel --out-dir=dist entropy-string.js",
+    "build": "yarn clean && BABEL_ENV=production babel --out-dir=dist entropy-string.js lib/*.js",
     "clean": "rm -f dist/*.js",
     "examples": "cd examples && BABEL_ENV=development babel --out-dir=dist *.js && cd ..",
-    "lint": "eslint entropy-string.js tests/*js examples/*js",
+    "lint": "eslint entropy-string.js lib/*.js tests/*js examples/*js",
     "prepare": "yarn build",
     "test": "yarn lint && yarn jest"
   },

@@ -14,15 +14,16 @@ var _log2 = _interopRequireDefault(_log);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-var Crypto = require('crypto');
 var WeakMap = require('weak-map');
+
+var csprngBytes = require('lib/csprng-bytes');
+var prngBytes = require('lib/prng-bytes');
 
 var BITS_PER_BYTE = 8;
 var abs = Math.abs,
     ceil = Math.ceil,
     floor = Math.floor,
     log2 = _log2.default,
-    random = Math.random,
     round = Math.round;
 
 
@@ -171,13 +172,6 @@ var charset8 = new CharSet('01234567');
 var charset4 = new CharSet('ATCG');
 var charset2 = new CharSet('01');
 
-var endianByteNum = function () {
-  var buf32 = new Uint32Array(1);
-  var buf8 = new Uint8Array(buf32.buffer);
-  buf32[0] = 0xff;
-  return buf8[0] === 0xff ? [2, 3, 4, 5, 6, 7] : [0, 1, 2, 3, 6, 7];
-}();
-
 var _stringWithBytes = function _stringWithBytes(bytes, bitLen, charset) {
   if (bitLen <= 0) {
     return '';
@@ -215,34 +209,27 @@ var _stringWithBytes = function _stringWithBytes(bytes, bitLen, charset) {
   return string;
 };
 
-var csprngBytes = function csprngBytes(count) {
-  return Buffer.from(Crypto.randomBytes(count));
-};
+// const csprngBytes = count => Buffer.from(Crypto.randomBytes(count))
 
-// const csprngBytes = count => (
-//   process.browser ?
-//     window.crypto.getRandomValues(new Uint8Array(count)) :
-//     Buffer.from(Crypto.randomBytes(count))
-// )
+// const prngBytes = (count) => {
+//   console.log('CxDebug prng: true')
+//   const BYTES_USED_PER_RANDOM_CALL = 6
+//   const randCount = ceil(count / BYTES_USED_PER_RANDOM_CALL)
 
-var prngBytes = function prngBytes(count) {
-  var BYTES_USED_PER_RANDOM_CALL = 6;
-  var randCount = ceil(count / BYTES_USED_PER_RANDOM_CALL);
-
-  var buffer = Buffer.alloc(count);
-  var dataView = new DataView(new ArrayBuffer(BITS_PER_BYTE));
-  for (var rNum = 0; rNum < randCount; rNum += 1) {
-    dataView.setFloat64(0, random());
-    for (var n = 0; n < BYTES_USED_PER_RANDOM_CALL; n += 1) {
-      var fByteNum = endianByteNum[n];
-      var bByteNum = rNum * BYTES_USED_PER_RANDOM_CALL + n;
-      if (bByteNum < count) {
-        buffer[bByteNum] = dataView.getUint8(fByteNum);
-      }
-    }
-  }
-  return buffer;
-};
+//   const buffer = new ArrayBuffer(count)
+//   const dataView = new DataView(new ArrayBuffer(BITS_PER_BYTE))
+//   for (let rNum = 0; rNum < randCount; rNum += 1) {
+//     dataView.setFloat64(0, random())
+//     for (let n = 0; n < BYTES_USED_PER_RANDOM_CALL; n += 1) {
+//       const fByteNum = endianByteNum[n]
+//       const bByteNum = (rNum * BYTES_USED_PER_RANDOM_CALL) + n
+//       if (bByteNum < count) {
+//         buffer[bByteNum] = dataView.getUint8(fByteNum)
+//       }
+//     }
+//   }
+//   return buffer
+// }
 
 var entropyBits = function entropyBits(total, risk) {
   if (total === 0) {
