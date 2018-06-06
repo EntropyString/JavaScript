@@ -7,6 +7,9 @@
     "dist": "dist",
     "test": "test"
   },
+  "browser": {
+    "./lib/csprng-bytes.js": "./lib/csprng-bytes-browser.js"
+  },
   "scripts": {
     "build": "yarn clean && BABEL_ENV=production babel --out-dir=dist entropy-string.js lib/*.js",
     "clean": "rm -f dist/*.js",
