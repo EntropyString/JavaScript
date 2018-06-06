@@ -5,56 +5,56 @@ const {
 
 test('charset64', () => {
   const charset = new CharSet('ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789-_')
-  const { length } = charset.getChars()
+  const { length } = charset.chars
   expect(length).toBe(64)
   const bitsPerChar = Math.log2(length)
-  expect(charset.getBitsPerChar()).toBe(bitsPerChar)
-  expect(charset.getCharsPerChunk()).toBe(4)
+  expect(charset.bitsPerChar).toBe(bitsPerChar)
+  expect(charset.charsPerChunk).toBe(4)
 })
 
 test('charset32', () => {
   const charset = new CharSet('2346789bdfghjmnpqrtBDFGHJLMNPQRT')
-  const { length } = charset.getChars()
+  const { length } = charset.chars
   expect(length).toBe(32)
   const bitsPerChar = Math.log2(length)
-  expect(charset.getBitsPerChar()).toBe(bitsPerChar)
-  expect(charset.getCharsPerChunk()).toBe(8)
+  expect(charset.bitsPerChar).toBe(bitsPerChar)
+  expect(charset.charsPerChunk).toBe(8)
 })
 
 test('charset16', () => {
   const charset = new CharSet('0123456789abcdef')
-  const { length } = charset.getChars()
+  const { length } = charset.chars
   expect(length).toBe(16)
   const bitsPerChar = Math.log2(length)
-  expect(charset.getBitsPerChar()).toBe(bitsPerChar)
-  expect(charset.getCharsPerChunk()).toBe(2)
+  expect(charset.bitsPerChar).toBe(bitsPerChar)
+  expect(charset.charsPerChunk).toBe(2)
 })
 
 test('charset8', () => {
   const charset = new CharSet('01234567')
-  const { length } = charset.getChars()
+  const { length } = charset.chars
   expect(length).toBe(8)
   const bitsPerChar = Math.log2(length)
-  expect(charset.getBitsPerChar()).toBe(bitsPerChar)
-  expect(charset.getCharsPerChunk()).toBe(8)
+  expect(charset.bitsPerChar).toBe(bitsPerChar)
+  expect(charset.charsPerChunk).toBe(8)
 })
 
 test('charset4', () => {
   const charset = new CharSet('ATCG')
-  const { length } = charset.getChars()
+  const { length } = charset.chars
   expect(length).toBe(4)
   const bitsPerChar = Math.log2(length)
-  expect(charset.getBitsPerChar()).toBe(bitsPerChar)
-  expect(charset.getCharsPerChunk()).toBe(4)
+  expect(charset.bitsPerChar).toBe(bitsPerChar)
+  expect(charset.charsPerChunk).toBe(4)
 })
 
 test('charset2', () => {
   const charset = new CharSet('01')
-  const { length } = charset.getChars()
+  const { length } = charset.chars
   expect(length).toBe(2)
   const bitsPerChar = Math.log2(length)
-  expect(charset.getBitsPerChar()).toBe(bitsPerChar)
-  expect(charset.getCharsPerChunk()).toBe(8)
+  expect(charset.bitsPerChar).toBe(bitsPerChar)
+  expect(charset.charsPerChunk).toBe(8)
 })
 
 test('Custom chars: 64', () => {

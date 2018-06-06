@@ -55,7 +55,6 @@ const genNdxFn = (bitsPerChar) => {
   }
 }
 
-const charsetProps = new WeakMap()
 class CharSet {
   constructor(chars) {
     if (!(typeof chars === 'string' || chars instanceof String)) {
@@ -65,7 +64,7 @@ class CharSet {
     if (![2, 4, 8, 16, 32, 64].includes(length)) {
       throw new Error('Invalid char count: must be one of 2,4,8,16,32,64')
     }
-    const bitsPerChar = floor(log2(length))
+
     // Ensure no repeated characters
     for (let i = 0; i < length; i += 1) {
       const c = chars.charAt(i)
@@ -75,45 +74,18 @@ class CharSet {
         }
       }
     }
-    const privProps = {
-      chars,
-      bitsPerChar,
-      length,
-      ndxFn: genNdxFn(bitsPerChar),
-      charsPerChunk: lcm(bitsPerChar, BITS_PER_BYTE) / bitsPerChar
-    }
-    charsetProps.set(this, privProps)
-  }
 
-  getChars() {
-    return charsetProps.get(this).chars
-  }
-
-  getBitsPerChar() {
-    return charsetProps.get(this).bitsPerChar
-  }
-
-  getNdxFn() {
-    return charsetProps.get(this).ndxFn
-  }
-
-  getCharsPerChunk() {
-    return charsetProps.get(this).charsPerChunk
-  }
-
-  length() {
-    return charsetProps.get(this).length
+    this.chars = chars
+    this.bitsPerChar = floor(log2(length))
+    this.length = length
+    this.ndxFn = genNdxFn(this.bitsPerChar)
+    this.charsPerChunk = lcm(this.bitsPerChar, BITS_PER_BYTE) / this.bitsPerChar
   }
 
   bytesNeeded(bitLen) {
-    const count = ceil(bitLen / this.bitsPerChar())
-    return ceil((count * this.bitsPerChar()) / BITS_PER_BYTE)
+    const count = ceil(bitLen / this.bitsPerChar)
+    return ceil((count * this.bitsPerChar) / BITS_PER_BYTE)
   }
-
-  // Aliases
-  chars() { return this.getChars() }
-  ndxFn() { return this.getNdxFn() }
-  bitsPerChar() { return this.getBitsPerChar() }
 }
 
 const charset64 = new CharSet('ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789-_')
@@ -126,7 +98,7 @@ const charset2 = new CharSet('01')
 const stringWithBytes = (bytes, bitLen, charset) => {
   if (bitLen <= 0) { return '' }
 
-  const bitsPerChar = charset.getBitsPerChar()
+  const { bitsPerChar } = charset
   const count = ceil(bitLen / bitsPerChar)
   if (count <= 0) { return '' }
 
@@ -135,12 +107,10 @@ const stringWithBytes = (bytes, bitLen, charset) => {
     throw new Error(`Insufficient bytes: need ${need} and got ${bytes.length}`)
   }
 
-  const charsPerChunk = charset.getCharsPerChunk()
+  const { ndxFn, charsPerChunk, chars } = charset
+
   const chunks = floor(count / charsPerChunk)
   const partials = count % charsPerChunk
-
-  const ndxFn = charset.getNdxFn()
-  const chars = charset.getChars()
 
   let string = ''
   for (let chunk = 0; chunk < chunks; chunk += 1) {
@@ -289,7 +259,7 @@ class Entropy {
   }
 
   chars() {
-    return entropyProps.get(this).charset.chars()
+    return entropyProps.get(this).charset.chars
   }
 
   bits() {

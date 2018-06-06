@@ -1,6 +1,7 @@
-'use strict';
+"use strict";
 
-var random = Math.random;
+var ceil = Math.ceil,
+    random = Math.random;
 
 
 var BITS_PER_BYTE = 8;
@@ -13,7 +14,6 @@ var endianByteNum = function () {
 }();
 
 var prngBytes = function prngBytes(count) {
-  console.log('CxDebug prng: true');
   var BYTES_USED_PER_RANDOM_CALL = 6;
   var randCount = ceil(count / BYTES_USED_PER_RANDOM_CALL);
 

@@ -16,8 +16,11 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 
 var WeakMap = require('weak-map');
 
-var csprngBytes = require('lib/csprng-bytes');
-var prngBytes = require('lib/prng-bytes');
+var _require = require('./lib/csprng-bytes'),
+    csprngBytes = _require.csprngBytes;
+
+var _require2 = require('./lib/prng-bytes'),
+    prngBytes = _require2.prngBytes;
 
 var BITS_PER_BYTE = 8;
 var abs = Math.abs,
@@ -92,7 +95,9 @@ var CharSet = function () {
     if (![2, 4, 8, 16, 32, 64].includes(length)) {
       throw new Error('Invalid char count: must be one of 2,4,8,16,32,64');
     }
-    var bitsPerChar = floor(log2(length));
+
+    this.bitsPerChar = floor(log2(length));
+
     // Ensure no repeated characters
     for (var i = 0; i < length; i += 1) {
       var c = chars.charAt(i);
@@ -104,10 +109,9 @@ var CharSet = function () {
     }
     var privProps = {
       chars: chars,
-      bitsPerChar: bitsPerChar,
       length: length,
-      ndxFn: genNdxFn(bitsPerChar),
-      charsPerChunk: lcm(bitsPerChar, BITS_PER_BYTE) / bitsPerChar
+      ndxFn: genNdxFn(this.bitsPerChar),
+      charsPerChunk: lcm(this.bitsPerChar, BITS_PER_BYTE) / this.bitsPerChar
     };
     charsetProps.set(this, privProps);
   }
@@ -120,7 +124,7 @@ var CharSet = function () {
   }, {
     key: 'getBitsPerChar',
     value: function getBitsPerChar() {
-      return charsetProps.get(this).bitsPerChar;
+      return this.bitsPerChar;
     }
   }, {
     key: 'getNdxFn',
@@ -140,8 +144,8 @@ var CharSet = function () {
   }, {
     key: 'bytesNeeded',
     value: function bytesNeeded(bitLen) {
-      var count = ceil(bitLen / this.bitsPerChar());
-      return ceil(count * this.bitsPerChar() / BITS_PER_BYTE);
+      var count = ceil(bitLen / this.bitsPerChar);
+      return ceil(count * this.bitsPerChar / BITS_PER_BYTE);
     }
 
     // Aliases
@@ -156,11 +160,8 @@ var CharSet = function () {
     value: function ndxFn() {
       return this.getNdxFn();
     }
-  }, {
-    key: 'bitsPerChar',
-    value: function bitsPerChar() {
-      return this.getBitsPerChar();
-    }
+    // bitsPerChar() { return this.getBitsPerChar() }
+
   }]);
   return CharSet;
 }();
@@ -177,7 +178,7 @@ var _stringWithBytes = function _stringWithBytes(bytes, bitLen, charset) {
     return '';
   }
 
-  var bitsPerChar = charset.getBitsPerChar();
+  var bitsPerChar = charset.bitsPerChar;
   var count = ceil(bitLen / bitsPerChar);
   if (count <= 0) {
     return '';
@@ -208,28 +209,6 @@ var _stringWithBytes = function _stringWithBytes(bytes, bitLen, charset) {
   }
   return string;
 };
-
-// const csprngBytes = count => Buffer.from(Crypto.randomBytes(count))
-
-// const prngBytes = (count) => {
-//   console.log('CxDebug prng: true')
-//   const BYTES_USED_PER_RANDOM_CALL = 6
-//   const randCount = ceil(count / BYTES_USED_PER_RANDOM_CALL)
-
-//   const buffer = new ArrayBuffer(count)
-//   const dataView = new DataView(new ArrayBuffer(BITS_PER_BYTE))
-//   for (let rNum = 0; rNum < randCount; rNum += 1) {
-//     dataView.setFloat64(0, random())
-//     for (let n = 0; n < BYTES_USED_PER_RANDOM_CALL; n += 1) {
-//       const fByteNum = endianByteNum[n]
-//       const bByteNum = (rNum * BYTES_USED_PER_RANDOM_CALL) + n
-//       if (bByteNum < count) {
-//         buffer[bByteNum] = dataView.getUint8(fByteNum)
-//       }
-//     }
-//   }
-//   return buffer
-// }
 
 var entropyBits = function entropyBits(total, risk) {
   if (total === 0) {

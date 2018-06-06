@@ -11,27 +11,27 @@ const rbits = (t, r) => round(Entropy.bits(t, r))
 test('Entropy constructor', () => {
   let entropy = new Entropy()
   expect(entropy.bits()).toBe(128)
-  expect(entropy.chars()).toBe(charset32.chars())
+  expect(entropy.chars()).toBe(charset32.chars)
   expect(entropy.bytesNeeded()).toBe(17)
 
   entropy = new Entropy({ bits: 32 })
   expect(entropy.bits()).toBe(32)
-  expect(entropy.chars()).toBe(charset32.chars())
+  expect(entropy.chars()).toBe(charset32.chars)
   expect(entropy.bytesNeeded()).toBe(5)
 
   entropy = new Entropy({ total: 1000, risk: 1e9 })
   expect(entropy.bits()).toBe(49)
-  expect(entropy.chars()).toBe(charset32.chars())
+  expect(entropy.chars()).toBe(charset32.chars)
   expect(entropy.bytesNeeded()).toBe(7)
 
   entropy = new Entropy({ bits: 32, charset: charset16 })
   expect(entropy.bits()).toBe(32)
-  expect(entropy.chars()).toBe(charset16.chars())
+  expect(entropy.chars()).toBe(charset16.chars)
   expect(entropy.bytesNeeded()).toBe(4)
 
   entropy = new Entropy({ total: 1e6, risk: 10000000, charset: charset16 })
   expect(entropy.bits()).toBe(62)
-  expect(entropy.chars()).toBe(charset16.chars())
+  expect(entropy.chars()).toBe(charset16.chars)
   expect(entropy.bytesNeeded()).toBe(8)
 })
 
