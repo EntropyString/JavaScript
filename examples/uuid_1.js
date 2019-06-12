@@ -18,4 +18,3 @@ console.log('  entropy:', bits)
 console.log('  string len:', string.length)
 console.log('  string bytes:', string.length * 8)
 console.log('  efficiency:', bits / (string.length * 8))
-

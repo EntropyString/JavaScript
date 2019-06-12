@@ -1,7 +1,7 @@
 {
-  "presets": ["es2015"],
-  "plugins": ["transform-runtime"],
-  "ignore": "test.js",
+  "presets": ["@babel/preset-env"],
+  "plugins": ["@babel/plugin-transform-runtime"],
+  "ignore": ["test.js"],
   "env": {
     "development": {
       "sourceMaps": "inline"

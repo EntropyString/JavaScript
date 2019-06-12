@@ -142,11 +142,11 @@ class Entropy {
         throw new Error('Invalid argument for Entropy constructor: Expect params object')
       }
 
-      if (params.bits === undefined &&
-          params.charset === undefined &&
-          params.total === undefined &&
-          params.risk === undefined &&
-          params.prng === undefined) {
+      if (params.bits === undefined
+          && params.charset === undefined
+          && params.total === undefined
+          && params.risk === undefined
+          && params.prng === undefined) {
         throw new Error('Invalid Entropy params')
       }
 
@@ -181,13 +181,13 @@ class Entropy {
         throw new Error('Invalid Entropy params: non-numeric risk')
       }
 
-      if ((params.total !== undefined && params.risk === undefined) ||
-          (params.total === undefined && params.risk !== undefined)) {
+      if ((params.total !== undefined && params.risk === undefined)
+          || (params.total === undefined && params.risk !== undefined)) {
         throw new Error('Invalid Entropy params: total and risk must be paired')
       }
 
-      if (params.bits !== undefined &&
-          (params.total !== undefined || params.risk !== undefined)) {
+      if (params.bits !== undefined
+          && (params.total !== undefined || params.risk !== undefined)) {
         throw new Error('Invalid Entropy params: bits with total and/or risk')
       }
     }
