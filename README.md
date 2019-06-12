@@ -532,7 +532,7 @@ It is quite common in most (all?) programming languages to simply use string rep
 By UUID, we almost always mean the version 4 string representation, which looks like this:
 
 ```
-  hhhhhhhh-hhhh-4hhh-Hhhh-hhhhh
+  hhhhhhhh-hhhh-4hhh-Hhhh-hhhhhhhhhhhh
 ```
 
 Per [Section 4.4 of RFC 4122](https://tools.ietf.org/html/rfc4122#section-4.4), the algorithm for creating 32-byte version 4 UUIDs is:
