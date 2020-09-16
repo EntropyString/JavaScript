@@ -8,13 +8,13 @@
     "test": "test"
   },
   "browser": {
-    "./lib/csprng-bytes.js": "./lib/csprng-bytes-browser.js"
+    "./csprng-bytes.js": "./csprng-bytes-browser.js"
   },
   "scripts": {
-    "build": "yarn clean && BABEL_ENV=production babel --out-dir=dist entropy-string.js lib/*.js",
+    "build": "yarn clean && BABEL_ENV=production babel --out-dir=dist *.js",
     "clean": "rm -f dist/*.js",
-    "examples": "cd examples && BABEL_ENV=development babel --out-dir=dist *.js lib/*.js && cd ..",
-    "lint": "eslint entropy-string.js lib/*.js tests/*js examples/*js",
+    "examples": "cd examples && BABEL_ENV=development babel --out-dir=dist *.js && cd ..",
+    "lint": "eslint *.js tests/*js examples/*js",
     "prepare": "yarn build",
     "test": "yarn lint && yarn jest"
   },
